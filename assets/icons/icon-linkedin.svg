@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 7 7" width="56" height="56" shape-rendering="crispEdges" fill="white">
+  <!-- top edge -->
+  <rect x="1" y="0" width="5" height="1"/>
+  <!-- bottom edge -->
+  <rect x="1" y="6" width="5" height="1"/>
+  <!-- left edge -->
+  <rect x="0" y="1" width="1" height="5"/>
+  <!-- right edge -->
+  <rect x="6" y="1" width="1" height="5"/>
+  <!-- "in" letterform -->
+  <text x="3.5" y="3.6" text-anchor="middle" dominant-baseline="middle" font-family="Arial, Helvetica, sans-serif" font-size="4.5" font-weight="bold" fill="white" text-rendering="optimizeLegibility">in</text>
+</svg>

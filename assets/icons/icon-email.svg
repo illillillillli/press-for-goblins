@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18 14" width="72" height="56" shape-rendering="crispEdges" fill="white">
+  <!-- top edge -->
+  <rect x="2"  y="0"  width="14" height="2"/>
+  <!-- bottom edge -->
+  <rect x="2"  y="12" width="14" height="2"/>
+  <!-- left edge -->
+  <rect x="0"  y="2"  width="2"  height="10"/>
+  <!-- right edge -->
+  <rect x="16" y="2"  width="2"  height="10"/>
+  <!-- top-left chevron dot -->
+  <rect x="4"  y="4"  width="2"  height="2"/>
+  <!-- top-right chevron dot -->
+  <rect x="12" y="4"  width="2"  height="2"/>
+  <!-- centre-left chevron point -->
+  <rect x="6"  y="6"  width="2"  height="2"/>
+  <!-- centre-right chevron point -->
+  <rect x="10" y="6"  width="2"  height="2"/>
+  <!-- bottom-left chevron dot -->
+  <rect x="4"  y="8"  width="2"  height="2"/>
+  <!-- centre bottom dot -->
+  <rect x="8"  y="8"  width="2"  height="2"/>
+  <!-- bottom-right chevron dot -->
+  <rect x="12" y="8"  width="2"  height="2"/>
+</svg>
