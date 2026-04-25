@@ -260,42 +260,59 @@
       display: none;
     }
 
-    /* fast-forward: tight sharp tracking band like VHS FF.
-       narrow height, hard edges, bright core, second ghost band via ::after. */
+    /* fast-forward: multiple thin jittery VHS tracking lines.
+       uses a repeating-linear-gradient to tile many tight stripes across the full screen.
+       a separate jitter animation randomly shifts them vertically for that unstable tape feel. */
     body.ff-active .crt::before {
-      height: 12vh;
-      animation-duration: 1.8s;
-      background: linear-gradient(to top,
-          rgba(255, 255, 255, 0)    0%,
-          rgba(255, 255, 255, 0.08) 10%,
-          rgba(255, 255, 255, 0.22) 35%,
-          rgba(255, 255, 255, 0.32) 50%,
-          rgba(255, 255, 255, 0.22) 65%,
-          rgba(255, 255, 255, 0.08) 90%,
-          rgba(255, 255, 255, 0)    100%
-        );
+      height: 100vh;
+      top: 0;
+      animation: crtSweep 1.4s linear infinite, ffJitter 0.08s steps(1) infinite;
+      background: repeating-linear-gradient(
+        to bottom,
+        rgba(255,255,255,0)    0px,
+        rgba(255,255,255,0)    18px,
+        rgba(255,255,255,0.06) 19px,
+        rgba(255,255,255,0.18) 20px,
+        rgba(255,255,255,0.06) 21px,
+        rgba(255,255,255,0)    22px,
+        rgba(255,255,255,0)    34px,
+        rgba(255,255,255,0.03) 35px,
+        rgba(255,255,255,0.10) 36px,
+        rgba(255,255,255,0.03) 37px,
+        rgba(255,255,255,0)    38px
+      );
     }
 
-    /* ghost trailing band — offset ~20vh behind the main one */
+    @keyframes ffJitter {
+      0%   { transform: translateY(0px); }
+      20%  { transform: translateY(-3px); }
+      40%  { transform: translateY(1px); }
+      60%  { transform: translateY(-2px); }
+      80%  { transform: translateY(2px); }
+      100% { transform: translateY(-1px); }
+    }
+
+    /* ghost layer — same stripes, slightly offset and dimmer */
     .crt::after {
       content: "";
       position: absolute;
-      left: 0;
-      right: 0;
-      height: 8vh;
+      inset: 0;
       opacity: 0;
-      background: linear-gradient(to top,
-          rgba(255, 255, 255, 0)    0%,
-          rgba(255, 255, 255, 0.06) 30%,
-          rgba(255, 255, 255, 0.10) 50%,
-          rgba(255, 255, 255, 0.06) 70%,
-          rgba(255, 255, 255, 0)    100%
-        );
-      animation: crtSweep 1.8s linear infinite;
-      animation-delay: -0.35s; /* offset so it trails behind main band */
+      pointer-events: none;
     }
     body.ff-active .crt::after {
       opacity: 1;
+      animation: crtSweep 1.4s linear infinite, ffJitter 0.11s steps(1) infinite;
+      animation-delay: -0.5s, -0.03s;
+      background: repeating-linear-gradient(
+        to bottom,
+        rgba(255,255,255,0)    0px,
+        rgba(255,255,255,0)    28px,
+        rgba(255,255,255,0.04) 29px,
+        rgba(255,255,255,0.12) 30px,
+        rgba(255,255,255,0.04) 31px,
+        rgba(255,255,255,0)    32px
+      );
     }
 
 
