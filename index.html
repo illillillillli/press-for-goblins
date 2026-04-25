@@ -1797,6 +1797,7 @@
     const cta = document.getElementById('cta');
 
     let heroTimers = [];
+    let skipping = false;        /* declared here so replayEyes can read it */
     function clearHeroTimers() { heroTimers.forEach(t => clearTimeout(t)); heroTimers = []; }
 
     function replayEyes() {
@@ -1995,7 +1996,6 @@
 
     /* state flags */
     let rewinding = false;       /* true while a rewind animation is playing */
-    let skipping = false;        /* true when user presses spacebar to skip typing */
     let rewindGen = 0;           /* increments on rewind — orphaned animations check this to self-cancel */
     let terminalStarted = false; /* true once the chat has been started */
 
