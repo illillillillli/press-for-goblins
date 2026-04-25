@@ -1,4 +1,4 @@
-# Press for Goblins
+# press for goblins
 
 definitely not three goblins in a trenchcoat
 
