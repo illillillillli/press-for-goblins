@@ -2600,24 +2600,33 @@
     }
 
     /* prevent long-press text selection globally (mobile) */
-    document.addEventListener('selectstart', e => { if (skipping) e.preventDefault(); });
+    document.addEventListener('selectstart', e => e.preventDefault());
+    document.addEventListener('contextmenu', e => e.preventDefault());
 
-    /* hold-to-skip: pointerdown starts a 400ms timer; pointerup/cancel cancels it.
-       ignored when target is an input, textarea, or option button. */
+    /* hold-to-skip on mobile: touchstart with passive:false lets us preventDefault,
+       which is the only reliable way to block iOS long-press selection/callout.
+       ignored when target is an input, textarea, or option button.
+       400ms hold activates skip; touchend/cancel before that = normal tap, no skip. */
     let holdTimer = null;
-    document.addEventListener('pointerdown', e => {
-      const t = e.target;
-      if (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA') return;
-      if (t.closest('.term-option, button')) return;
+    function startHold(target) {
+      if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA') return;
+      if (target.closest('.term-option, button')) return;
       holdTimer = setTimeout(() => {
         skipping = true;
         showFfIcon();
-        /* suppress any text selection that crept in */
         window.getSelection()?.removeAllRanges();
       }, 400);
-    });
-    document.addEventListener('pointerup', () => { clearTimeout(holdTimer); holdTimer = null; });
-    document.addEventListener('pointercancel', () => { clearTimeout(holdTimer); holdTimer = null; });
+    }
+    function cancelHold() { clearTimeout(holdTimer); holdTimer = null; }
+
+    document.addEventListener('touchstart', e => {
+      /* allow taps on interactive elements to work normally */
+      if (e.target.closest('.term-option, button, input, textarea, a')) return;
+      e.preventDefault(); /* blocks long-press callout + text selection on iOS */
+      startHold(e.target);
+    }, { passive: false });
+    document.addEventListener('touchend', cancelHold);
+    document.addEventListener('touchcancel', cancelHold);
 
     document.addEventListener('keydown', e => {
       const t = document.activeElement?.tagName;
