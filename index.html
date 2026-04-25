@@ -168,6 +168,8 @@
       /* no scrollbars on the page itself */
       -webkit-font-smoothing: antialiased;
       /* smoother text on mac/ios */
+      -webkit-user-select: none; /* prevent long-press text selection on iOS */
+      user-select: none;
     }
 
     body {
@@ -2583,6 +2585,8 @@
     /* ═══════════════════════════════════════════════════════
        [FF-ICON-JS] — fast-forward icon visibility.
        shows instantly when skipping starts, hides 1s after skipping ends.
+       desktop: spacebar. mobile: hold anywhere (not on an option/input).
+       long-press threshold: 400ms. prevents text selection on hold.
        ═══════════════════════════════════════════════════════ */
     const ffIcon = document.getElementById('ff-icon');
     let ffHideTimer = null;
@@ -2594,6 +2598,26 @@
       if (ffHideTimer) clearTimeout(ffHideTimer);
       ffHideTimer = setTimeout(() => { ffIcon.classList.remove('visible'); ffHideTimer = null; }, 1000);
     }
+
+    /* prevent long-press text selection globally (mobile) */
+    document.addEventListener('selectstart', e => { if (skipping) e.preventDefault(); });
+
+    /* hold-to-skip: pointerdown starts a 400ms timer; pointerup/cancel cancels it.
+       ignored when target is an input, textarea, or option button. */
+    let holdTimer = null;
+    document.addEventListener('pointerdown', e => {
+      const t = e.target;
+      if (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA') return;
+      if (t.closest('.term-option, button')) return;
+      holdTimer = setTimeout(() => {
+        skipping = true;
+        showFfIcon();
+        /* suppress any text selection that crept in */
+        window.getSelection()?.removeAllRanges();
+      }, 400);
+    });
+    document.addEventListener('pointerup', () => { clearTimeout(holdTimer); holdTimer = null; });
+    document.addEventListener('pointercancel', () => { clearTimeout(holdTimer); holdTimer = null; });
 
     document.addEventListener('keydown', e => {
       const t = document.activeElement?.tagName;
