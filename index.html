@@ -260,39 +260,46 @@
       display: none;
     }
 
-    /* fast-forward: multiple thin jittery VHS tracking lines.
-       uses a repeating-linear-gradient to tile many tight stripes across the full screen.
-       a separate jitter animation randomly shifts them vertically for that unstable tape feel. */
+    /* fast-forward: 3-4 wide VHS tracking bands sweeping upward.
+       each band is ~8-12% of screen height with soft inner edges but clear gaps between.
+       jitter shifts the whole element randomly for tape-instability feel. */
     body.ff-active .crt::before {
       height: 100vh;
       top: 0;
-      animation: crtSweep 1.4s linear infinite, ffJitter 0.08s steps(1) infinite;
+      animation: crtSweep 1.6s linear infinite, ffJitter 0.1s steps(1) infinite;
       background: repeating-linear-gradient(
         to bottom,
-        rgba(255,255,255,0)    0px,
-        rgba(255,255,255,0)    18px,
-        rgba(255,255,255,0.06) 19px,
-        rgba(255,255,255,0.18) 20px,
-        rgba(255,255,255,0.06) 21px,
-        rgba(255,255,255,0)    22px,
-        rgba(255,255,255,0)    34px,
-        rgba(255,255,255,0.03) 35px,
-        rgba(255,255,255,0.10) 36px,
-        rgba(255,255,255,0.03) 37px,
-        rgba(255,255,255,0)    38px
+        rgba(255,255,255,0)    0%,
+        rgba(255,255,255,0)    14%,
+        rgba(255,255,255,0.04) 16%,
+        rgba(255,255,255,0.14) 19%,
+        rgba(255,255,255,0.04) 22%,
+        rgba(255,255,255,0)    24%,
+        rgba(255,255,255,0)    49%,
+        rgba(255,255,255,0.03) 51%,
+        rgba(255,255,255,0.10) 54%,
+        rgba(255,255,255,0.03) 57%,
+        rgba(255,255,255,0)    59%,
+        rgba(255,255,255,0)    74%,
+        rgba(255,255,255,0.02) 76%,
+        rgba(255,255,255,0.07) 79%,
+        rgba(255,255,255,0.02) 82%,
+        rgba(255,255,255,0)    84%,
+        rgba(255,255,255,0)    100%
       );
     }
 
     @keyframes ffJitter {
       0%   { transform: translateY(0px); }
-      20%  { transform: translateY(-3px); }
-      40%  { transform: translateY(1px); }
-      60%  { transform: translateY(-2px); }
-      80%  { transform: translateY(2px); }
-      100% { transform: translateY(-1px); }
+      15%  { transform: translateY(-4px); }
+      30%  { transform: translateY(2px); }
+      50%  { transform: translateY(-3px); }
+      70%  { transform: translateY(1px); }
+      85%  { transform: translateY(-2px); }
+      100% { transform: translateY(0px); }
     }
 
-    /* ghost layer — same stripes, slightly offset and dimmer */
+    /* second offset layer for the broken/dashed look within each band */
     .crt::after {
       content: "";
       position: absolute;
@@ -302,17 +309,31 @@
     }
     body.ff-active .crt::after {
       opacity: 1;
-      animation: crtSweep 1.4s linear infinite, ffJitter 0.11s steps(1) infinite;
-      animation-delay: -0.5s, -0.03s;
+      animation: crtSweep 1.6s linear infinite, ffJitter 0.13s steps(1) infinite;
+      animation-delay: -0.7s, -0.05s;
       background: repeating-linear-gradient(
         to bottom,
-        rgba(255,255,255,0)    0px,
-        rgba(255,255,255,0)    28px,
-        rgba(255,255,255,0.04) 29px,
-        rgba(255,255,255,0.12) 30px,
-        rgba(255,255,255,0.04) 31px,
-        rgba(255,255,255,0)    32px
+        rgba(255,255,255,0)    0%,
+        rgba(255,255,255,0)    14%,
+        rgba(255,255,255,0.06) 17%,
+        rgba(255,255,255,0.18) 20%,
+        rgba(255,255,255,0.06) 23%,
+        rgba(255,255,255,0)    25%,
+        rgba(255,255,255,0)    49%,
+        rgba(255,255,255,0.04) 52%,
+        rgba(255,255,255,0.13) 55%,
+        rgba(255,255,255,0.04) 58%,
+        rgba(255,255,255,0)    60%,
+        rgba(255,255,255,0)    100%
       );
+    }
+
+    /* zero hero transition delays when FF is active so text snaps in instantly */
+    body.ff-active .hero .title,
+    body.ff-active .hero .body,
+    body.ff-active .hero .cta-wrap {
+      transition-duration: 0.15s !important;
+      transition-delay: 0s !important;
     }
 
 
@@ -1781,12 +1802,12 @@
     function replayEyes() {
       /* reset all eyes to closed state */
       eyes.forEach(e => { e.classList.remove('open', 'open-locked'); void e.offsetWidth; });
-      /* stagger the opening — each pair opens after a delay */
-      heroTimers.push(setTimeout(() => eyes[0].classList.add('open'), 500));   /* ← p1 delay */
-      heroTimers.push(setTimeout(() => eyes[1].classList.add('open'), 1600));  /* ← p2 delay */
-      heroTimers.push(setTimeout(() => eyes[2].classList.add('open'), 2900));  /* ← p3 delay (droop starts here) */
-      /* after all animations finish, swap to open-locked so blink can override later */
-      heroTimers.push(setTimeout(() => eyes.forEach(e => { e.classList.remove('open'); e.classList.add('open-locked'); }), 5200));
+      const fast = skipping;
+      /* stagger the opening — collapse delays when skipping */
+      heroTimers.push(setTimeout(() => eyes[0].classList.add('open'), fast ? 0   : 500));
+      heroTimers.push(setTimeout(() => eyes[1].classList.add('open'), fast ? 80  : 1600));
+      heroTimers.push(setTimeout(() => eyes[2].classList.add('open'), fast ? 160 : 2900));
+      heroTimers.push(setTimeout(() => eyes.forEach(e => { e.classList.remove('open'); e.classList.add('open-locked'); }), fast ? 600 : 5200));
     }
 
 
@@ -1860,9 +1881,20 @@
       resetCorrection();
       void hero.offsetWidth; /* force reflow so transitions restart cleanly */
       replayEyes();
+      const fast = skipping;
       /* after eyes finish opening, fade in the text */
-      heroTimers.push(setTimeout(() => hero.classList.add('ready'), 5090));  /* ← text appears */
-      heroTimers.push(setTimeout(() => runCorrection(), 9500));              /* ← we→i starts */
+      heroTimers.push(setTimeout(() => hero.classList.add('ready'), fast ? 200  : 5090));
+      heroTimers.push(setTimeout(() => runCorrection(),              fast ? 300  : 9500));
+    }
+
+    /* ffHero — called mid-sequence when FF activates on the hero screen.
+       cancels pending timers and re-fires everything instantly. */
+    function ffHero() {
+      if (!document.getElementById('screen-hero')?.classList.contains('is-active')) return;
+      clearHeroTimers();
+      eyes.forEach(e => { e.classList.remove('open'); e.classList.add('open-locked'); });
+      hero.classList.add('ready');
+      heroTimers.push(setTimeout(() => runCorrection(), 100));
     }
 
 
@@ -2638,6 +2670,7 @@
       if (ffHideTimer) { clearTimeout(ffHideTimer); ffHideTimer = null; }
       ffIcon.classList.add('visible');
       document.body.classList.add('ff-active');
+      ffHero(); /* fast-forward hero sequence if on hero screen */
     }
     function hideFfIcon() {
       if (!ffIcon.classList.contains('visible')) return;
