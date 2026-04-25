@@ -548,6 +548,7 @@
         /* left/right — responsive side padding */
         clamp(60px, 10vw, 80px);
       /* bottom */
+      /* mobile override below */
       overflow-y: auto;
       /* allows scrolling within each screen */
       scrollbar-width: none;
@@ -556,6 +557,15 @@
 
     .screen::-webkit-scrollbar {
       display: none;
+    }
+
+    @media (max-width: 600px) {
+      .screen {
+        padding-top: 100px; /* tighter gap below eyes on mobile */
+      }
+      .hero .title {
+        font-size: 1.05rem; /* bigger than clamp min on mobile */
+      }
     }
 
     /* hides scrollbar on chrome/safari */
