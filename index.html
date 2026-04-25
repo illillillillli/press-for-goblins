@@ -72,9 +72,6 @@
      ► change typing speed:
        search [TIMING] → MSG_GAP (pause between messages), STEP_GAP (pause between steps)
 
-     ► change eye droop personality:
-       search [CONFIG] → change droop:'awakened' to 'lazy' or 'alert'
-
      ► change eye animation timing:
        search [EYE-ANIM] → the setTimeout delays control when each pair opens
 
@@ -391,165 +388,60 @@
       }
     }
 
-    /* p3 droop: "awakened" — the signature animation.
-   opens wide → settles to a confident squint → holds → opens fully.
-   the idea: something powerful has just woken up and is deciding
-   whether to pay attention to you. not sleepy — considering.
-   each keyframe has its own timing function for organic feel.
-   to tweak: adjust the inset percentages (higher = more closed). */
-    .eye-pair.p3.open[data-droop="awakened"] {
-      -webkit-animation: droopAwakened 2.9s forwards;
-      animation: droopAwakened 2.9s forwards;
+    /* p3 droop — opens cleanly, lazily droops to ~27%, then eases back open */
+    .eye-pair.p3.open {
+      -webkit-animation: openBot 2.04s linear forwards;
+      animation: openBot 2.04s linear forwards;
     }
 
-    @-webkit-keyframes droopAwakened {
+    @-webkit-keyframes openBot {
       0% {
         -webkit-clip-path: inset(50% 0 50% 0);
         clip-path: inset(50% 0 50% 0);
-        animation-timing-function: cubic-bezier(.2, .75, .25, 1);
-      }
-
-      22% {
-        -webkit-clip-path: inset(4% 0 4% 0);
-        clip-path: inset(4% 0 4% 0);
-        animation-timing-function: cubic-bezier(.55, .06, .68, .19);
-      }
-
-      48% {
-        -webkit-clip-path: inset(32% 0 34% 0);
-        clip-path: inset(32% 0 34% 0);
-        animation-timing-function: cubic-bezier(.37, 0, .63, 1);
-      }
-
-      58% {
-        -webkit-clip-path: inset(36% 0 38% 0);
-        clip-path: inset(36% 0 38% 0);
-        animation-timing-function: cubic-bezier(.37, 0, .63, 1);
-      }
-
-      72% {
-        -webkit-clip-path: inset(36% 0 38% 0);
-        clip-path: inset(36% 0 38% 0);
-        animation-timing-function: cubic-bezier(.22, 1, .36, 1);
-      }
-
-      100% {
-        -webkit-clip-path: inset(0 0 0 0);
-        clip-path: inset(0 0 0 0);
-      }
-    }
-
-    @keyframes droopAwakened {
-      0% {
-        -webkit-clip-path: inset(50% 0 50% 0);
-        clip-path: inset(50% 0 50% 0);
-        animation-timing-function: cubic-bezier(.2, .75, .25, 1);
-      }
-
-      22% {
-        -webkit-clip-path: inset(4% 0 4% 0);
-        clip-path: inset(4% 0 4% 0);
-        animation-timing-function: cubic-bezier(.55, .06, .68, .19);
-      }
-
-      /* ^ opens almost fully, then... */
-      48% {
-        -webkit-clip-path: inset(32% 0 34% 0);
-        clip-path: inset(32% 0 34% 0);
-        animation-timing-function: cubic-bezier(.37, 0, .63, 1);
-      }
-
-      /* ^ drops to a deliberate squint */
-      58% {
-        -webkit-clip-path: inset(36% 0 38% 0);
-        clip-path: inset(36% 0 38% 0);
-        animation-timing-function: cubic-bezier(.37, 0, .63, 1);
-      }
-
-      /* ^ settles slightly deeper — the "considering" pause */
-      72% {
-        -webkit-clip-path: inset(36% 0 38% 0);
-        clip-path: inset(36% 0 38% 0);
-        animation-timing-function: cubic-bezier(.22, 1, .36, 1);
-      }
-
-      /* ^ holds the squint... */
-      100% {
-        -webkit-clip-path: inset(0 0 0 0);
-        clip-path: inset(0 0 0 0);
-      }
-
-      /* ^ then opens fully with authority */
-    }
-
-    /* "lazy" droop — more casual, less dramatic */
-    .eye-pair.p3.open[data-droop="lazy"] {
-      -webkit-animation: droopLazy 2.2s forwards;
-      animation: droopLazy 2.2s forwards;
-    }
-
-    @-webkit-keyframes droopLazy {
-      0% {
-        -webkit-clip-path: inset(50% 0 50% 0);
-        clip-path: inset(50% 0 50% 0);
-      }
-
-      30% {
-        -webkit-clip-path: inset(10% 0 10% 0);
-        clip-path: inset(10% 0 10% 0);
-        animation-timing-function: ease-in;
-      }
-
-      55% {
-        -webkit-clip-path: inset(30% 0 32% 0);
-        clip-path: inset(30% 0 32% 0);
-      }
-
-      70% {
-        -webkit-clip-path: inset(27% 0 27% 0);
-        clip-path: inset(27% 0 27% 0);
-      }
-
-      100% {
-        -webkit-clip-path: inset(0 0 0 0);
-        clip-path: inset(0 0 0 0);
         animation-timing-function: ease-out;
       }
-    }
 
-    @keyframes droopLazy {
-      0% {
-        -webkit-clip-path: inset(50% 0 50% 0);
-        clip-path: inset(50% 0 50% 0);
+      40% {
+        -webkit-clip-path: inset(5% 0 5% 0);
+        clip-path: inset(5% 0 5% 0);
+        animation-timing-function: ease-out;
       }
 
-      30% {
-        -webkit-clip-path: inset(10% 0 10% 0);
-        clip-path: inset(10% 0 10% 0);
-        animation-timing-function: ease-in;
-      }
-
-      55% {
-        -webkit-clip-path: inset(30% 0 32% 0);
-        clip-path: inset(30% 0 32% 0);
-      }
-
-      70% {
+      60% {
         -webkit-clip-path: inset(27% 0 27% 0);
         clip-path: inset(27% 0 27% 0);
+        animation-timing-function: ease-out;
       }
 
       100% {
         -webkit-clip-path: inset(0 0 0 0);
         clip-path: inset(0 0 0 0);
-        animation-timing-function: ease-out;
       }
     }
 
-    /* "alert" droop — no droop at all, just opens fast like p1/p2 */
-    .eye-pair.p3.open[data-droop="alert"] {
-      -webkit-animation: pairOpen .8s cubic-bezier(.22, .8, .3, 1) forwards;
-      animation: pairOpen .8s cubic-bezier(.22, .8, .3, 1) forwards;
+    @keyframes openBot {
+      0% {
+        -webkit-clip-path: inset(50% 0 50% 0);
+        clip-path: inset(50% 0 50% 0);
+        animation-timing-function: ease-out;
+      }
+
+      40% {
+        -webkit-clip-path: inset(5% 0 5% 0);
+        clip-path: inset(5% 0 5% 0);
+        animation-timing-function: ease-out;
+      }
+
+      60% {
+        -webkit-clip-path: inset(27% 0 27% 0);
+        clip-path: inset(27% 0 27% 0);
+        animation-timing-function: ease-out;
+      }
+
+      100% {
+        -webkit-clip-path: inset(0 0 0 0);
+        clip-path: inset(0 0 0 0);
+      }
     }
 
     /* blink — quick close-and-open, used when you click the CTA */
@@ -1674,14 +1566,12 @@
 
     /* ═══════════════════════════════════════════════════════
        [CONFIG] — master settings. change these to tweak behaviour.
-       droop:      'awakened' | 'lazy' | 'alert' — p3 eye personality
        accent:     hex colour — the green used everywhere
        crt:        true | false — CRT sweep effect on/off
        rewind:     'vcr' | 'simple' | 'off' — click-to-rewind animation style
        submitMode: 'mock' | 'live' — mock just fakes it, live sends to formspree
        ═══════════════════════════════════════════════════════ */
     const CONFIG = {
-      droop: 'awakened',      /* ← eye droop personality */
       accent: '#7bbf7b',      /* ← accent colour (goblin green) */
       crt: true,              /* ← CRT sweep on/off */
       rewind: 'vcr',          /* ← rewind animation style */
@@ -1697,9 +1587,6 @@
       document.body.classList.toggle('crt-off', !CONFIG.crt);
       document.body.classList.toggle('rewind-simple', CONFIG.rewind === 'simple');
       document.body.classList.toggle('rewind-off', CONFIG.rewind === 'off');
-      /* set the droop personality on the p3 eye pair */
-      const p3 = document.querySelector('.eye-pair.p3');
-      if (p3) p3.dataset.droop = CONFIG.droop;
     }
 
     /* postMessage listener — allows an external wrapper (like the design preview)
@@ -1790,11 +1677,11 @@
       /* reset all eyes to closed state */
       eyes.forEach(e => { e.classList.remove('open', 'open-locked'); void e.offsetWidth; });
       /* stagger the opening — each pair opens after a delay */
-      heroTimers.push(setTimeout(() => eyes[0].classList.add('open'), 300));   /* ← p1 delay */
-      heroTimers.push(setTimeout(() => eyes[1].classList.add('open'), 1100));  /* ← p2 delay */
-      heroTimers.push(setTimeout(() => eyes[2].classList.add('open'), 2100));  /* ← p3 delay (droop starts here) */
+      heroTimers.push(setTimeout(() => eyes[0].classList.add('open'), 500));   /* ← p1 delay */
+      heroTimers.push(setTimeout(() => eyes[1].classList.add('open'), 1600));  /* ← p2 delay */
+      heroTimers.push(setTimeout(() => eyes[2].classList.add('open'), 2900));  /* ← p3 delay (droop starts here) */
       /* after all animations finish, swap to open-locked so blink can override later */
-      heroTimers.push(setTimeout(() => eyes.forEach(e => { e.classList.remove('open'); e.classList.add('open-locked'); }), 5100));
+      heroTimers.push(setTimeout(() => eyes.forEach(e => { e.classList.remove('open'); e.classList.add('open-locked'); }), 5200));
     }
 
 
