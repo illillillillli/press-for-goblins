@@ -2682,9 +2682,9 @@
       }, 1000);
     }
 
-    /* prevent long-press text selection globally (mobile) */
-    document.addEventListener('selectstart', e => e.preventDefault());
-    document.addEventListener('contextmenu', e => e.preventDefault());
+    /* prevent long-press text selection and context menu globally (mobile) */
+    document.addEventListener('selectstart', e => { if (!e.target.closest('input, textarea')) e.preventDefault(); });
+    document.addEventListener('contextmenu', e => { if (!e.target.closest('input, textarea')) e.preventDefault(); });
 
     /* hold-to-skip on mobile: touchstart with passive:false lets us preventDefault,
        which is the only reliable way to block iOS long-press selection/callout.
