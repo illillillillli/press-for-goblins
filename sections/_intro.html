@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>pfg — intro</title>
+<link rel="preload" href="../fonts/PressStart2P-Regular.woff2" as="font" type="font/woff2" crossorigin>
+<style>
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   DESIGN TOKENS — shared across all sections; copy this block
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+@font-face {
+  font-family: 'PressStart2P';
+  src: url('../fonts/PressStart2P-Regular.woff2') format('woff2'),
+       url('../fonts/PressStart2P-Regular.woff') format('woff'),
+       url('../fonts/PressStart2P-Regular.ttf') format('truetype');
+  font-weight: normal; font-style: normal; font-display: swap;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --green:          #7bbf7b;
+  --text-primary:   rgba(255,255,255,0.88);
+  --text-secondary: rgba(255,255,255,0.55);
+  --text-muted:     rgba(255,255,255,0.35);
+  --text-ghost:     rgba(255,255,255,0.14);
+  --font-header:    'PressStart2P', monospace;
+  --font-body:      'Courier New', Courier, monospace;
+}
+
+html, body { height: 100vh; overflow: hidden; } /* lock viewport — intro never scrolls */
+html { font-size: 100%; }
+
+body {
+  margin: 0;
+  background: #000;
+  font-family: var(--font-body);
+  color: var(--text-secondary);
+  caret-color: #fff;
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   CRT SWEEP — slow vertical glow passes over the void
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  pointer-events: none; z-index: 0;
+  background: linear-gradient(
+    to top,
+    rgba(255,255,255,0.015) 0%,
+    rgba(255,255,255,0.045) 50%,
+    rgba(255,255,255,0.015) 80%,
+    rgba(255,255,255,0) 100%
+  );
+  animation: crtSweep 25s linear infinite;
+}
+@keyframes crtSweep {
+  0%   { transform: translateY(110%); opacity: 0.4; }
+  50%  { opacity: 0.9; }
+  100% { transform: translateY(-110%); opacity: 0.4; }
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   PAGE FADE — black overlay fades out on load; fades in on navigate
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+#page-fade {
+  position: fixed; inset: 0;
+  background: #000; z-index: 9999;
+  pointer-events: none;
+  opacity: 1; transition: opacity 0.5s ease;
+}
+#page-fade.done { opacity: 0; }
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   EYE LOGO — fixed at top-centre; stays above all content
+   each .eye-pair is an SVG pixel-art row (left + right eye)
+   three rows stacked = the trio of goblins peering from void
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+#eye-logo {
+  position: fixed; top: 8px; left: clamp(16px, 4vw, 48px); transform: none;
+  z-index: 100; cursor: default;
+  display: flex; flex-direction: column; align-items: flex-start; gap: 1px;
+  /* solid black pad behind pixel eyes — prevents text clash when content scrolls under */
+  background: #000;
+  padding: 4px 6px 6px 4px;
+  box-shadow: 0 0 18px 10px #000;
+}
+
+/* eyes start clamped shut; open animations or .open-locked reveal them */
+.eye-pair {
+  display: block; width: 66px; height: 16px;
+  image-rendering: pixelated; image-rendering: crisp-edges;
+  clip-path: inset(50% 0 50% 0);
+  will-change: clip-path; /* own compositor layer — keeps clip-path animation isolated */
+}
+
+/* top pair: clean open */
+@keyframes openTop { from { clip-path: inset(50% 0 50% 0); } to { clip-path: inset(0% 0 0% 0); } }
+#p1.open { animation: openTop 0.8s ease-out forwards; }
+
+/* middle pair: clean open */
+@keyframes openMid { from { clip-path: inset(50% 0 50% 0); } to { clip-path: inset(0% 0 0% 0); } }
+#p2.open { animation: openMid 0.8s ease-out forwards; }
+
+/* bottom pair: opens cleanly then lazily droops to ~27%, eases back open */
+@keyframes openBot {
+  0%  {
+    clip-path: inset(50% 0 50% 0);
+    animation-timing-function: ease-out;
+  }
+  40% {
+    clip-path: inset(5%  0 5%  0); /* 90% open — never quite reaches full */
+    animation-timing-function: ease-out;
+  }
+  60% {
+    clip-path: inset(27% 0 27% 0);
+    animation-timing-function: ease-out;
+  }
+  100% { clip-path: inset(0%  0 0%  0); }
+}
+#p3.open { animation: openBot 2.04s linear forwards; }
+
+/* open-locked: holds eyes open after animation ends; class-based so blink can override */
+.eye-pair.open-locked { clip-path: inset(0% 0 0% 0); }
+
+/* blink: a quick squeeze, used on CTA click and random idle */
+@keyframes blink {
+  0%, 100% { clip-path: inset(0% 0 0% 0); }
+  40%, 60%  { clip-path: inset(48% 0 48% 0); }
+}
+.eye-pair.blink { animation: blink 0.2s ease-in-out; }
+
+/* gradient mask — content scrolling under eyes fades into void */
+#eye-mask {
+  position: fixed; top: 0; left: 0; right: 0; height: 74px;
+  background: linear-gradient(to bottom, #000 0%, #000 88%, transparent 100%);
+  z-index: 99; pointer-events: none;
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   PAGE LAYOUT — centres intro content below the fixed eye logo
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+.page-wrap {
+  position: relative; height: 100vh;
+  display: flex; flex-direction: column; align-items: flex-start;
+  /* mobile: small eyes sit at 8px, start content below them */
+  padding: 72px 10px 32px;
+}
+
+.container { width: 100%; max-width: 700px; text-align: left; }
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   HEADER — neon sign deliberately switching on
+   PressStart2P only; two lines, never wraps on desktop
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+.site-title {
+  font-family: var(--font-header);
+  color: rgba(255,255,255,0.72);
+  font-size: 0.9rem; line-height: 1.7; letter-spacing: 0.06em;
+  font-weight: normal; margin-bottom: 28px;
+  opacity: 0; /* JS controls reveal */
+}
+.title-line { display: block; } /* each line independent for layout */
+
+/* .site-title.on opacity driven by WAAPI */
+.site-title.on { opacity: 1; }
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   BODY COPY — paragraphs drift up and fade in as a wave
+   .service-hl marks editorial terms and genres in green
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+.copy { margin-bottom: clamp(8px, 1.5vh, 22px); max-width: 65ch; }
+
+.copy p {
+  font-size: 1rem; line-height: 2; /* generous line-height for monospace readability */
+  color: var(--text-primary); margin-bottom: 8px;
+  opacity: 0;
+}
+.copy p:last-child { margin-bottom: 0; }
+/* .copy p.fade-in opacity driven by WAAPI */
+.copy p.fade-in { opacity: 1; }
+
+.copy .note { color: var(--text-secondary); }
+.service-hl { color: var(--green); }
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   WE → I — a goblin slip: "we" gets struck through; "i" is written in
+   the strikethrough is an SVG line drawn via stroke-dashoffset
+   the "i" SVG is drawn with two separate animations (stalk then dot)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+#subject {
+  position: relative; display: inline-block;
+  white-space: nowrap; vertical-align: baseline;
+  isolation: isolate; /* own stacking context — insulates from parent .copy p opacity transition */
+}
+
+#strikethrough-svg {
+  position: absolute; left: -2px; top: 57%; transform: translateY(-50%);
+  width: calc(100% + 6px); height: 8px; overflow: visible; pointer-events: none;
+}
+#strikethrough-svg path {
+  stroke-dasharray: 31; stroke-dashoffset: 31; /* path length ~30.4 — WAAPI animates this */
+}
+#new-subject {
+  display: none; margin-left: 0.45em; margin-right: -0.3em;
+  vertical-align: baseline;
+}
+#new-subject .i-stalk {
+  stroke-dasharray: 13; stroke-dashoffset: 13; /* WAAPI animates this */
+}
+#new-subject .i-dot {
+  opacity: 0; transform-box: fill-box; transform-origin: center; transform: scale(0); /* WAAPI animates this */
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   CTA BUTTON — >press for goblins<
+   arrows are always visible; text expands between them
+   breathes gently after appearing; stops on hover
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+.cta-btn {
+  font-family: var(--font-header); font-size: 0.9rem;
+  letter-spacing: 0.06em; color: var(--green);
+  background: transparent; border: none; cursor: pointer;
+  padding: 0; margin-top: 36px;
+  display: inline-block; text-align: left;
+  white-space: nowrap; opacity: 0;
+}
+/* fade-in driven by WAAPI; .breathing added by JS after fade completes */
+.cta-btn.breathing { animation: breathe 3s ease-in-out infinite; }
+@keyframes breathe { 0%, 100% { opacity: 1; } 50% { opacity: 0.55; } }
+.cta-btn:hover    { animation: none; opacity: 1; }
+.cta-btn:focus-visible { outline: 2px solid var(--green); outline-offset: 6px; }
+
+/* arrows nudge outward on hover */
+.cta-arrow { font-size: 0.65em; vertical-align: 0.08em; display: inline-block; transition: transform 0.2s ease; }
+.cta-arrow-l { margin-right: 0.1em; }
+.cta-arrow-r { margin-left: 0.1em; }
+.cta-btn:hover .cta-arrow-l { transform: translateX(-3px); }
+.cta-btn:hover .cta-arrow-r { transform: translateX(3px); }
+
+/* periodic idle nudge — both arrows breathe out and back in sync */
+@keyframes arrowNudgeL {
+  0%, 100% { transform: translateX(0); }
+  35%      { transform: translateX(4px); }  /* inward — toward text */
+  65%      { transform: translateX(4px); }
+}
+@keyframes arrowNudgeR {
+  0%, 100% { transform: translateX(0); }
+  35%      { transform: translateX(-4px); } /* inward — toward text */
+  65%      { transform: translateX(-4px); }
+}
+.cta-btn.nudge .cta-arrow-l { animation: arrowNudgeL 0.65s ease-in-out; }
+.cta-btn.nudge .cta-arrow-r { animation: arrowNudgeR 0.65s ease-in-out; }
+
+/* text reveals by expanding max-width — pushes arrows apart without layout jump */
+.cta-text {
+  display: inline-block; overflow: hidden;
+  max-width: 0; opacity: 0; white-space: nowrap; vertical-align: bottom;
+  transition: max-width 0.7s cubic-bezier(0.4,0,0.2,1), opacity 0.5s ease;
+}
+.cta-text.revealed { max-width: 22em; opacity: 1; }
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   RESPONSIVE — mobile first; scale up at 601px and 1024px
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+@media (min-width: 601px) {
+  .title-line { white-space: nowrap; }
+
+  /* eyes: back to a sensible size — pixel art, not a billboard */
+  .eye-pair   { width: 88px; height: 22px; }
+  #eye-logo   { gap: clamp(1px, 0.3vw, 3px); top: clamp(10px, 2vh, 20px); }
+  #eye-mask   { height: clamp(74px, 10vh, 100px); }
+
+  .page-wrap  {
+    justify-content: center;
+    padding-top:    clamp(100px, 12vh, 140px);  /* clears the fixed eye-mask */
+    padding-left:   clamp(32px, 6vw, 80px);
+    padding-right:  clamp(32px, 6vw, 80px);
+    padding-bottom: clamp(48px, 6vh, 72px);
+  }
+
+  /* title: was capped at 1.45rem — push max to 2.2rem so it fills more space */
+  .site-title { font-size: clamp(1.2rem, 3.5vw, 2.2rem); margin-bottom: clamp(16px, 2vh, 28px); }
+
+  /* body: scale up, line-height 2 so monospace text breathes properly */
+  .copy p     { font-size: clamp(1rem, 1.5vw, 1.3rem); line-height: 2; margin-bottom: clamp(10px, 1.5vh, 18px); }
+  .copy       { margin-bottom: clamp(12px, 2.5vh, 32px); }
+
+  /* CTA: was capped at 1.2rem — push max to 1.6rem */
+  .cta-btn    { font-size: clamp(0.8rem, 2.5vw, 1.6rem); margin-top: clamp(28px, 5vh, 60px); }
+}
+@media (min-width: 1024px) {
+  /* on wide screens narrow horizontal padding so text column stays centred, readable */
+  .page-wrap  { padding-left: clamp(16px, 4vw, 48px); padding-right: clamp(16px, 4vw, 48px); }
+  .site-title { font-size: clamp(1.2rem, 3vw, 2.2rem); }
+  .copy p     { font-size: clamp(1rem, 1.4vw, 1.3rem); line-height: 2; }
+  .cta-btn    { font-size: clamp(0.8rem, 2vw, 1.6rem); }
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   REDUCED MOTION — skip animations; show final states immediately
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+@media (prefers-reduced-motion: reduce) {
+  body::before { animation: none; }
+  .cta-btn.breathing { animation: none; opacity: 1; }
+  .eye-pair.blink { animation: none; }
+  #new-subject.visible .i-dot    { animation: none; opacity: 1; transform: scale(1); }
+}
+
+</style>
+</head>
+<body>
+
+<!-- page-fade: black overlay; JS fades it out on load -->
+<div id="page-fade"></div>
+
+<!-- eye-mask: gradient that hides content scrolling behind the eye logo -->
+<div id="eye-mask"></div>
+
+<!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     EYE LOGO — three pairs of pixel-art eyes, fixed top-centre
+     p1/p2/p3 are opened sequentially by JS timing constants
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+<div id="eye-logo" role="img" aria-label="press for goblins logo">
+
+  <svg id="p1" class="eye-pair" viewBox="0 0 65 16" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges">
+    <g><path d="M3 0h1v1h-1z M18 0h1v1h-1z M3 1h1v1h-1z M18 1h1v1h-1z M0 3h1v1h-1z M22 3h2v1h-2z M16 4h1v1h-1z M16 5h1v1h-1z M24 5h2v1h-2z M16 6h1v1h-1z M16 7h1v1h-1z M26 7h2v1h-2z M16 8h1v1h-1z M27 8h1v1h-1z M0 9h1v1h-1z M16 9h1v1h-1z M16 10h1v1h-1z M3 11h1v1h-1z M16 11h1v1h-1z M27 11h1v1h-1z M3 12h1v1h-1z M16 12h1v1h-1z M27 12h1v1h-1z M5 13h1v1h-1z M5 14h1v1h-1z M20 15h1v1h-1z" fill="#2d4a2e"/><path d="M4 0h14v1h-14z M4 1h14v1h-14z M2 2h3v1h-3z M19 2h3v1h-3z M2 3h3v1h-3z M19 3h3v1h-3z M0 4h4v1h-4z M22 4h2v1h-2z M0 5h2v1h-2z M0 6h2v1h-2z M24 6h2v1h-2z M0 7h2v1h-2z M0 8h2v1h-2z M26 8h1v1h-1z M2 9h2v1h-2z M26 9h2v1h-2z M2 10h2v1h-2z M26 10h2v1h-2z M4 11h1v1h-1z M24 11h3v1h-3z M4 12h1v1h-1z M24 12h3v1h-3z M6 13h3v1h-3z M20 13h4v1h-4z M6 14h3v1h-3z M21 14h3v1h-3z M9 15h11v1h-11z" fill="#4d784e"/><path d="M5 2h14v1h-14z M5 3h3v1h-3z M14 3h5v1h-5z M4 4h3v1h-3z M19 4h3v1h-3z M2 5h4v1h-4z M13 5h2v1h-2z M20 5h4v1h-4z M2 6h3v1h-3z M21 6h3v1h-3z M2 7h3v1h-3z M24 7h2v1h-2z M2 8h3v1h-3z M24 8h2v1h-2z M4 9h3v1h-3z M23 9h3v1h-3z M4 10h3v1h-3z M22 10h4v1h-4z M5 11h4v1h-4z M21 11h3v1h-3z M5 12h4v1h-4z M20 12h4v1h-4z M9 13h11v1h-11z M9 14h12v1h-12z" fill="#6ba36d"/><path d="M8 3h6v1h-6z M7 4h8v1h-8z M17 4h2v1h-2z M6 5h7v1h-7z M17 5h3v1h-3z M5 6h8v1h-8z M17 6h4v1h-4z M5 7h8v1h-8z M17 7h7v1h-7z M5 8h8v1h-8z M17 8h7v1h-7z M7 9h6v1h-6z M17 9h6v1h-6z M7 10h6v1h-6z M17 10h5v1h-5z M9 11h6v1h-6z M17 11h4v1h-4z M9 12h6v1h-6z M17 12h3v1h-3z" fill="#89ce8d"/></g>
+    <g transform="translate(37,0)"><path d="M10 0h1v1h-1z M10 1h1v1h-1z M6 2h1v1h-1z M5 3h2v1h-2z M3 5h2v1h-2z M1 7h2v1h-2z M1 8h1v1h-1z M27 9h1v1h-1z M1 11h1v1h-1z M1 12h1v1h-1z M23 13h1v1h-1z M23 14h1v1h-1z M8 15h1v1h-1z" fill="#2d4a2e"/><path d="M11 0h14v1h-14z M11 1h14v1h-14z M7 2h3v1h-3z M23 2h4v1h-4z M7 3h3v1h-3z M23 3h4v1h-4z M5 4h2v1h-2z M25 4h3v1h-3z M27 5h1v1h-1z M3 6h2v1h-2z M27 6h1v1h-1z M27 7h1v1h-1z M2 8h1v1h-1z M27 8h1v1h-1z M0 9h3v1h-3z M25 9h2v1h-2z M0 10h3v1h-3z M25 10h2v1h-2z M2 11h3v1h-3z M23 11h2v1h-2z M2 12h3v1h-3z M23 12h2v1h-2z M5 13h3v1h-3z M20 13h3v1h-3z M5 14h4v1h-4z M20 14h3v1h-3z M9 15h11v1h-11z" fill="#4d784e"/><path d="M10 2h13v1h-13z M10 3h5v1h-5z M16 3h3v1h-3z M20 3h3v1h-3z M7 4h3v1h-3z M22 4h3v1h-3z M5 5h4v1h-4z M14 5h2v1h-2z M23 5h4v1h-4z M5 6h3v1h-3z M24 6h3v1h-3z M3 7h2v1h-2z M24 7h3v1h-3z M3 8h2v1h-2z M24 8h3v1h-3z M3 9h2v1h-2z M22 9h3v1h-3z M3 10h4v1h-4z M22 10h3v1h-3z M5 11h3v1h-3z M20 11h3v1h-3z M5 12h4v1h-4z M20 12h3v1h-3z M8 13h12v1h-12z M9 14h11v1h-11z" fill="#6ba36d"/><path d="M15 3h1v1h-1z M19 3h1v1h-1z M10 4h2v1h-2z M14 4h8v1h-8z M9 5h3v1h-3z M16 5h7v1h-7z M8 6h4v1h-4z M16 6h8v1h-8z M5 7h7v1h-7z M16 7h8v1h-8z M5 8h7v1h-7z M16 8h8v1h-8z M5 9h7v1h-7z M16 9h6v1h-6z M7 10h5v1h-5z M16 10h6v1h-6z M8 11h4v1h-4z M14 11h6v1h-6z M9 12h3v1h-3z M14 12h6v1h-6z" fill="#89ce8d"/></g>
+  </svg>
+
+  <svg id="p2" class="eye-pair" viewBox="0 0 65 16" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges">
+    <g><path d="M3 0h1v1h-1z M18 0h1v1h-1z M3 1h1v1h-1z M18 1h1v1h-1z M0 3h1v1h-1z M22 3h2v1h-2z M16 4h1v1h-1z M16 5h1v1h-1z M24 5h2v1h-2z M16 6h1v1h-1z M16 7h1v1h-1z M26 7h2v1h-2z M16 8h1v1h-1z M27 8h1v1h-1z M0 9h1v1h-1z M16 9h1v1h-1z M16 10h1v1h-1z M3 11h1v1h-1z M16 11h1v1h-1z M27 11h1v1h-1z M3 12h1v1h-1z M16 12h1v1h-1z M27 12h1v1h-1z M5 13h1v1h-1z M5 14h1v1h-1z M20 15h1v1h-1z" fill="#2d4a2e"/><path d="M4 0h14v1h-14z M4 1h14v1h-14z M2 2h3v1h-3z M19 2h3v1h-3z M2 3h3v1h-3z M19 3h3v1h-3z M0 4h4v1h-4z M22 4h2v1h-2z M0 5h2v1h-2z M0 6h2v1h-2z M24 6h2v1h-2z M0 7h2v1h-2z M0 8h2v1h-2z M26 8h1v1h-1z M2 9h2v1h-2z M26 9h2v1h-2z M2 10h2v1h-2z M26 10h2v1h-2z M4 11h1v1h-1z M24 11h3v1h-3z M4 12h1v1h-1z M24 12h3v1h-3z M6 13h3v1h-3z M20 13h4v1h-4z M6 14h3v1h-3z M21 14h3v1h-3z M9 15h11v1h-11z" fill="#4d784e"/><path d="M5 2h14v1h-14z M5 3h3v1h-3z M14 3h5v1h-5z M4 4h3v1h-3z M19 4h3v1h-3z M2 5h4v1h-4z M13 5h2v1h-2z M20 5h4v1h-4z M2 6h3v1h-3z M21 6h3v1h-3z M2 7h3v1h-3z M24 7h2v1h-2z M2 8h3v1h-3z M24 8h2v1h-2z M4 9h3v1h-3z M23 9h3v1h-3z M4 10h3v1h-3z M22 10h4v1h-4z M5 11h4v1h-4z M21 11h3v1h-3z M5 12h4v1h-4z M20 12h4v1h-4z M9 13h11v1h-11z M9 14h12v1h-12z" fill="#6ba36d"/><path d="M8 3h6v1h-6z M7 4h8v1h-8z M17 4h2v1h-2z M6 5h7v1h-7z M17 5h3v1h-3z M5 6h8v1h-8z M17 6h4v1h-4z M5 7h8v1h-8z M17 7h7v1h-7z M5 8h8v1h-8z M17 8h7v1h-7z M7 9h6v1h-6z M17 9h6v1h-6z M7 10h6v1h-6z M17 10h5v1h-5z M9 11h6v1h-6z M17 11h4v1h-4z M9 12h6v1h-6z M17 12h3v1h-3z" fill="#89ce8d"/></g>
+    <g transform="translate(37,0)"><path d="M10 0h1v1h-1z M10 1h1v1h-1z M6 2h1v1h-1z M5 3h2v1h-2z M3 5h2v1h-2z M1 7h2v1h-2z M1 8h1v1h-1z M27 9h1v1h-1z M1 11h1v1h-1z M1 12h1v1h-1z M23 13h1v1h-1z M23 14h1v1h-1z M8 15h1v1h-1z" fill="#2d4a2e"/><path d="M11 0h14v1h-14z M11 1h14v1h-14z M7 2h3v1h-3z M23 2h4v1h-4z M7 3h3v1h-3z M23 3h4v1h-4z M5 4h2v1h-2z M25 4h3v1h-3z M27 5h1v1h-1z M3 6h2v1h-2z M27 6h1v1h-1z M27 7h1v1h-1z M2 8h1v1h-1z M27 8h1v1h-1z M0 9h3v1h-3z M25 9h2v1h-2z M0 10h3v1h-3z M25 10h2v1h-2z M2 11h3v1h-3z M23 11h2v1h-2z M2 12h3v1h-3z M23 12h2v1h-2z M5 13h3v1h-3z M20 13h3v1h-3z M5 14h4v1h-4z M20 14h3v1h-3z M9 15h11v1h-11z" fill="#4d784e"/><path d="M10 2h13v1h-13z M10 3h5v1h-5z M16 3h3v1h-3z M20 3h3v1h-3z M7 4h3v1h-3z M22 4h3v1h-3z M5 5h4v1h-4z M14 5h2v1h-2z M23 5h4v1h-4z M5 6h3v1h-3z M24 6h3v1h-3z M3 7h2v1h-2z M24 7h3v1h-3z M3 8h2v1h-2z M24 8h3v1h-3z M3 9h2v1h-2z M22 9h3v1h-3z M3 10h4v1h-4z M22 10h3v1h-3z M5 11h3v1h-3z M20 11h3v1h-3z M5 12h4v1h-4z M20 12h3v1h-3z M8 13h12v1h-12z M9 14h11v1h-11z" fill="#6ba36d"/><path d="M15 3h1v1h-1z M19 3h1v1h-1z M10 4h2v1h-2z M14 4h8v1h-8z M9 5h3v1h-3z M16 5h7v1h-7z M8 6h4v1h-4z M16 6h8v1h-8z M5 7h7v1h-7z M16 7h8v1h-8z M5 8h7v1h-7z M16 8h8v1h-8z M5 9h7v1h-7z M16 9h6v1h-6z M7 10h5v1h-5z M16 10h6v1h-6z M8 11h4v1h-4z M14 11h6v1h-6z M9 12h3v1h-3z M14 12h6v1h-6z" fill="#89ce8d"/></g>
+  </svg>
+
+  <svg id="p3" class="eye-pair" viewBox="0 0 65 16" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges">
+    <g><path d="M3 0h1v1h-1z M18 0h1v1h-1z M3 1h1v1h-1z M18 1h1v1h-1z M0 3h1v1h-1z M22 3h2v1h-2z M16 4h1v1h-1z M16 5h1v1h-1z M24 5h2v1h-2z M16 6h1v1h-1z M16 7h1v1h-1z M26 7h2v1h-2z M16 8h1v1h-1z M27 8h1v1h-1z M0 9h1v1h-1z M16 9h1v1h-1z M16 10h1v1h-1z M3 11h1v1h-1z M16 11h1v1h-1z M27 11h1v1h-1z M3 12h1v1h-1z M16 12h1v1h-1z M27 12h1v1h-1z M5 13h1v1h-1z M5 14h1v1h-1z M20 15h1v1h-1z" fill="#2d4a2e"/><path d="M4 0h14v1h-14z M4 1h14v1h-14z M2 2h3v1h-3z M19 2h3v1h-3z M2 3h3v1h-3z M19 3h3v1h-3z M0 4h4v1h-4z M22 4h2v1h-2z M0 5h2v1h-2z M0 6h2v1h-2z M24 6h2v1h-2z M0 7h2v1h-2z M0 8h2v1h-2z M26 8h1v1h-1z M2 9h2v1h-2z M26 9h2v1h-2z M2 10h2v1h-2z M26 10h2v1h-2z M4 11h1v1h-1z M24 11h3v1h-3z M4 12h1v1h-1z M24 12h3v1h-3z M6 13h3v1h-3z M20 13h4v1h-4z M6 14h3v1h-3z M21 14h3v1h-3z M9 15h11v1h-11z" fill="#4d784e"/><path d="M5 2h14v1h-14z M5 3h3v1h-3z M14 3h5v1h-5z M4 4h3v1h-3z M19 4h3v1h-3z M2 5h4v1h-4z M13 5h2v1h-2z M20 5h4v1h-4z M2 6h3v1h-3z M21 6h3v1h-3z M2 7h3v1h-3z M24 7h2v1h-2z M2 8h3v1h-3z M24 8h2v1h-2z M4 9h3v1h-3z M23 9h3v1h-3z M4 10h3v1h-3z M22 10h4v1h-4z M5 11h4v1h-4z M21 11h3v1h-3z M5 12h4v1h-4z M20 12h4v1h-4z M9 13h11v1h-11z M9 14h12v1h-12z" fill="#6ba36d"/><path d="M8 3h6v1h-6z M7 4h8v1h-8z M17 4h2v1h-2z M6 5h7v1h-7z M17 5h3v1h-3z M5 6h8v1h-8z M17 6h4v1h-4z M5 7h8v1h-8z M17 7h7v1h-7z M5 8h8v1h-8z M17 8h7v1h-7z M7 9h6v1h-6z M17 9h6v1h-6z M7 10h6v1h-6z M17 10h5v1h-5z M9 11h6v1h-6z M17 11h4v1h-4z M9 12h6v1h-6z M17 12h3v1h-3z" fill="#89ce8d"/></g>
+    <g transform="translate(37,0)"><path d="M10 0h1v1h-1z M10 1h1v1h-1z M6 2h1v1h-1z M5 3h2v1h-2z M3 5h2v1h-2z M1 7h2v1h-2z M1 8h1v1h-1z M27 9h1v1h-1z M1 11h1v1h-1z M1 12h1v1h-1z M23 13h1v1h-1z M23 14h1v1h-1z M8 15h1v1h-1z" fill="#2d4a2e"/><path d="M11 0h14v1h-14z M11 1h14v1h-14z M7 2h3v1h-3z M23 2h4v1h-4z M7 3h3v1h-3z M23 3h4v1h-4z M5 4h2v1h-2z M25 4h3v1h-3z M27 5h1v1h-1z M3 6h2v1h-2z M27 6h1v1h-1z M27 7h1v1h-1z M2 8h1v1h-1z M27 8h1v1h-1z M0 9h3v1h-3z M25 9h2v1h-2z M0 10h3v1h-3z M25 10h2v1h-2z M2 11h3v1h-3z M23 11h2v1h-2z M2 12h3v1h-3z M23 12h2v1h-2z M5 13h3v1h-3z M20 13h3v1h-3z M5 14h4v1h-4z M20 14h3v1h-3z M9 15h11v1h-11z" fill="#4d784e"/><path d="M10 2h13v1h-13z M10 3h5v1h-5z M16 3h3v1h-3z M20 3h3v1h-3z M7 4h3v1h-3z M22 4h3v1h-3z M5 5h4v1h-4z M14 5h2v1h-2z M23 5h4v1h-4z M5 6h3v1h-3z M24 6h3v1h-3z M3 7h2v1h-2z M24 7h3v1h-3z M3 8h2v1h-2z M24 8h3v1h-3z M3 9h2v1h-2z M22 9h3v1h-3z M3 10h4v1h-4z M22 10h3v1h-3z M5 11h3v1h-3z M20 11h3v1h-3z M5 12h4v1h-4z M20 12h3v1h-3z M8 13h12v1h-12z M9 14h11v1h-11z" fill="#6ba36d"/><path d="M15 3h1v1h-1z M19 3h1v1h-1z M10 4h2v1h-2z M14 4h8v1h-8z M9 5h3v1h-3z M16 5h7v1h-7z M8 6h4v1h-4z M16 6h8v1h-8z M5 7h7v1h-7z M16 7h8v1h-8z M5 8h7v1h-7z M16 8h8v1h-8z M5 9h7v1h-7z M16 9h6v1h-6z M7 10h5v1h-5z M16 10h6v1h-6z M8 11h4v1h-4z M14 11h6v1h-6z M9 12h3v1h-3z M14 12h6v1h-6z" fill="#89ce8d"/></g>
+  </svg>
+
+</div><!-- /#eye-logo -->
+
+<!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     INTRO CONTENT — header, body copy, CTA
+     #intro-section is scaled by fitIntroToViewport() to fit the
+     available space below the eye logo without scrolling
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+<main class="page-wrap">
+  <div class="container">
+    <div id="intro-section">
+
+      <h2 class="site-title" id="site-title">
+        <span class="title-line">definitely not three</span>
+        <span class="title-line">goblins in a trenchcoat</span>
+      </h2>
+
+      <div class="copy">
+        <p>yes, hello. this is noah. please ignore the shifting height; nothing to see here.
+          <span id="subject">we<svg id="strikethrough-svg" viewBox="0 0 30 8" preserveAspectRatio="none"><path d="M0 4 Q15 3.8,26 4 Q28 3,30 2.5" fill="none" stroke="#7bbf7b" stroke-width="1.6" stroke-linecap="round"/></svg></span><span id="new-subject" aria-hidden="true"><svg viewBox="0 0 12 22" width="9" height="15" style="vertical-align:baseline;margin-bottom:-2px"><ellipse class="i-dot" cx="5.8" cy="3" rx="1.8" ry="2.2" fill="#7bbf7b" transform="rotate(-6,5.8,3)"/><path class="i-stalk" d="M 6.3 9 C 6.0 12,6.4 16,6.1 20" stroke="#7bbf7b" stroke-width="1.8" fill="none" stroke-linecap="round"/></svg></span>
+          run an editorial workshop from a dimly lit room in london. with five years of experience at a big four publisher and counting, i work with writers to provide <span class="service-hl">editorial assessment</span>, <span class="service-hl">creative development</span> and <span class="service-hl">pitch feedback</span> to get your project ready to take on the industry.</p>
+
+        <p>specialising in <span class="service-hl">sci-fi</span>, <span class="service-hl">fantasy</span>, <span class="service-hl">horror</span> and <span class="service-hl">romance</span>. especially interested in cutting-edge genre blends, high-concept plots, inventive magic systems and queer and neurodivergent protagonists.</p>
+
+        <p class="note">please note: the goblins cannot digest literary fiction, poetry or non-fiction.</p>
+      </div>
+
+      <button class="cta-btn" id="cta-btn" type="button">
+        <span class="cta-arrow cta-arrow-l">&gt;</span>
+        <span id="cta-text" class="cta-text">press for goblins</span>
+        <span class="cta-arrow cta-arrow-r">&lt;</span>
+      </button>
+
+    </div><!-- /#intro-section -->
+  </div>
+</main>
+
+<script>
+(function () {
+'use strict';
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// TIMING CONSTANTS — all sequence delays in one place
+// adjust here; nothing else needs touching
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+const T = {
+  eye1:         400,   // p1 starts opening
+  eye2:         1280,  // p2 starts opening
+  eye3:         2320,  // p3 starts opening (+ 2040ms anim + 240ms buffer = lock at 4600)
+  eyesLocked:   4600,  // all three locked open
+  titleAt:      5160,  // eyesLocked + 560ms beat → header fires
+  copyDelay:    400,   // beat after title before ALL copy appears at once
+  ctaAfterCopy: 200,   // pause after copy fully faded in before CTA appears
+  ctaTextDelay: 400,   // CTA text expands after button fades in
+  strikeAfter:  7000,  // CTA fade(2500ms) + 4500ms pause = fires 4.5s after CTA is fully visible
+  skipGrace:    1200,  // space-to-skip ignored for first 1.2s (prevents accidental skip)
+};
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// ELEMENT REFS
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+const eyes       = ['p1','p2','p3'].map(id => document.getElementById(id));
+const titleEl    = document.getElementById('site-title');
+const ctaBtn     = document.getElementById('cta-btn');
+const ctaText    = document.getElementById('cta-text');
+const strikeSvg  = document.getElementById('strikethrough-svg');
+const newSubject = document.getElementById('new-subject');
+const copyParas  = Array.from(document.querySelectorAll('.copy p'));
+const introEl    = document.getElementById('intro-section');
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// PAGE FADE — fade in on load; restore from bfcache too
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+const fade = document.getElementById('page-fade');
+function fadeIn() {
+  requestAnimationFrame(() => requestAnimationFrame(() => fade.classList.add('done')));
+}
+fadeIn();
+window.addEventListener('pageshow', e => {
+  if (!e.persisted) return;
+  fade.classList.remove('done');
+  fade.style.transition = 'none';
+  requestAnimationFrame(() => requestAnimationFrame(() => {
+    fade.style.transition = '';
+    fade.classList.add('done');
+  }));
+});
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// EYE OPENING SEQUENCE — opens sequentially; locks open after all done
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+window.scrollTo(0, 0);
+
+setTimeout(() => eyes[0].classList.add('open'), T.eye1);
+setTimeout(() => eyes[1].classList.add('open'), T.eye2);
+setTimeout(() => eyes[2].classList.add('open'), T.eye3);
+
+setTimeout(() => {
+  eyes.forEach(e => { e.classList.remove('open'); e.classList.add('open-locked'); });
+}, T.eyesLocked);
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// HEADER — fades in from void (WAAPI — CSS animations unreliable in Safari)
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+setTimeout(function () {
+  titleEl.classList.add('on');
+  titleEl.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 1000, easing: 'ease', fill: 'forwards' });
+}, T.titleAt);
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// BODY COPY — all paragraphs fade in together as one from the void (WAAPI)
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+const copyAt = T.titleAt + T.copyDelay;
+setTimeout(function () {
+  copyParas.forEach(function (p) {
+    p.classList.add('fade-in');
+    p.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 1600, easing: 'ease', fill: 'forwards' });
+  });
+}, copyAt);
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// ARROW NUDGE — idle hint that CTA is clickable
+// fires every 8–10s at random; both arrows move out in sync via CSS
+// only runs while the button is not being hovered; stops on click
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+let nudgeActive = false;   // set to true once CTA fades in; false on click
+let ctaHovered  = false;
+let nudgeTimer  = null;
+
+ctaBtn.addEventListener('mouseenter', function () { ctaHovered = true;  });
+ctaBtn.addEventListener('mouseleave', function () { ctaHovered = false; });
+
+function scheduleNudge() {
+  if (!nudgeActive) return;
+  var delay = 8000 + Math.random() * 2000; // 8–10s
+  nudgeTimer = setTimeout(function () {
+    if (!nudgeActive) return;
+    if (!ctaHovered) {
+      ctaBtn.classList.add('nudge');
+      // remove class once the animation finishes (650ms matches keyframe duration)
+      setTimeout(function () { ctaBtn.classList.remove('nudge'); }, 650);
+    }
+    scheduleNudge(); // queue the next nudge regardless
+  }, delay);
+}
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// CTA — fades in via WAAPI, then breathes via CSS after fade completes
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+const ctaAt = copyAt + 1600 + T.ctaAfterCopy;
+
+setTimeout(function () {
+  var ctaFade = ctaBtn.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 2500, easing: 'ease', fill: 'forwards' });
+  ctaFade.onfinish = function () {
+    ctaBtn.classList.add('breathing');          // CSS breathe starts at opacity:1
+    requestAnimationFrame(function () { ctaFade.cancel(); }); // hand off to CSS breathe
+    nudgeActive = true;
+    scheduleNudge(); // start the idle arrow nudge cycle
+  };
+}, ctaAt);
+
+setTimeout(() => { ctaText.classList.add('revealed'); }, ctaAt + T.ctaTextDelay);
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// WE → I — WAAPI-driven: all timing controlled here in JS
+// CSS only sets initial dashoffset values; WAAPI animates from them
+// strike: 1.2s | stalk: starts 1.4s in, draws 0.8s | dot: stamps at 2.5s (matches standalone exactly)
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+setTimeout(function () {
+  var strikePath = strikeSvg.querySelector('path');
+  var iStalk     = newSubject.querySelector('.i-stalk');
+  var iDot       = newSubject.querySelector('.i-dot');
+
+  // draw the strikethrough line (3.5s)
+  strikePath.animate(
+    [{ strokeDashoffset: '31' }, { strokeDashoffset: '0' }],
+    { duration: 1200, easing: 'cubic-bezier(0.4,0,0.2,1)', fill: 'forwards' }
+  );
+
+  // show the "i" and draw stalk after strike finishes (1.2s + 0.2s beat = 1400ms)
+  newSubject.style.display = 'inline';
+  setTimeout(function () {
+    iStalk.animate(
+      [{ strokeDashoffset: '13' }, { strokeDashoffset: '0' }],
+      { duration: 800, easing: 'cubic-bezier(0.4,0,0.2,1)', fill: 'forwards' }
+    );
+    // stamp dot after stalk draws (800ms + 300ms beat = 1100ms from now)
+    setTimeout(function () {
+      iDot.animate(
+        [
+          { opacity: '0', transform: 'scale(0)',   offset: 0   },
+          { opacity: '1', transform: 'scale(1.2)', offset: 0.7 },
+          { opacity: '1', transform: 'scale(1)',   offset: 1   }
+        ],
+        { duration: 200, easing: 'ease-out', fill: 'forwards' }
+      );
+    }, 1100);
+  }, 1400);
+}, ctaAt + T.strikeAfter);
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// SPACE TO SKIP — completes all intro animations instantly
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+let skipped = false;
+
+function skipAll() {
+  if (skipped) return;
+  skipped = true;
+
+  eyes.forEach(e => { e.style.animation = 'none'; e.classList.remove('open'); e.classList.add('open-locked'); });
+
+  titleEl.getAnimations().forEach(function (a) { a.cancel(); });
+  titleEl.style.opacity = '1';
+  titleEl.classList.add('on');
+
+  copyParas.forEach(function (p) {
+    p.getAnimations().forEach(function (a) { a.cancel(); });
+    p.style.opacity = '1';
+    p.classList.add('fade-in');
+  });
+
+  ctaBtn.getAnimations().forEach(function (a) { a.cancel(); });
+  ctaBtn.style.opacity = '1';
+  ctaBtn.classList.add('breathing');
+  ctaText.classList.add('revealed');
+
+  var strikeP = strikeSvg.querySelector('path');
+  var stalk   = newSubject.querySelector('.i-stalk');
+  var dot     = newSubject.querySelector('.i-dot');
+  // cancel any in-progress WAAPI animations and snap to final state
+  if (strikeP) { strikeP.getAnimations().forEach(function(a) { a.cancel(); }); strikeP.style.strokeDashoffset = '0'; }
+  newSubject.style.display = 'inline';
+  if (stalk) { stalk.getAnimations().forEach(function(a) { a.cancel(); }); stalk.style.strokeDashoffset = '0'; }
+  if (dot)   { dot.getAnimations().forEach(function(a) { a.cancel(); }); dot.style.opacity = '1'; dot.style.transform = 'scale(1)'; }
+}
+
+setTimeout(() => {
+  document.addEventListener('keydown', e => { if (e.code === 'Space') { e.preventDefault(); skipAll(); } });
+}, T.skipGrace);
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// INTRO ZOOM — scales intro section to fill viewport vertically
+// eyes stay fixed and unscaled above; only #intro-section shrinks
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+function fitToViewport() {
+  if (!introEl || introEl.style.display === 'none') return;
+  introEl.style.transform = 'scale(1)';
+  introEl.style.marginBottom = '';
+  const h   = introEl.offsetHeight;
+  // 80% of viewport minus ~120px for the fixed eye-logo area at top
+  const max = (window.innerHeight - 120) * 0.80;
+  if (h > max) {
+    const s = (max / h).toFixed(4); // scale factor: always < 1 (shrink only)
+    introEl.style.transform       = `scale(${s})`;
+    introEl.style.transformOrigin = 'top left';
+    introEl.style.marginBottom    = `-${h - h * s}px`; // collapse space below scaled content
+  }
+}
+
+if (document.fonts?.ready) {
+  document.fonts.ready.then(fitToViewport);
+} else {
+  fitToViewport();
+}
+window.addEventListener('resize', fitToViewport);
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// CTA CLICK — blinks eyes, fades out intro, fires pfg:cta-clicked
+// in the assembled index.html, listen for this event to start terminal
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+function blinkEyes(callback) {
+  eyes.forEach(e => {
+    e.classList.add('blink');
+    e.addEventListener('animationend', function onEnd() {
+      e.removeEventListener('animationend', onEnd);
+      e.classList.remove('blink');
+    });
+  });
+  if (callback) setTimeout(callback, 300);
+}
+
+ctaBtn.addEventListener('click', () => {
+  nudgeActive = false; // stop idle nudge cycle
+  if (nudgeTimer) { clearTimeout(nudgeTimer); nudgeTimer = null; }
+  ctaBtn.classList.remove('nudge');
+  skipAll(); // ensure fully revealed before transitioning
+  setTimeout(() => blinkEyes(() => {
+    ctaBtn.style.transition  = 'opacity 0.35s ease';
+    ctaBtn.style.opacity     = '0';
+    const intro = document.getElementById('intro-section');
+    intro.style.transition   = 'opacity 0.45s ease';
+    intro.style.opacity      = '0';
+    setTimeout(() => {
+      ctaBtn.style.display   = 'none';
+      intro.style.display    = 'none';
+      // signal to assembled page that terminal should start
+      document.dispatchEvent(new CustomEvent('pfg:cta-clicked'));
+    }, 480);
+  }), 300); // brief pause before blink
+});
+
+}());
+</script>
+</body>
+</html>

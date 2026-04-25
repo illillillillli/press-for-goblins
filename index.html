@@ -290,7 +290,7 @@
    ═══════════════════════════════════════════════════════ */
     .eyes {
       position: fixed;
-      top: 64px;
+      top: 16px;
       /* ← distance from top of screen on mobile */
       left: 50%;
       transform: translateX(-50%);
@@ -320,7 +320,7 @@
 
     .eyes svg {
       display: block;
-      width: 78px;
+      width: 98px;
       /* ← eye width on mobile */
       height: auto;
       /* maintains aspect ratio */
@@ -1756,7 +1756,7 @@
       void hero.offsetWidth; /* force reflow so transitions restart cleanly */
       replayEyes();
       /* after eyes finish opening, fade in the text */
-      heroTimers.push(setTimeout(() => hero.classList.add('ready'), 5200));  /* ← text appears */
+      heroTimers.push(setTimeout(() => hero.classList.add('ready'), 4980));  /* ← text appears */
       heroTimers.push(setTimeout(() => runCorrection(), 9500));              /* ← we→i starts */
     }
 
