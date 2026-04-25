@@ -2610,6 +2610,7 @@
       document.body.classList.add('ff-active');
     }
     function hideFfIcon() {
+      if (!ffIcon.classList.contains('visible')) return;
       if (ffHideTimer) clearTimeout(ffHideTimer);
       ffHideTimer = setTimeout(() => {
         ffIcon.classList.remove('visible');
@@ -2641,8 +2642,8 @@
     function cancelHold() {
       clearTimeout(holdTimer); holdTimer = null;
       holding = false;
-      /* only stop skipping when finger lifts — not when showOptions resets it */
-      if (skipping) { skipping = false; hideFfIcon(); }
+      skipping = false;
+      hideFfIcon(); /* always trigger the 1s linger+hide on finger lift */
     }
 
     document.addEventListener('touchstart', e => {
