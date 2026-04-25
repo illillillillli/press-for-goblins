@@ -628,13 +628,16 @@
 
     @media (max-width: 600px) {
       .screen {
-        padding-top: 100px; /* tighter gap below eyes on mobile */
+        padding-top: 140px; /* extra breathing room below eyes on mobile */
       }
       .hero .title {
-        font-size: 1.3rem; /* header — stays bigger than body */
+        font-size: 1.625rem; /* 25% bigger than previous 1.3rem */
       }
       .hero p {
-        font-size: 1.425rem; /* body text 50% larger than clamp min */
+        font-size: 1.2rem; /* body scaled to sit comfortably under larger title */
+      }
+      .cta {
+        font-size: 0.95rem; /* CTA scaled up to match */
       }
     }
 
