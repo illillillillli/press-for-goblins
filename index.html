@@ -1407,7 +1407,7 @@
       display: block;
     }
     #ff-icon svg {
-      width: 80px;
+      width: 44px;
       height: auto;
     }
     @media (min-width: 601px) {
@@ -1416,7 +1416,7 @@
         right: 24px;
       }
       #ff-icon svg {
-        width: 88px;
+        width: 52px;
       }
     }
   </style>
@@ -2123,7 +2123,7 @@
        each option fades in with a stagger delay.
        clicking one collapses the group and records the answer. */
     function showOptions(options, stepName, onSelect) {
-      rewinding = false; skipping = false; hideFfIcon();
+      rewinding = false; if (!holding) { skipping = false; hideFfIcon(); }
       addBlank();
       const group = document.createElement('div');
       group.className = 'term-options-group';
@@ -2152,7 +2152,7 @@
     /* showTextInput — displays a text field for free-form input.
        validates on enter. shakes if empty or invalid. */
     function showTextInput(placeholder, onSubmit, multiline, stepName, validate, validationMsg) {
-      rewinding = false; skipping = false; hideFfIcon();
+      rewinding = false; if (!holding) { skipping = false; hideFfIcon(); }
       addBlank();
       const row = document.createElement('div');
       row.className = 'term-line term-input-line visible';
@@ -2608,16 +2608,23 @@
        ignored when target is an input, textarea, or option button.
        400ms hold activates skip; touchend/cancel before that = normal tap, no skip. */
     let holdTimer = null;
+    let holding = false; /* true while finger is physically held down */
     function startHold(target) {
       if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA') return;
       if (target.closest('.term-option, button')) return;
       holdTimer = setTimeout(() => {
+        holding = true;
         skipping = true;
         showFfIcon();
         window.getSelection()?.removeAllRanges();
-      }, 400);
+      }, 800);
     }
-    function cancelHold() { clearTimeout(holdTimer); holdTimer = null; }
+    function cancelHold() {
+      clearTimeout(holdTimer); holdTimer = null;
+      holding = false;
+      /* only stop skipping when finger lifts — not when showOptions resets it */
+      if (skipping) { skipping = false; hideFfIcon(); }
+    }
 
     document.addEventListener('touchstart', e => {
       /* allow taps on interactive elements to work normally */
