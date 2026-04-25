@@ -241,79 +241,36 @@
       /* ← height of the light band. bigger = softer sweep */
       background: linear-gradient(to top,
           rgba(255, 255, 255, 0) 0%,
+          /* transparent at bottom edge */
           rgba(255, 255, 255, 0.015) 15%,
+          /* barely visible fade in */
           rgba(255, 255, 255, 0.04) 50%,
+          /* ← peak brightness of the sweep */
           rgba(255, 255, 255, 0.015) 85%,
+          /* fade back out */
           rgba(255, 255, 255, 0) 100%
+          /* transparent at top edge */
         );
       animation: crtSweep 25s linear infinite;
       /* ← 25s = speed. lower = faster sweep */
     }
 
     @keyframes crtSweep {
-      0%   { transform: translateY(100vh); }
-      100% { transform: translateY(-100vh); }
+      0% {
+        transform: translateY(100vh);
+      }
+
+      /* starts below the screen */
+      100% {
+        transform: translateY(-100vh);
+      }
+
+      /* ends above the screen */
     }
 
     /* when CRT is toggled off via config */
     body.crt-off .crt {
       display: none;
-    }
-
-    /* fast-forward: CRT layer accelerates during FF — base sweep only */
-    body.ff-active .crt::before {
-      animation: crtSweep 1.6s linear infinite;
-    }
-
-    @keyframes ffJitter {
-      0%   { transform: translateY(0px); }
-      15%  { transform: translateY(-4px); }
-      30%  { transform: translateY(2px); }
-      50%  { transform: translateY(-3px); }
-      70%  { transform: translateY(1px); }
-      85%  { transform: translateY(-2px); }
-      100% { transform: translateY(0px); }
-    }
-
-    /* .crt::after kept empty — FF bands handled by #ff-lines canvas instead */
-    .crt::after {
-      content: "";
-      position: absolute;
-      inset: 0;
-      opacity: 0;
-      pointer-events: none;
-    }
-
-    /* zero hero transition delays when FF is active so text snaps in instantly */
-    body.ff-active .hero .title,
-    body.ff-active .hero .body,
-    body.ff-active .hero .cta-wrap {
-      transition-duration: 0.15s !important;
-      transition-delay: 0s !important;
-    }
-
-    /* ═══════════════════════════════════════════════════════
-       [FF-LINES] — the distinct VHS tracking bands overlay.
-       sits above the CRT layer, only visible during ff-active.
-       each band is a bright, hard-edged horizontal strip that
-       jitters position independently for tape-instability feel.
-       ═══════════════════════════════════════════════════════ */
-    #ff-lines {
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-      z-index: 101;
-      opacity: 0;
-      mix-blend-mode: screen;
-    }
-    body.ff-active #ff-lines {
-      opacity: 1;
-    }
-    #ff-lines svg {
-      width: 100%;
-      height: 100%;
-      position: absolute;
-      inset: 0;
     }
 
 
@@ -353,8 +310,20 @@
       pointer-events: none;
       /* clicks pass through the eyes */
       align-items: center;
-      filter: drop-shadow(0 6px 16px rgba(0,0,0,1)) drop-shadow(0 2px 8px rgba(0,0,0,0.9));
-      /* dark shadow behind eyes so they lift off the title text */
+    }
+
+    /* full-width dark band behind the eyes so they lift off the title text */
+    .eyes::before {
+      content: '';
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      width: 100vw;
+      height: calc(100% + 40px); /* eye cluster height + 20px bleed top/bottom */
+      background: radial-gradient(ellipse 60% 100% at 50% 50%, rgba(0,0,0,0.92) 40%, transparent 100%);
+      z-index: -1;
+      pointer-events: none;
     }
 
     @media (min-width:601px) {
@@ -598,10 +567,6 @@
       /* mobile override below */
       overflow-y: auto;
       /* allows scrolling within each screen */
-      -webkit-overflow-scrolling: touch;
-      /* momentum scroll on iOS */
-      touch-action: pan-y;
-      /* tell browser this element scrolls vertically — allows iOS scroll even with touch listeners */
       scrollbar-width: none;
       /* hides scrollbar on firefox */
     }
@@ -612,16 +577,13 @@
 
     @media (max-width: 600px) {
       .screen {
-        padding-top: 140px; /* extra breathing room below eyes on mobile */
+        padding-top: 100px; /* tighter gap below eyes on mobile */
       }
       .hero .title {
-        font-size: 2.275rem; /* 40% bigger */
+        font-size: 1.3rem; /* header — stays bigger than body */
       }
       .hero p {
-        font-size: 1.2rem; /* body scaled to sit comfortably under larger title */
-      }
-      .cta {
-        font-size: 0.95rem; /* CTA scaled up to match */
+        font-size: 1.425rem; /* body text 50% larger than clamp min */
       }
     }
 
@@ -659,8 +621,8 @@
     .hero .title {
       font-family: "Press Start 2P", monospace;
       /* pixel font */
-      font-size: clamp(1.09rem, 3.64vw, 2.1rem);
-      /* ← responsive title size (40% larger) */
+      font-size: clamp(0.78rem, 2.6vw, 1.5rem);
+      /* ← responsive title size */
       line-height: 1.75;
       color: var(--text-primary);
       letter-spacing: .02em;
@@ -1445,25 +1407,6 @@
        appears instantly (no transition) in top-right when skipping.
        sized slightly smaller than the eyes.
        ═══════════════════════════════════════════════════════ */
-    /* ═══════════════════════════════════════════════════════
-       [FF-LINES-CSS] — canvas VHS tracking bands overlay.
-       sits above CRT, below ff-icon. only draws when ff-active.
-       ═══════════════════════════════════════════════════════ */
-    #ff-lines {
-      position: fixed;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      pointer-events: none;
-      z-index: 101;
-      opacity: 0;
-      mix-blend-mode: screen;
-      transition: opacity 0.1s;
-    }
-    body.ff-active #ff-lines {
-      opacity: 1;
-    }
-
     #ff-icon {
       position: fixed;
       top: 16px;
@@ -1478,9 +1421,8 @@
       display: block;
     }
     #ff-icon svg {
-      width: 37px; /* 44 × 0.85 = 37px */
+      width: 44px;
       height: auto;
-      display: block;
     }
     @media (min-width: 601px) {
       #ff-icon {
@@ -1488,49 +1430,8 @@
         right: 24px;
       }
       #ff-icon svg {
-        width: 44px; /* 52 × 0.85 = 44px */
+        width: 52px;
       }
-    }
-
-    /* chromatic aberration on the FF icon — red ghost left, cyan ghost right,
-       both jitter independently via animation */
-    #ff-icon .ca-wrap {
-      position: relative;
-      display: inline-block;
-    }
-    #ff-icon .ca-wrap .ca-r,
-    #ff-icon .ca-wrap .ca-c {
-      position: absolute;
-      inset: 0;
-      pointer-events: none;
-    }
-    #ff-icon .ca-wrap .ca-r svg {
-      filter: drop-shadow(0 0 0 transparent);
-      opacity: 0.55;
-      mix-blend-mode: screen;
-      animation: caJitterR 0.08s steps(1) infinite;
-    }
-    #ff-icon .ca-wrap .ca-c svg {
-      filter: drop-shadow(0 0 0 transparent);
-      opacity: 0.55;
-      mix-blend-mode: screen;
-      animation: caJitterC 0.11s steps(1) infinite;
-    }
-
-    @keyframes caJitterR {
-      0%   { transform: translate(-2px,  0px); filter: drop-shadow(0 0 2px rgba(255,0,80,0.7));  }
-      20%  { transform: translate(-3px,  1px); filter: drop-shadow(0 0 3px rgba(255,0,80,0.5));  }
-      40%  { transform: translate(-1px, -1px); filter: drop-shadow(0 0 2px rgba(255,0,80,0.8));  }
-      60%  { transform: translate(-2px,  1px); filter: drop-shadow(0 0 2px rgba(255,0,80,0.6));  }
-      80%  { transform: translate(-3px,  0px); filter: drop-shadow(0 0 3px rgba(255,0,80,0.7));  }
-      100% { transform: translate(-2px, -1px); filter: drop-shadow(0 0 2px rgba(255,0,80,0.5));  }
-    }
-    @keyframes caJitterC {
-      0%   { transform: translate( 2px,  0px); filter: drop-shadow(0 0 2px rgba(0,220,255,0.7)); }
-      25%  { transform: translate( 3px, -1px); filter: drop-shadow(0 0 3px rgba(0,220,255,0.5)); }
-      50%  { transform: translate( 2px,  1px); filter: drop-shadow(0 0 2px rgba(0,220,255,0.8)); }
-      75%  { transform: translate( 3px,  0px); filter: drop-shadow(0 0 2px rgba(0,220,255,0.6)); }
-      100% { transform: translate( 2px, -1px); filter: drop-shadow(0 0 3px rgba(0,220,255,0.7)); }
     }
   </style>
 </head>
@@ -1540,52 +1441,18 @@
   <!-- [CRT-HTML] — the CRT sweep overlay. just an empty div; the CSS does the work -->
   <div class="crt"></div>
 
-  <!-- [FF-LINES-HTML] — canvas-driven VHS tracking bands, only visible during ff-active -->
-  <canvas id="ff-lines"></canvas>
-
-  <!-- [FF-ICON-HTML] — fast-forward indicator, top-right, shown during skip.
-       .ca-wrap holds three layers: main white icon + red ghost + cyan ghost.
-       the ghosts are offset+tinted via CSS animation for chromatic aberration. -->
+  <!-- [FF-ICON-HTML] — fast-forward indicator, top-right, shown during skip -->
   <div id="ff-icon">
-    <div class="ca-wrap">
-      <!-- red channel ghost -->
-      <div class="ca-r" aria-hidden="true">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 22 14" shape-rendering="crispEdges" fill="rgb(255,60,100)">
-          <rect x="3" y="0"  width="2" height="14"/>
-          <rect x="5" y="2"  width="2" height="10"/>
-          <rect x="7" y="4"  width="2" height="6"/>
-          <rect x="9" y="6"  width="2" height="2"/>
-          <rect x="11" y="0"  width="2" height="14"/>
-          <rect x="13" y="2"  width="2" height="10"/>
-          <rect x="15" y="4"  width="2" height="6"/>
-          <rect x="17" y="6"  width="2" height="2"/>
-        </svg>
-      </div>
-      <!-- cyan channel ghost -->
-      <div class="ca-c" aria-hidden="true">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 22 14" shape-rendering="crispEdges" fill="rgb(0,220,255)">
-          <rect x="3" y="0"  width="2" height="14"/>
-          <rect x="5" y="2"  width="2" height="10"/>
-          <rect x="7" y="4"  width="2" height="6"/>
-          <rect x="9" y="6"  width="2" height="2"/>
-          <rect x="11" y="0"  width="2" height="14"/>
-          <rect x="13" y="2"  width="2" height="10"/>
-          <rect x="15" y="4"  width="2" height="6"/>
-          <rect x="17" y="6"  width="2" height="2"/>
-        </svg>
-      </div>
-      <!-- main white icon -->
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 22 14" shape-rendering="crispEdges" fill="white">
-        <rect x="3" y="0"  width="2" height="14"/>
-        <rect x="5" y="2"  width="2" height="10"/>
-        <rect x="7" y="4"  width="2" height="6"/>
-        <rect x="9" y="6"  width="2" height="2"/>
-        <rect x="11" y="0"  width="2" height="14"/>
-        <rect x="13" y="2"  width="2" height="10"/>
-        <rect x="15" y="4"  width="2" height="6"/>
-        <rect x="17" y="6"  width="2" height="2"/>
-      </svg>
-    </div>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 22 14" shape-rendering="crispEdges" fill="white">
+      <rect x="3" y="0"  width="2" height="14"/>
+      <rect x="5" y="2"  width="2" height="10"/>
+      <rect x="7" y="4"  width="2" height="6"/>
+      <rect x="9" y="6"  width="2" height="2"/>
+      <rect x="11" y="0"  width="2" height="14"/>
+      <rect x="13" y="2"  width="2" height="10"/>
+      <rect x="15" y="4"  width="2" height="6"/>
+      <rect x="17" y="6"  width="2" height="2"/>
+    </svg>
   </div>
 
   <!-- hidden SVG defs — must come BEFORE the eyes so <use> references resolve in safari -->
@@ -1879,18 +1746,17 @@
     const cta = document.getElementById('cta');
 
     let heroTimers = [];
-    let skipping = false;        /* declared here so replayEyes can read it */
     function clearHeroTimers() { heroTimers.forEach(t => clearTimeout(t)); heroTimers = []; }
 
     function replayEyes() {
       /* reset all eyes to closed state */
       eyes.forEach(e => { e.classList.remove('open', 'open-locked'); void e.offsetWidth; });
-      const fast = skipping;
-      /* stagger the opening — collapse delays when skipping */
-      heroTimers.push(setTimeout(() => eyes[0].classList.add('open'), fast ? 0   : 500));
-      heroTimers.push(setTimeout(() => eyes[1].classList.add('open'), fast ? 80  : 1600));
-      heroTimers.push(setTimeout(() => eyes[2].classList.add('open'), fast ? 160 : 2900));
-      heroTimers.push(setTimeout(() => eyes.forEach(e => { e.classList.remove('open'); e.classList.add('open-locked'); }), fast ? 600 : 5200));
+      /* stagger the opening — each pair opens after a delay */
+      heroTimers.push(setTimeout(() => eyes[0].classList.add('open'), 500));   /* ← p1 delay */
+      heroTimers.push(setTimeout(() => eyes[1].classList.add('open'), 1600));  /* ← p2 delay */
+      heroTimers.push(setTimeout(() => eyes[2].classList.add('open'), 2900));  /* ← p3 delay (droop starts here) */
+      /* after all animations finish, swap to open-locked so blink can override later */
+      heroTimers.push(setTimeout(() => eyes.forEach(e => { e.classList.remove('open'); e.classList.add('open-locked'); }), 5200));
     }
 
 
@@ -1964,20 +1830,9 @@
       resetCorrection();
       void hero.offsetWidth; /* force reflow so transitions restart cleanly */
       replayEyes();
-      const fast = skipping;
       /* after eyes finish opening, fade in the text */
-      heroTimers.push(setTimeout(() => hero.classList.add('ready'), fast ? 200  : 5090));
-      heroTimers.push(setTimeout(() => runCorrection(),              fast ? 300  : 9500));
-    }
-
-    /* ffHero — called mid-sequence when FF activates on the hero screen.
-       cancels pending timers and re-fires everything instantly. */
-    function ffHero() {
-      if (!document.getElementById('screen-hero')?.classList.contains('is-active')) return;
-      clearHeroTimers();
-      eyes.forEach(e => { e.classList.remove('open'); e.classList.add('open-locked'); });
-      hero.classList.add('ready');
-      heroTimers.push(setTimeout(() => runCorrection(), 100));
+      heroTimers.push(setTimeout(() => hero.classList.add('ready'), 5090));  /* ← text appears */
+      heroTimers.push(setTimeout(() => runCorrection(), 9500));              /* ← we→i starts */
     }
 
 
@@ -2078,6 +1933,7 @@
 
     /* state flags */
     let rewinding = false;       /* true while a rewind animation is playing */
+    let skipping = false;        /* true when user presses spacebar to skip typing */
     let rewindGen = 0;           /* increments on rewind — orphaned animations check this to self-cancel */
     let terminalStarted = false; /* true once the chat has been started */
 
@@ -2751,23 +2607,15 @@
     function showFfIcon() {
       if (ffHideTimer) { clearTimeout(ffHideTimer); ffHideTimer = null; }
       ffIcon.classList.add('visible');
-      document.body.classList.add('ff-active');
-      /* ffHero() intentionally NOT called here — skipping flag already speeds up
-         typewriter and timers. calling ffHero() snapped the whole hero instantly. */
     }
     function hideFfIcon() {
-      if (!ffIcon.classList.contains('visible')) return;
       if (ffHideTimer) clearTimeout(ffHideTimer);
-      ffHideTimer = setTimeout(() => {
-        ffIcon.classList.remove('visible');
-        document.body.classList.remove('ff-active');
-        ffHideTimer = null;
-      }, 1000);
+      ffHideTimer = setTimeout(() => { ffIcon.classList.remove('visible'); ffHideTimer = null; }, 1000);
     }
 
-    /* prevent long-press text selection and context menu globally (mobile) */
-    document.addEventListener('selectstart', e => { if (!e.target.closest('input, textarea')) e.preventDefault(); });
-    document.addEventListener('contextmenu', e => { if (!e.target.closest('input, textarea')) e.preventDefault(); });
+    /* prevent long-press text selection globally (mobile) */
+    document.addEventListener('selectstart', e => e.preventDefault());
+    document.addEventListener('contextmenu', e => e.preventDefault());
 
     /* hold-to-skip on mobile: touchstart with passive:false lets us preventDefault,
        which is the only reliable way to block iOS long-press selection/callout.
@@ -2788,17 +2636,16 @@
     function cancelHold() {
       clearTimeout(holdTimer); holdTimer = null;
       holding = false;
-      skipping = false;
-      hideFfIcon(); /* always trigger the 1s linger+hide on finger lift */
+      /* only stop skipping when finger lifts — not when showOptions resets it */
+      if (skipping) { skipping = false; hideFfIcon(); }
     }
 
     document.addEventListener('touchstart', e => {
       /* allow taps on interactive elements to work normally */
       if (e.target.closest('.term-option, button, input, textarea, a')) return;
-      /* do NOT preventDefault here — that blocks scroll.
-         long-press callout is blocked via CSS (-webkit-user-select:none) instead. */
+      e.preventDefault(); /* blocks long-press callout + text selection on iOS */
       startHold(e.target);
-    }, { passive: true });
+    }, { passive: false });
     document.addEventListener('touchend', cancelHold);
     document.addEventListener('touchcancel', cancelHold);
 
@@ -2812,9 +2659,6 @@
       if (!g) return;
       const opts = g.querySelectorAll('.term-option');
       if (opts[n - 1]) { e.preventDefault(); opts[n - 1].click(); }
-    });
-    document.addEventListener('keyup', e => {
-      if (e.key === ' ') { skipping = false; hideFfIcon(); }
     });
 
 
@@ -2880,105 +2724,6 @@
         sendCopy.classList.add('sent');
       };
     }
-
-
-    /* ═══════════════════════════════════════════════════════
-       [FF-LINES-JS] — canvas VHS tracking bands.
-       3 bands with independent vertical positions, speeds, and jitter.
-       each band: bright white core (~3-6px), soft feathered edges (~8px each side).
-       they sweep upward at slightly different speeds, jitter horizontally like
-       tape misalignment, and occasionally snap to a new random position.
-       only runs RAF loop when ff-active to save CPU.
-       ═══════════════════════════════════════════════════════ */
-    (function () {
-      const canvas = document.getElementById('ff-lines');
-      const ctx = canvas.getContext('2d');
-      let raf = null;
-      let running = false;
-
-      function resize() {
-        canvas.width  = window.innerWidth;
-        canvas.height = window.innerHeight;
-      }
-      resize();
-      window.addEventListener('resize', resize);
-
-      /* band definitions — position is 0..1 (fraction of screen height from top).
-         speed: px per frame downward (they wrap). xShift: current horizontal offset. */
-      const bands = [
-        { y: 0.18, speed: 4.2, xShift: 0, xTarget: 0, snapTimer: 0, height: 14, alpha: 0.82 },
-        { y: 0.51, speed: 3.1, xShift: 0, xTarget: 0, snapTimer: 0, height: 10, alpha: 0.65 },
-        { y: 0.76, speed: 5.8, xShift: 0, xTarget: 0, snapTimer: 0, height: 8,  alpha: 0.50 },
-      ];
-
-      function drawBand(b) {
-        const h = canvas.height;
-        const w = canvas.width;
-        const cy = (b.y * h) % h;           /* centre y of band */
-        const bh = b.height;                /* core height px */
-        const feather = 10;                 /* feather px each side */
-        const totalH = bh + feather * 2;
-
-        /* horizontal jitter — lerp toward xTarget, snap occasionally */
-        b.xShift += (b.xTarget - b.xShift) * 0.18;
-        b.snapTimer--;
-        if (b.snapTimer <= 0) {
-          b.xTarget = (Math.random() - 0.5) * 6; /* ±3px snap */
-          b.snapTimer = Math.floor(Math.random() * 8) + 3;
-        }
-
-        const x = b.xShift;
-
-        /* gradient: transparent → white core → transparent */
-        const top = cy - bh / 2 - feather;
-        const grad = ctx.createLinearGradient(0, top, 0, top + totalH);
-        grad.addColorStop(0,   `rgba(255,255,255,0)`);
-        grad.addColorStop(feather / totalH, `rgba(255,255,255,${b.alpha * 0.6})`);
-        grad.addColorStop((feather + bh * 0.15) / totalH, `rgba(255,255,255,${b.alpha})`);
-        grad.addColorStop((feather + bh * 0.85) / totalH, `rgba(255,255,255,${b.alpha})`);
-        grad.addColorStop((feather + bh) / totalH, `rgba(255,255,255,${b.alpha * 0.6})`);
-        grad.addColorStop(1,   `rgba(255,255,255,0)`);
-
-        ctx.save();
-        ctx.translate(x, 0);
-        ctx.fillStyle = grad;
-        ctx.fillRect(-Math.abs(x) - 2, top, w + Math.abs(x) * 2 + 4, totalH);
-
-        /* draw wrap-around copy if band is near top or bottom edge */
-        if (top < 0) {
-          ctx.fillRect(-Math.abs(x) - 2, top + h, w + Math.abs(x) * 2 + 4, totalH);
-        }
-        if (top + totalH > h) {
-          ctx.fillRect(-Math.abs(x) - 2, top - h, w + Math.abs(x) * 2 + 4, totalH);
-        }
-        ctx.restore();
-      }
-
-      function tick() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        bands.forEach(b => {
-          /* move band upward */
-          b.y -= b.speed / canvas.height;
-          if (b.y < -0.1) b.y += 1.1;
-          drawBand(b);
-        });
-        if (running) raf = requestAnimationFrame(tick);
-      }
-
-      /* watch for ff-active class on body */
-      const observer = new MutationObserver(() => {
-        const active = document.body.classList.contains('ff-active');
-        if (active && !running) {
-          running = true;
-          raf = requestAnimationFrame(tick);
-        } else if (!active && running) {
-          running = false;
-          if (raf) { cancelAnimationFrame(raf); raf = null; }
-          ctx.clearRect(0, 0, canvas.width, canvas.height);
-        }
-      });
-      observer.observe(document.body, { attributes: true, attributeFilter: ['class'] });
-    }());
 
 
     /* ═══════════════════════════════════════════════════════
