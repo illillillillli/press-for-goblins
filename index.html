@@ -241,31 +241,18 @@
       /* ← height of the light band. bigger = softer sweep */
       background: linear-gradient(to top,
           rgba(255, 255, 255, 0) 0%,
-          /* transparent at bottom edge */
           rgba(255, 255, 255, 0.015) 15%,
-          /* barely visible fade in */
           rgba(255, 255, 255, 0.04) 50%,
-          /* ← peak brightness of the sweep */
           rgba(255, 255, 255, 0.015) 85%,
-          /* fade back out */
           rgba(255, 255, 255, 0) 100%
-          /* transparent at top edge */
         );
       animation: crtSweep 25s linear infinite;
       /* ← 25s = speed. lower = faster sweep */
     }
 
     @keyframes crtSweep {
-      0% {
-        transform: translateY(100vh);
-      }
-
-      /* starts below the screen */
-      100% {
-        transform: translateY(-100vh);
-      }
-
-      /* ends above the screen */
+      0%   { transform: translateY(100vh); }
+      100% { transform: translateY(-100vh); }
     }
 
     /* when CRT is toggled off via config */
@@ -273,16 +260,42 @@
       display: none;
     }
 
-    /* fast-forward: speed up the CRT sweep and boost brightness slightly */
+    /* fast-forward: tight sharp tracking band like VHS FF.
+       narrow height, hard edges, bright core, second ghost band via ::after. */
     body.ff-active .crt::before {
-      animation-duration: 3s;
+      height: 12vh;
+      animation-duration: 1.8s;
       background: linear-gradient(to top,
-          rgba(255, 255, 255, 0) 0%,
-          rgba(255, 255, 255, 0.03) 15%,
-          rgba(255, 255, 255, 0.08) 50%,
-          rgba(255, 255, 255, 0.03) 85%,
-          rgba(255, 255, 255, 0) 100%
+          rgba(255, 255, 255, 0)    0%,
+          rgba(255, 255, 255, 0.08) 10%,
+          rgba(255, 255, 255, 0.22) 35%,
+          rgba(255, 255, 255, 0.32) 50%,
+          rgba(255, 255, 255, 0.22) 65%,
+          rgba(255, 255, 255, 0.08) 90%,
+          rgba(255, 255, 255, 0)    100%
         );
+    }
+
+    /* ghost trailing band — offset ~20vh behind the main one */
+    .crt::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      height: 8vh;
+      opacity: 0;
+      background: linear-gradient(to top,
+          rgba(255, 255, 255, 0)    0%,
+          rgba(255, 255, 255, 0.06) 30%,
+          rgba(255, 255, 255, 0.10) 50%,
+          rgba(255, 255, 255, 0.06) 70%,
+          rgba(255, 255, 255, 0)    100%
+        );
+      animation: crtSweep 1.8s linear infinite;
+      animation-delay: -0.35s; /* offset so it trails behind main band */
+    }
+    body.ff-active .crt::after {
+      opacity: 1;
     }
 
 
