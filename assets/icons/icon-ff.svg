@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 22 14" width="88" height="56" shape-rendering="crispEdges" fill="white">
+  <!-- left triangle — base on left, tip pointing right -->
+  <rect x="3" y="0"  width="2" height="14"/>
+  <rect x="5" y="2"  width="2" height="10"/>
+  <rect x="7" y="4"  width="2" height="6"/>
+  <rect x="9" y="6"  width="2" height="2"/>
+  <!-- right triangle — same, shifted right by 8 -->
+  <rect x="11" y="0"  width="2" height="14"/>
+  <rect x="13" y="2"  width="2" height="10"/>
+  <rect x="15" y="4"  width="2" height="6"/>
+  <rect x="17" y="6"  width="2" height="2"/>
+</svg>

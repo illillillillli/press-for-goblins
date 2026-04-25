@@ -1385,6 +1385,38 @@
         -webkit-clip-path: inset(0 0 0 0) !important;
       }
     }
+
+    /* ═══════════════════════════════════════════════════════
+       [FF-ICON-CSS] — fast-forward indicator.
+       appears instantly (no transition) in top-right when skipping.
+       sized slightly smaller than the eyes.
+       ═══════════════════════════════════════════════════════ */
+    #ff-icon {
+      position: fixed;
+      top: 16px;
+      right: 16px;
+      z-index: 60;
+      display: none;
+      pointer-events: none;
+      image-rendering: pixelated;
+      image-rendering: crisp-edges;
+    }
+    #ff-icon.visible {
+      display: block;
+    }
+    #ff-icon svg {
+      width: 80px;
+      height: auto;
+    }
+    @media (min-width: 601px) {
+      #ff-icon {
+        top: 56px;
+        right: 24px;
+      }
+      #ff-icon svg {
+        width: 88px;
+      }
+    }
   </style>
 </head>
 
@@ -1392,6 +1424,20 @@
 
   <!-- [CRT-HTML] — the CRT sweep overlay. just an empty div; the CSS does the work -->
   <div class="crt"></div>
+
+  <!-- [FF-ICON-HTML] — fast-forward indicator, top-right, shown during skip -->
+  <div id="ff-icon">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 22 14" shape-rendering="crispEdges" fill="white">
+      <rect x="3" y="0"  width="2" height="14"/>
+      <rect x="5" y="2"  width="2" height="10"/>
+      <rect x="7" y="4"  width="2" height="6"/>
+      <rect x="9" y="6"  width="2" height="2"/>
+      <rect x="11" y="0"  width="2" height="14"/>
+      <rect x="13" y="2"  width="2" height="10"/>
+      <rect x="15" y="4"  width="2" height="6"/>
+      <rect x="17" y="6"  width="2" height="2"/>
+    </svg>
+  </div>
 
   <!-- hidden SVG defs — must come BEFORE the eyes so <use> references resolve in safari -->
   <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="0" height="0"
@@ -2075,7 +2121,7 @@
        each option fades in with a stagger delay.
        clicking one collapses the group and records the answer. */
     function showOptions(options, stepName, onSelect) {
-      rewinding = false; skipping = false;
+      rewinding = false; skipping = false; hideFfIcon();
       addBlank();
       const group = document.createElement('div');
       group.className = 'term-options-group';
@@ -2104,7 +2150,7 @@
     /* showTextInput — displays a text field for free-form input.
        validates on enter. shakes if empty or invalid. */
     function showTextInput(placeholder, onSubmit, multiline, stepName, validate, validationMsg) {
-      rewinding = false; skipping = false;
+      rewinding = false; skipping = false; hideFfIcon();
       addBlank();
       const row = document.createElement('div');
       row.className = 'term-line term-input-line visible';
@@ -2534,10 +2580,25 @@
        NUMBER KEYS (1-9): select the corresponding option without clicking.
        only works when not focused on an input field.
        ═══════════════════════════════════════════════════════ */
+    /* ═══════════════════════════════════════════════════════
+       [FF-ICON-JS] — fast-forward icon visibility.
+       shows instantly when skipping starts, hides 1s after skipping ends.
+       ═══════════════════════════════════════════════════════ */
+    const ffIcon = document.getElementById('ff-icon');
+    let ffHideTimer = null;
+    function showFfIcon() {
+      if (ffHideTimer) { clearTimeout(ffHideTimer); ffHideTimer = null; }
+      ffIcon.classList.add('visible');
+    }
+    function hideFfIcon() {
+      if (ffHideTimer) clearTimeout(ffHideTimer);
+      ffHideTimer = setTimeout(() => { ffIcon.classList.remove('visible'); ffHideTimer = null; }, 1000);
+    }
+
     document.addEventListener('keydown', e => {
       const t = document.activeElement?.tagName;
       if (t === 'INPUT' || t === 'TEXTAREA') return; /* don't intercept when typing */
-      if (e.key === ' ') { e.preventDefault(); skipping = true; return; }
+      if (e.key === ' ') { e.preventDefault(); skipping = true; showFfIcon(); return; }
       const n = parseInt(e.key, 10);
       if (!n) return;
       const g = termOut.querySelector('.term-options-group:not(.collapsed)');
