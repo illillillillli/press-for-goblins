@@ -4,7 +4,7 @@
 <head>
   <meta charset="utf-8">
 
-  <!-- ╔════════════════════════════════════════h══════════════════════════════════╗
+  <!-- ╔══════════════════════════════════════════════════════════════════════════╗
      ║  PRESS FOR GOBLINS — index.html                                        ║
      ║  the entire site lives in this one file. css, html, js — all here.     ║
      ║  void philosophy: no borders, no containers, no roundness, no colour.  ║
@@ -72,6 +72,9 @@
      ► change typing speed:
        search [TIMING] → MSG_GAP (pause between messages), STEP_GAP (pause between steps)
 
+     ► change eye droop personality:
+       search [CONFIG] → change droop:'awakened' to 'lazy' or 'alert'
+
      ► change eye animation timing:
        search [EYE-ANIM] → the setTimeout delays control when each pair opens
 
@@ -113,13 +116,19 @@
   <meta name="robots" content="noarchive,noimageindex">
   <!-- theme-color — makes the browser chrome (address bar etc) black on mobile -->
   <meta name="theme-color" content="#000000">
+  <!-- [DARK-MODE-LOCK] — tell dark-mode browser extensions (noir, dark reader, etc)
+       this site is already dark and does NOT need recoloring. noir reads color-scheme;
+       dark reader reads the lock meta. without these, extensions invert the eye SVGs
+       and turn them into a washed-out green blob. -->
+  <meta name="color-scheme" content="dark">
+  <meta name="darkreader-lock">
   <!-- canonical — tells search engines this is the one true URL -->
   <link rel="canonical" href="https://pressforgoblins.com">
-  <!-- [FONTS] — preload the pixel font so it's ready before the page renders -->
-  <link rel="preload" href="fonts/PressStart2P-Regular.woff2" as="font" type="font/woff2" crossorigin>
 
   <!-- [FONTS] — preload the pixel font so it's ready before the page renders -->
   <link rel="preload" href="fonts/PressStart2P-Regular.woff2" as="font" type="font/woff2" crossorigin>
+
+  <!-- [FONTS] — pixel font loads via @font-face below -->
 
   <style>
     /* [FONTS] — self-hosted pixel font. lives in /fonts/ folder.
@@ -128,7 +137,7 @@
     @font-face {
       font-family: 'Press Start 2P';
       src: url('fonts/PressStart2P-Regular.woff2') format('woff2'),
-        url('fonts/PressStart2P-Regular.woff') format('woff');
+           url('fonts/PressStart2P-Regular.woff') format('woff');
       font-weight: normal;
       font-style: normal;
       font-display: swap;
@@ -285,14 +294,14 @@
      desktop: edit width:104px in the @media block
    to change eye position from top:
      mobile: edit top:64px below
-     desktop: edit top:64px in the @media block
+     desktop: edit top:56px in the @media block
    to change gap between eye rows:
-     mobile: edit gap:4px below
-     desktop: edit gap:4px in the @media block
+     mobile: edit gap:2px below
+     desktop: edit gap:3px in the @media block
    ═══════════════════════════════════════════════════════ */
     .eyes {
       position: fixed;
-      top: 16px;
+      top: 12px;
       /* ← distance from top of screen on mobile */
       left: 50%;
       transform: translateX(-50%);
@@ -310,14 +319,23 @@
       pointer-events: none;
       /* clicks pass through the eyes */
       align-items: center;
+      transition: transform 0.3s ease, opacity 0.3s ease;
     }
 
     @media (min-width:601px) {
       .eyes {
-        top: 56px;
+        top: 40px;
       }
 
       /* ← distance from top on desktop */
+    }
+
+    /* mobile-only: hide eyes on scroll down */
+    @media (max-width:600px) {
+      .eyes.hidden-mobile {
+        transform: translateX(-50%) translateY(-120px);
+        opacity: 0;
+      }
     }
 
     .eyes svg {
@@ -330,7 +348,7 @@
 
     @media (min-width:601px) {
       .eyes {
-        gap: 4px;
+        gap: 3px;
       }
 
       /* ← gap between rows on desktop */
@@ -448,8 +466,8 @@
 
     /* blink — quick close-and-open, used when you click the CTA */
     .eye-pair.blink {
-      -webkit-animation: blink .25s ease-in-out !important;
-      animation: blink .25s ease-in-out !important;
+      -webkit-animation: blink .22s ease-in-out !important;
+      animation: blink .22s ease-in-out !important;
     }
 
     @-webkit-keyframes blink {
@@ -509,6 +527,25 @@
       overflow: hidden;
     }
 
+    /* viewport-level gradient backdrop — darkens top of screen naturally */
+    .page::before {
+      content: "";
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: var(--shadow-height, 55vh);
+      background: linear-gradient(to bottom,
+        rgba(0,0,0,1) 0%,
+        rgba(0,0,0,0.96) 25%,
+        rgba(0,0,0,0.75) 45%,
+        rgba(0,0,0,0.4) 65%,
+        rgba(0,0,0,0) 100%
+      );
+      pointer-events: none;
+      z-index: 40;
+    }
+
     .stage {
       position: relative;
       flex: 1;
@@ -517,14 +554,16 @@
       mask-image: linear-gradient(to bottom,
           transparent 0,
           /* fully invisible at the very top */
-          #000 120px,
-          /* ← content becomes visible 120px down (clears the eyes) */
+          transparent 140px,
+          /* hard cutoff below the eyes */
+          #000 145px,
+          /* instant transition to visible */
           #000 82%,
           /* stays visible through most of the page */
           transparent 100%
           /* ← fades to void at the bottom */
         );
-      -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 120px, #000 82%, transparent 100%);
+      -webkit-mask-image: linear-gradient(to bottom, transparent 0, transparent 140px, #000 145px, #000 82%, transparent 100%);
       /* ^ same thing but for safari/webkit */
     }
 
@@ -544,13 +583,12 @@
       transition: opacity .6s ease;
       /* ← fade duration when switching screens */
       padding:
-        clamp(150px, 20vw, 180px)
+        clamp(180px, 24vw, 220px)
         /* top — enough space to clear the eyes */
         clamp(18px, 4vw, 48px)
         /* left/right — responsive side padding */
         clamp(60px, 10vw, 80px);
       /* bottom */
-      /* mobile override below */
       overflow-y: auto;
       /* allows scrolling within each screen */
       scrollbar-width: none;
@@ -563,18 +601,10 @@
 
     @media (max-width: 600px) {
       .screen {
-        padding-top: 120px;
-        /* slightly more space below eyes on mobile */
-      }
-
-      .hero .title {
-        font-size: 1.625rem;
-        /* header — 25% bigger than old 1.3rem */
-      }
-
-      .hero p {
-        font-size: 1.78rem;
-        /* body — 25% bigger than old 1.425rem */
+        padding-top: clamp(160px, 26vh, 200px);
+        padding-left: clamp(20px, 5vw, 32px);
+        padding-right: clamp(20px, 5vw, 32px);
+        padding-bottom: clamp(80px, 12vh, 100px);
       }
     }
 
@@ -612,7 +642,7 @@
     .hero .title {
       font-family: "Press Start 2P", monospace;
       /* pixel font */
-      font-size: clamp(0.78rem, 2.6vw, 1.5rem);
+      font-size: clamp(1.1rem, 2.6vw, 1.5rem);
       /* ← responsive title size */
       line-height: 1.75;
       color: var(--text-primary);
@@ -621,9 +651,16 @@
       /* hidden until .ready */
       transition: opacity 1.4s ease;
       /* ← title fade-in speed */
-      transition-delay: 1.6s;
-      /* ← waits this long after .ready */
+      transition-delay: 0.64s;
+      /* ← reduced by 60% from 1.6s */
       text-align: center;
+    }
+
+    @media (max-width: 600px) {
+      .hero .title {
+        font-size: clamp(1.25rem, 5vw, 1.5rem);
+        line-height: 1.85;
+      }
     }
 
     .hero.ready .title {
@@ -637,13 +674,13 @@
 
     /* each line of the title on its own row */
     .hero .body {
-      margin-top: clamp(32px, 5vw, 52px);
-      /* ← gap between title and body text */
+      margin-top: var(--title-body-gap, clamp(24px, 3.75vw, 39px));
+      /* ← gap between title and body text - reduced by 25% */
       opacity: 0;
       transition: opacity 1.6s ease;
       /* ← body fade-in speed */
-      transition-delay: 2.6s;
-      /* ← waits this long after .ready */
+      transition-delay: 1.04s;
+      /* ← reduced by 60% from 2.6s */
       max-width: 64ch;
       /* keeps paragraphs a readable width */
       text-align: left;
@@ -654,19 +691,31 @@
     }
 
     .hero p {
-      font-size: clamp(.95rem, 1.35vw, 1.1rem);
+      font-size: clamp(1.05rem, 1.35vw, 1.1rem);
       /* ← body text size */
       line-height: 2;
       color: var(--text-primary);
     }
 
+    @media (max-width: 600px) {
+      .hero p {
+        font-size: clamp(1.125rem, 4.5vw, 1.3rem);
+        line-height: 1.9;
+      }
+    }
+
     .hero p+p {
-      margin-top: clamp(18px, 2.5vw, 28px);
+      margin-top: var(--paragraph-gap, clamp(20px, 2.5vw, 28px));
     }
 
     /* ← gap between paragraphs */
     .hero p.note {
       color: var(--text-secondary);
+    }
+
+    /* service highlights — editorial terms + genres in goblin green */
+    .hero p .service-hl {
+      color: var(--green);
     }
 
     /* the "please note" line is dimmer */
@@ -729,14 +778,14 @@
    to change the breathing speed: edit 3.6s in animation:breathe.
    to change the arrow squeeze: edit the idleSqueeze keyframes. */
     .cta-wrap {
-      margin-top: clamp(28px, 4vw, 44px);
+      margin-top: var(--body-cta-gap, clamp(28px, 4vw, 44px));
       /* ← gap between body and CTA */
       display: flex;
       justify-content: center;
       opacity: 0;
       transition: opacity 1s ease;
-      transition-delay: 3.4s;
-      /* ← CTA appears last */
+      transition-delay: 1.36s;
+      /* ← reduced by 60% from 3.4s */
     }
 
     .hero.ready .cta-wrap {
@@ -745,7 +794,7 @@
 
     .cta {
       font-family: "Press Start 2P", monospace;
-      font-size: clamp(0.78rem, 2vw, 1.2rem);
+      font-size: clamp(0.95rem, 2vw, 1.2rem);
       /* ← CTA text size */
       color: var(--green);
       /* goblin green */
@@ -753,9 +802,16 @@
       display: inline-flex;
       align-items: center;
       gap: .35em;
-      padding: 12px 4px;
+      padding: 14px 6px;
       animation: breathe 3.6s ease-in-out infinite;
       /* ← gentle pulse */
+    }
+
+    @media (max-width: 600px) {
+      .cta {
+        font-size: clamp(1.05rem, 4.2vw, 1.3rem);
+        padding: 16px 8px;
+      }
     }
 
     @keyframes breathe {
@@ -845,10 +901,19 @@
       padding:
         clamp(150px, 20vw, 180px)
         /* top — clears the eyes */
-        clamp(18px, 4vw, 32px)
+        clamp(20px, 4vw, 32px)
         /* sides */
-        clamp(80px, 12vw, 120px);
+        clamp(100px, 15vh, 140px);
       /* bottom — room before the void fade */
+    }
+
+    @media (max-width: 600px) {
+      .terminal {
+        padding:
+          clamp(160px, 24vh, 200px)
+          clamp(24px, 6vw, 36px)
+          clamp(120px, 18vh, 160px);
+      }
     }
 
     .terminal-screen {
@@ -862,7 +927,7 @@
 
     /* each line of chat text */
     .term-line {
-      font-size: clamp(.95rem, 1.4vw, 1.1rem);
+      font-size: clamp(1.05rem, 1.4vw, 1.1rem);
       /* ← chat text size */
       line-height: 1.75;
       color: var(--text-primary);
@@ -871,8 +936,16 @@
       /* hidden until .visible is added */
       white-space: pre-wrap;
       word-break: break-word;
-      margin: clamp(8px, 1.2vw, 14px) 0;
+      margin: clamp(10px, 1.2vw, 14px) 0;
       /* ← gap between chat lines */
+    }
+
+    @media (max-width: 600px) {
+      .term-line {
+        font-size: clamp(1.125rem, 4.5vw, 1.25rem);
+        line-height: 1.8;
+        margin: clamp(12px, 2vw, 16px) 0;
+      }
     }
 
     .term-line.visible {
@@ -1040,9 +1113,18 @@
       transform: translateY(4px);
       /* starts slightly below, fades in */
       transition: color .2s ease;
-      min-height: 40px;
-      line-height: 40px;
+      min-height: 44px;
+      line-height: 44px;
       /* ← tap target size */
+      padding: 4px 0;
+    }
+
+    @media (max-width: 600px) {
+      .term-option {
+        min-height: 50px;
+        line-height: 50px;
+        padding: 6px 0;
+      }
     }
 
     .term-option.visible {
@@ -1073,15 +1155,23 @@
     .term-input-field {
       color: var(--text-primary);
       font-family: "Courier New", monospace;
-      font-size: clamp(.95rem, 1.4vw, 1.1rem);
+      font-size: clamp(1.05rem, 1.4vw, 1.1rem);
       flex: 1;
-      padding: 8px 10px;
+      padding: 10px 12px;
       text-align: right;
       /* text typed from the right */
       caret-color: var(--green);
       /* green blinking cursor */
-      min-height: 40px;
+      min-height: 44px;
       transition: background .3s ease;
+    }
+
+    @media (max-width: 600px) {
+      .term-input-field {
+        font-size: clamp(1.125rem, 4.5vw, 1.25rem);
+        padding: 12px 14px;
+        min-height: 50px;
+      }
     }
 
     .term-input-field:focus {
@@ -1524,9 +1614,9 @@
                   <path class="i-stalk" d="M 6.3 9 C 6.0 12,6.4 16,6.1 20" stroke="#7bbf7b" stroke-width="1.8"
                     fill="none" stroke-linecap="round" />
                 </svg></span> run an editorial workshop from a dimly lit room in london. with five years of experience
-              at a big four publisher and counting, i work with writers to provide editorial assessment, creative
-              development and pitch feedback to get your project ready to take on the industry.</p>
-            <p>specialising in sci-fi, fantasy, horror and romance. especially interested in cutting-edge genre blends,
+              at a big four publisher and counting, i work with writers to provide <span class="service-hl">editorial assessment</span>, <span class="service-hl">creative
+              development</span> and <span class="service-hl">pitch feedback</span> to get your project ready to take on the industry.</p>
+            <p>specialising in <span class="service-hl">sci-fi</span>, <span class="service-hl">fantasy</span>, <span class="service-hl">horror</span> and <span class="service-hl">romance</span>. especially interested in cutting-edge genre blends,
               high-concept plots, inventive magic systems and queer and neurodivergent protagonists.</p>
             <p class="note">please note: the goblins cannot digest literary fiction, poetry or non-fiction.</p>
           </div>
@@ -1577,6 +1667,9 @@
     </div>
   </div>
 
+  <!-- Tweaks root -->
+  <div id="tweaks-root"></div>
+
   <script>
     /* ╔══════════════════════════════════════════════════════════════════════════╗
        ║  JAVASCRIPT — all the behaviour lives here.                            ║
@@ -1586,12 +1679,14 @@
 
     /* ═══════════════════════════════════════════════════════
        [CONFIG] — master settings. change these to tweak behaviour.
+       droop:      'awakened' | 'lazy' | 'alert' — p3 eye personality
        accent:     hex colour — the green used everywhere
        crt:        true | false — CRT sweep effect on/off
        rewind:     'vcr' | 'simple' | 'off' — click-to-rewind animation style
        submitMode: 'mock' | 'live' — mock just fakes it, live sends to formspree
        ═══════════════════════════════════════════════════════ */
     const CONFIG = {
+      droop: 'awakened',      /* ← eye droop personality */
       accent: '#7bbf7b',      /* ← accent colour (goblin green) */
       crt: true,              /* ← CRT sweep on/off */
       rewind: 'vcr',          /* ← rewind animation style */
@@ -1607,6 +1702,9 @@
       document.body.classList.toggle('crt-off', !CONFIG.crt);
       document.body.classList.toggle('rewind-simple', CONFIG.rewind === 'simple');
       document.body.classList.toggle('rewind-off', CONFIG.rewind === 'off');
+      /* set the droop personality on the p3 eye pair */
+      const p3 = document.querySelector('.eye-pair.p3');
+      if (p3) p3.dataset.droop = CONFIG.droop;
     }
 
     /* postMessage listener — allows an external wrapper (like the design preview)
@@ -1677,7 +1775,7 @@
        the three eye pairs open one at a time with delays.
        p1 opens first, then p2, then p3 (with its droop).
        after they're all open, they get locked open (class swap).
-
+    
        to change the timing:
          300  = delay before p1 opens (ms)
          1100 = delay before p2 opens
@@ -1697,11 +1795,11 @@
       /* reset all eyes to closed state */
       eyes.forEach(e => { e.classList.remove('open', 'open-locked'); void e.offsetWidth; });
       /* stagger the opening — each pair opens after a delay */
-      heroTimers.push(setTimeout(() => eyes[0].classList.add('open'), 500));   /* ← p1 delay */
-      heroTimers.push(setTimeout(() => eyes[1].classList.add('open'), 1600));  /* ← p2 delay */
-      heroTimers.push(setTimeout(() => eyes[2].classList.add('open'), 2900));  /* ← p3 delay (droop starts here) */
+      heroTimers.push(setTimeout(() => eyes[0].classList.add('open'), 300));   /* ← p1 delay */
+      heroTimers.push(setTimeout(() => eyes[1].classList.add('open'), 1100));  /* ← p2 delay */
+      heroTimers.push(setTimeout(() => eyes[2].classList.add('open'), 2100));  /* ← p3 delay (droop starts here) */
       /* after all animations finish, swap to open-locked so blink can override later */
-      heroTimers.push(setTimeout(() => eyes.forEach(e => { e.classList.remove('open'); e.classList.add('open-locked'); }), 5200));
+      heroTimers.push(setTimeout(() => eyes.forEach(e => { e.classList.remove('open'); e.classList.add('open-locked'); }), 5100));
     }
 
 
@@ -1709,10 +1807,10 @@
        [WE-TO-I] — the "we" → "i" correction animation.
        uses WAAPI (Web Animations API) — no CSS keyframes needed.
        sequence: strikethrough draws across "we" → pause → "i" stalk draws → dot stamps down.
-
+    
        resetCorrection() — hides everything, cancels running animations.
        runCorrection()  — plays the full sequence.
-
+    
        timing (all in ms, tweak these):
          1200 = duration of the strikethrough line drawing
          1400 = delay before the "i" stalk starts drawing
@@ -1776,9 +1874,43 @@
       void hero.offsetWidth; /* force reflow so transitions restart cleanly */
       replayEyes();
       /* after eyes finish opening, fade in the text */
-      heroTimers.push(setTimeout(() => hero.classList.add('ready'), 5090));  /* ← text appears */
+      heroTimers.push(setTimeout(() => hero.classList.add('ready'), 5200));  /* ← text appears */
       heroTimers.push(setTimeout(() => runCorrection(), 9500));              /* ← we→i starts */
     }
+
+    /* [AUTO-HIDE-EYES] — mobile only: hide eyes on scroll down, show on scroll up */
+    (function() {
+      if (window.innerWidth > 600) return; /* desktop: skip */
+      
+      const eyesEl = document.getElementById('eyes');
+      const terminal = document.querySelector('.terminal');
+      if (!eyesEl || !terminal) return;
+      
+      let lastScroll = 0;
+      let ticking = false;
+      
+      function updateEyes() {
+        const currentScroll = terminal.scrollTop;
+        
+        if (currentScroll > lastScroll && currentScroll > 50) {
+          /* scrolling down — hide eyes */
+          eyesEl.classList.add('hidden-mobile');
+        } else if (currentScroll < lastScroll) {
+          /* scrolling up — show eyes */
+          eyesEl.classList.remove('hidden-mobile');
+        }
+        
+        lastScroll = currentScroll;
+        ticking = false;
+      }
+      
+      terminal.addEventListener('scroll', () => {
+        if (!ticking) {
+          requestAnimationFrame(updateEyes);
+          ticking = true;
+        }
+      });
+    }());
 
 
     /* ═══════════════════════════════════════════════════════
@@ -1786,21 +1918,63 @@
        eyes blink, hero fades out, terminal fades in, chat begins.
        ═══════════════════════════════════════════════════════ */
     cta.addEventListener('click', () => {
+      const arrL = cta.querySelector('.arr.l');
+      const arrR = cta.querySelector('.arr.r');
+      
+      /* arrows jump in and back out */
+      arrL.animate([
+        { transform: 'translateX(0)' },
+        { transform: 'translateX(6px)', offset: 0.4 },
+        { transform: 'translateX(0)', offset: 1 }
+      ], { duration: 400, easing: 'cubic-bezier(.4,0,.2,1)' });
+      
+      arrR.animate([
+        { transform: 'translateX(0)' },
+        { transform: 'translateX(-6px)', offset: 0.4 },
+        { transform: 'translateX(0)', offset: 1 }
+      ], { duration: 400, easing: 'cubic-bezier(.4,0,.2,1)' });
+      
       /* make all eyes blink */
       eyes.forEach(e => { e.classList.add('blink'); setTimeout(() => e.classList.remove('blink'), 250); });
-      /* fade out the hero */
-      hero.style.transition = 'opacity .45s ease';
-      hero.style.opacity = '0';
-      /* after fade, switch to terminal and start the chat */
+      
+      /* fade out the hero after arrow animation */
       setTimeout(() => {
-        showScreen('term');
-        hero.style.opacity = '';
-        if (!terminalStarted) { terminalStarted = true; runStep(1); }
-      }, 500); /* ← delay before terminal appears (matches fade duration) */
+        hero.style.transition = 'opacity .45s ease';
+        hero.style.opacity = '0';
+        /* after fade, switch to terminal and start the chat */
+        setTimeout(() => {
+          showScreen('term');
+          hero.style.opacity = '';
+          if (!terminalStarted) { terminalStarted = true; runStep(1); }
+        }, 500);
+      }, 150); /* slight delay so arrow animation is visible before fade */
     });
 
     /* start the hero sequence on page load */
     replayHero();
+
+    /* [IDLE-BLINK] — random independent blinking for each eye pair */
+    function startIdleBlinks() {
+      eyes.forEach((eye, idx) => {
+        function scheduleNextBlink() {
+          const delay = 15000 + Math.random() * 5000; /* 15-20 seconds */
+          setTimeout(() => {
+            if (!eye.classList.contains('open-locked')) {
+              scheduleNextBlink();
+              return;
+            }
+            eye.classList.add('blink');
+            setTimeout(() => {
+              eye.classList.remove('blink');
+              scheduleNextBlink();
+            }, 250);
+          }, delay);
+        }
+        scheduleNextBlink();
+      });
+    }
+    /* start idle blinking after eyes are fully open */
+    setTimeout(startIdleBlinks, 6000);
 
 
     /* ═══════════════════════════════════════════════════════
@@ -1808,15 +1982,15 @@
        each key matches a step name. each value is an object mapping
        the user's answer to an array of reply strings.
        empty array = no reply, just move to next step.
-
+    
        TO EDIT THE GOBLIN REPLIES: change the strings in the arrays below.
        TO ADD A NEW REPLY: add a string to the array.
        TO REMOVE A REPLY: delete the string (keep the array, even if empty).
        ═══════════════════════════════════════════════════════ */
     const REACTIONS = {
       gate: {
-        yes: ['of course you are'],
-        absolutely: ['we can tell']
+        yes: ['we can tell'],
+        'are you really goblins?': ['yes']
         /* 'no' doesn't have a reaction — it goes straight to 404 */
       },
       'writer-type': {
@@ -2230,13 +2404,13 @@
     /* ═══════════════════════════════════════════════════════
        [STEPS] — the 11-step chat flow.
        each case is one step. steps are numbered 1-12 (12 = submit button).
-
+    
        TO CHANGE A QUESTION: edit the string in typeMessage().
        TO CHANGE THE OPTIONS: edit the {label, value} objects in showOptions().
        TO ADD A NEW STEP: add a new case and update STEP_NUM above.
        TO CHANGE THE ORDER: renumber the cases and update reactThenStep() calls.
        TO CHANGE A PLACEHOLDER: edit the string in showTextInput().
-
+    
        step 1:  gate       — "are you in need of goblins?" (yes/no/absolutely)
        step 2:  writer-type — "what are you working on?" (novel/video game/etc)
        step 3:  service    — "what do you need help with?" (assessment/dev/pitch/etc)
@@ -2276,7 +2450,7 @@
                       showOptions([
                         { label: 'yes', value: 'yes' },
                         { label: 'no', value: 'no' },
-                        { label: 'absolutely', value: 'absolutely' }
+                        { label: 'are you really goblins?', value: 'are you really goblins?' }
                       ], 'gate', opt => {
                         answers.gate = opt.value;
                         if (opt.value === 'no') {
@@ -2284,8 +2458,11 @@
                           setTimeout(() => typeMessage('fair enough', () => {
                             setTimeout(() => { err404.classList.add('is-active'); }, 600);
                           }), 300);
-                        } else {
+                        } else if (opt.value === 'are you really goblins?') {
+                          /* special case: skip to step 2 (service) after the reaction */
                           reactThenStep(REACTIONS.gate[opt.value], 2);
+                        } else {
+                          reactThenStep(REACTIONS.gate[opt.value], 3);
                         }
                       });
                     });
@@ -2297,9 +2474,26 @@
           break;
         }
 
-        /* ── STEP 2: WRITER TYPE ── "what are you working on?" */
+        /* ── STEP 2: SERVICE ── "what do you need help with?" */
         case 2:
           markStep(2);
+          typeMessage('what do you need help with?', () => {
+            showOptions([
+              { label: 'editorial assessment', value: 'editorial assessment' },
+              { label: 'creative development', value: 'creative development' },
+              { label: 'pitch feedback', value: 'pitch feedback' },
+              { label: 'all of the above', value: 'all of the above' },
+              { label: 'something else', value: 'something else' }
+            ], 'service', opt => {
+              answers.service = opt.value;
+              reactThenStep(REACTIONS.service[opt.value], 3);
+            });
+          });
+          break;
+
+        /* ── STEP 3: WRITER TYPE ── "what are you working on?" */
+        case 3:
+          markStep(3);
           typeMessage('what are you working on?', () => {
             showOptions([
               { label: 'novel', value: 'novel' },
@@ -2310,29 +2504,12 @@
               if (opt.value === 'box') {
                 showTextInput('go on then...', val => {
                   answers['writer-type'] = val;
-                  reactThenStep(REACTIONS['writer-type'].box, 3);
+                  reactThenStep(REACTIONS['writer-type'].box, 4);
                 }, false, 'writer-type');
               } else {
                 answers['writer-type'] = opt.value;
-                reactThenStep(REACTIONS['writer-type'][opt.value], 3);
+                reactThenStep(REACTIONS['writer-type'][opt.value], 4);
               }
-            });
-          });
-          break;
-
-        /* ── STEP 3: SERVICE ── "what do you need help with?" */
-        case 3:
-          markStep(3);
-          typeMessage('what do you need help with?', () => {
-            showOptions([
-              { label: 'editorial assessment', value: 'editorial assessment' },
-              { label: 'creative development', value: 'creative development' },
-              { label: 'pitch feedback', value: 'pitch feedback' },
-              { label: 'all of the above', value: 'all of the above' },
-              { label: 'something else', value: 'something else' }
-            ], 'service', opt => {
-              answers.service = opt.value;
-              reactThenStep(REACTIONS.service[opt.value], 4);
             });
           });
           break;
@@ -2496,7 +2673,7 @@
        in live mode: POST to formspree, shows error if it fails.
        after success: types a personalised message based on pronouns,
        then fades to the receipt screen.
-
+    
        TO CHANGE THE FORMSPREE ENDPOINT:
          replace 'mblndezr' with your new form ID.
        TO GO LIVE:
@@ -2558,7 +2735,7 @@
        [RECEIPT-JS] — builds the receipt grid from the user's answers.
        FIELDS defines the order and labels.
        DEMO_ANSWERS is used when jumping directly to the receipt screen.
-
+    
        TO CHANGE FIELD LABELS: edit the 'label' values below.
        TO CHANGE FIELD ORDER: reorder the objects.
        TO ADD A NEW FIELD: add a new {key, label} object (key must match answers).
@@ -2626,6 +2803,69 @@
       err404.classList.remove('is-active');
       resetAll();
     });
+  </script>
+
+  <!-- Tweaks panel -->
+  <script type="text/babel" src="tweaks-panel.jsx"></script>
+  <script type="text/babel">
+    const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{"shadowHeight":55,"titleBodyGap":24,"paragraphGap":20,"bodyCtaGap":28}/*EDITMODE-END*/;
+
+    function TweaksApp() {
+      const [tweaks, setTweak] = useTweaks(TWEAK_DEFAULTS);
+
+      React.useEffect(() => {
+        document.documentElement.style.setProperty('--shadow-height', tweaks.shadowHeight + 'vh');
+        document.documentElement.style.setProperty('--title-body-gap', tweaks.titleBodyGap + 'px');
+        document.documentElement.style.setProperty('--paragraph-gap', tweaks.paragraphGap + 'px');
+        document.documentElement.style.setProperty('--body-cta-gap', tweaks.bodyCtaGap + 'px');
+      }, [tweaks]);
+
+      return (
+        <TweaksPanel title="Press for Goblins">
+          <TweakSection title="Layout">
+            <TweakSlider
+              label="Shadow height"
+              value={tweaks.shadowHeight}
+              onChange={v => setTweak('shadowHeight', v)}
+              min={40}
+              max={80}
+              step={1}
+              unit="vh"
+            />
+            <TweakSlider
+              label="Title → Body gap"
+              value={tweaks.titleBodyGap}
+              onChange={v => setTweak('titleBodyGap', v)}
+              min={16}
+              max={60}
+              step={2}
+              unit="px"
+            />
+            <TweakSlider
+              label="Paragraph gap"
+              value={tweaks.paragraphGap}
+              onChange={v => setTweak('paragraphGap', v)}
+              min={12}
+              max={40}
+              step={2}
+              unit="px"
+            />
+            <TweakSlider
+              label="Body → CTA gap"
+              value={tweaks.bodyCtaGap}
+              onChange={v => setTweak('bodyCtaGap', v)}
+              min={20}
+              max={60}
+              step={2}
+              unit="px"
+            />
+          </TweakSection>
+        </TweaksPanel>
+      );
+    }
+
+    const root = ReactDOM.createRoot(document.getElementById('tweaks-root'));
+    root.render(<TweaksApp />);
   </script>
 </body>
 
