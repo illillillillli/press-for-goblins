@@ -126,6 +126,7 @@
   <link rel="canonical" href="https://pressforgoblins.com">
   <!-- [FONTS] — preload the pixel font so it's ready before the page renders -->
   <link rel="preload" href="fonts/PressStart2P-Regular.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="icon" type="image/svg+xml" href="assets/icons/favicon.svg">
 
   <!-- [FONTS] — preload the pixel font so it's ready before the page renders -->
   <link rel="preload" href="fonts/PressStart2P-Regular.woff2" as="font" type="font/woff2" crossorigin>
@@ -1777,7 +1778,7 @@
        the three eye pairs open one at a time with delays.
        p1 opens first, then p2, then p3 (with its droop).
        after they're all open, they get locked open (class swap).
-    
+
        to change the timing:
          300  = delay before p1 opens (ms)
          1100 = delay before p2 opens
@@ -1809,10 +1810,10 @@
        [WE-TO-I] — the "we" → "i" correction animation.
        uses WAAPI (Web Animations API) — no CSS keyframes needed.
        sequence: strikethrough draws across "we" → pause → "i" stalk draws → dot stamps down.
-    
+
        resetCorrection() — hides everything, cancels running animations.
        runCorrection()  — plays the full sequence.
-    
+
        timing (all in ms, tweak these):
          1200 = duration of the strikethrough line drawing
          1400 = delay before the "i" stalk starts drawing
@@ -1883,17 +1884,17 @@
     /* [AUTO-HIDE-EYES] — mobile only: hide eyes on scroll down, show on scroll up */
     (function() {
       if (window.innerWidth > 600) return; /* desktop: skip */
-      
+
       const eyesEl = document.getElementById('eyes');
       const terminal = document.querySelector('.terminal');
       if (!eyesEl || !terminal) return;
-      
+
       let lastScroll = 0;
       let ticking = false;
-      
+
       function updateEyes() {
         const currentScroll = terminal.scrollTop;
-        
+
         if (currentScroll > lastScroll && currentScroll > 50) {
           /* scrolling down — hide eyes */
           eyesEl.classList.add('hidden-mobile');
@@ -1901,11 +1902,11 @@
           /* scrolling up — show eyes */
           eyesEl.classList.remove('hidden-mobile');
         }
-        
+
         lastScroll = currentScroll;
         ticking = false;
       }
-      
+
       terminal.addEventListener('scroll', () => {
         if (!ticking) {
           requestAnimationFrame(updateEyes);
@@ -1922,23 +1923,23 @@
     cta.addEventListener('click', () => {
       const arrL = cta.querySelector('.arr.l');
       const arrR = cta.querySelector('.arr.r');
-      
+
       /* arrows jump in and back out */
       arrL.animate([
         { transform: 'translateX(0)' },
         { transform: 'translateX(6px)', offset: 0.4 },
         { transform: 'translateX(0)', offset: 1 }
       ], { duration: 400, easing: 'cubic-bezier(.4,0,.2,1)' });
-      
+
       arrR.animate([
         { transform: 'translateX(0)' },
         { transform: 'translateX(-6px)', offset: 0.4 },
         { transform: 'translateX(0)', offset: 1 }
       ], { duration: 400, easing: 'cubic-bezier(.4,0,.2,1)' });
-      
+
       /* make all eyes blink */
       eyes.forEach(e => { e.classList.add('blink'); setTimeout(() => e.classList.remove('blink'), 250); });
-      
+
       /* fade out the hero after arrow animation */
       setTimeout(() => {
         hero.style.transition = 'opacity .45s ease';
@@ -1984,7 +1985,7 @@
        each key matches a step name. each value is an object mapping
        the user's answer to an array of reply strings.
        empty array = no reply, just move to next step.
-    
+
        TO EDIT THE GOBLIN REPLIES: change the strings in the arrays below.
        TO ADD A NEW REPLY: add a string to the array.
        TO REMOVE A REPLY: delete the string (keep the array, even if empty).
@@ -2406,13 +2407,13 @@
     /* ═══════════════════════════════════════════════════════
        [STEPS] — the 11-step chat flow.
        each case is one step. steps are numbered 1-12 (12 = submit button).
-    
+
        TO CHANGE A QUESTION: edit the string in typeMessage().
        TO CHANGE THE OPTIONS: edit the {label, value} objects in showOptions().
        TO ADD A NEW STEP: add a new case and update STEP_NUM above.
        TO CHANGE THE ORDER: renumber the cases and update reactThenStep() calls.
        TO CHANGE A PLACEHOLDER: edit the string in showTextInput().
-    
+
        step 1:  gate       — "are you in need of goblins?" (yes/no/absolutely)
        step 2:  writer-type — "what are you working on?" (novel/video game/etc)
        step 3:  service    — "what do you need help with?" (assessment/dev/pitch/etc)
@@ -2675,7 +2676,7 @@
        in live mode: POST to formspree, shows error if it fails.
        after success: types a personalised message based on pronouns,
        then fades to the receipt screen.
-    
+
        TO CHANGE THE FORMSPREE ENDPOINT:
          replace 'mblndezr' with your new form ID.
        TO GO LIVE:
@@ -2737,7 +2738,7 @@
        [RECEIPT-JS] — builds the receipt grid from the user's answers.
        FIELDS defines the order and labels.
        DEMO_ANSWERS is used when jumping directly to the receipt screen.
-    
+
        TO CHANGE FIELD LABELS: edit the 'label' values below.
        TO CHANGE FIELD ORDER: reorder the objects.
        TO ADD A NEW FIELD: add a new {key, label} object (key must match answers).
