@@ -78,9 +78,6 @@
      ► change eye animation timing:
        search [EYE-ANIM] → the setTimeout delays control when each pair opens
 
-     ► change the formspree endpoint:
-       search [SUBMIT] → replace 'mblndezr' with new form ID
-
      ► switch between mock/live form submission:
        search [CONFIG] → change submitMode:'mock' to 'live'
 
@@ -126,10 +123,11 @@
   <link rel="canonical" href="https://pressforgoblins.com">
   <!-- [FONTS] — preload the pixel font so it's ready before the page renders -->
   <link rel="preload" href="fonts/PressStart2P-Regular.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="icon" type="image/svg+xml" href="assets/icons/favicon.svg">
 
-  <!-- [FONTS] — preload the pixel font so it's ready before the page renders -->
-  <link rel="preload" href="fonts/PressStart2P-Regular.woff2" as="font" type="font/woff2" crossorigin>
+  <!-- [ICONS] — favicon and app icons -->
+  <link rel="icon" type="image/svg+xml" href="assets/icons/favicon.svg?v=4">
+  <link rel="shortcut icon" href="assets/icons/favicon.svg?v=4">
+  <link rel="apple-touch-icon" href="assets/icons/favicon.svg?v=4">
 
   <!-- [FONTS] — pixel font loads via @font-face below -->
 
@@ -184,9 +182,12 @@
       /* smoother text on mac/ios */
     }
 
+    html {
+      font-size: 18.4px;
+    }
+
     body {
-      font-size: 16px;
-      line-height: 2;
+      line-height: 1.8;
     }
 
     /* base font size + generous line height */
@@ -216,10 +217,20 @@
       outline: none;
     }
 
-    /* when you select text, it highlights in green with black text */
+    /* when you select text, it highlights in dark grey with white text */
     ::selection {
-      background: var(--green);
-      color: #000;
+      background: #444444 !important;
+      color: #ffffff !important;
+    }
+
+    ::-moz-selection {
+      background: #444444 !important;
+      color: #ffffff !important;
+    }
+
+    ::-webkit-selection {
+      background: #444444 !important;
+      color: #ffffff !important;
     }
 
     a {
@@ -902,8 +913,8 @@
       overflow-y: auto;
       scrollbar-width: none;
       padding:
-        clamp(150px, 20vw, 180px)
-        /* top — clears the eyes */
+        clamp(260px, 35vh, 320px)
+        /* top — nudged down further to clear the shadow */
         clamp(20px, 4vw, 32px)
         /* sides */
         clamp(100px, 15vh, 140px);
@@ -913,7 +924,7 @@
     @media (max-width: 600px) {
       .terminal {
         padding:
-          clamp(160px, 24vh, 200px)
+          clamp(220px, 36vh, 280px)
           clamp(24px, 6vw, 36px)
           clamp(120px, 18vh, 160px);
       }
@@ -985,15 +996,47 @@
       opacity: .7;
     }
 
-    /* the ⏪ rewind icon next to each answer — hidden until hover */
+    /* the rewind icon — appears after the answer locks in, stays visible */
     .term-rewind-icon {
-      opacity: 0;
+      opacity: 0;           /* starts hidden; JS animates it in */
       flex-shrink: 0;
       overflow: visible;
+      align-self: baseline; /* sit on the text baseline, not centred */
+      transition: opacity 80ms ease, filter 80ms ease;
+      transform-origin: center center;
+      will-change: transform, opacity;
     }
 
-    .term-user:hover .term-rewind-icon {
-      filter: drop-shadow(0 0 3px rgba(123, 191, 123, .7));
+    /* once materialised it stays visible and follows its container's hover */
+    .term-rewind-icon.materialised {
+      opacity: .75;
+    }
+
+    /* hover — slight brightness lift + tiny extra anti-clockwise nudge */
+    .term-user:hover .term-rewind-icon.materialised {
+      opacity: 1;
+      filter: drop-shadow(0 0 4px rgba(123, 191, 123, .55));
+      transform: rotate(-10deg);
+      transition: opacity 100ms ease, filter 100ms ease, transform 160ms cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    /* active — instant, no flash */
+    .term-user:active .term-rewind-icon.materialised {
+      opacity: .9;
+      filter: none;
+      transition: none;
+    }
+
+    /* the three-part materialise animation (JS applies this class once) */
+    @keyframes rewindMaterialise {
+      from {
+        opacity: 0;
+        transform: rotate(0deg) scale(0.92);
+      }
+      to {
+        opacity: .75;
+        transform: rotate(-195deg) scale(1);
+      }
     }
 
     /* after a step is completed and greyed out */
@@ -1116,17 +1159,17 @@
       transform: translateY(4px);
       /* starts slightly below, fades in */
       transition: color .2s ease;
-      min-height: 44px;
-      line-height: 44px;
-      /* ← tap target size */
-      padding: 4px 0;
+      min-height: 32px;
+      line-height: 32px;
+      /* ← reduced tap target size */
+      padding: 2px 0;
     }
 
     @media (max-width: 600px) {
       .term-option {
-        min-height: 50px;
-        line-height: 50px;
-        padding: 6px 0;
+        min-height: 38px;
+        line-height: 38px;
+        padding: 4px 0;
       }
     }
 
@@ -1235,13 +1278,20 @@
     }
 
     /* the → submit button at the end of the chat */
+    .term-send-wrap {
+      display: flex;
+      justify-content: center;
+      width: 100%;
+      margin: 32px 0;
+    }
+
     .term-send-btn {
       font-family: "Courier New", monospace;
       color: var(--green);
-      font-size: clamp(1.4rem, 3vw, 2rem);
-      /* ← submit arrow size */
+      font-size: clamp(2.4rem, 6vw, 3.2rem);
+      /* ← larger submit arrow */
       line-height: 1;
-      padding: 4px 0;
+      padding: 8px;
     }
 
     .term-send-btn:hover {
@@ -1686,14 +1736,15 @@
        accent:     hex colour — the green used everywhere
        crt:        true | false — CRT sweep effect on/off
        rewind:     'vcr' | 'simple' | 'off' — click-to-rewind animation style
-       submitMode: 'mock' | 'live' — mock just fakes it, live sends to formspree
+       submitMode: 'mock' | 'live' — mock just fakes it, live sends via api/submit
        ═══════════════════════════════════════════════════════ */
     const CONFIG = {
       droop: 'awakened',      /* ← eye droop personality */
       accent: '#7bbf7b',      /* ← accent colour (goblin green) */
       crt: true,              /* ← CRT sweep on/off */
       rewind: 'vcr',          /* ← rewind animation style */
-      submitMode: 'live'      /* ← 'mock' for testing, 'live' sends to formspree */
+      submitMode: 'live',     /* ← 'mock' for testing, 'live' posts to submitEndpoint */
+      submitEndpoint: 'https://press-for-goblins.vercel.app/api/submit'  /* ← Vercel URL */
     };
 
     /* applyConfig — pushes the config values into the DOM.
@@ -2083,29 +2134,40 @@
 
 
     /* ═══════════════════════════════════════════════════════
-       [REWIND-ICON] — the double-triangle rewind icon.
-       appears next to each user answer. filled with the accent colour.
-       built programmatically so it picks up the current CONFIG.accent.
-       to change size: edit width/height below (currently 14x14).
-       to change shape: edit the polygon points.
+       [REWIND-ICON] — single-stroke anti-clockwise arc with arrowhead.
+       organic curve (cubic beziers, not perfect circle).
+       no filled shapes — stroke only, colour inherits from CONFIG.accent.
+       to change size: edit width/height (currently 15×15).
+       to tune the curve: edit the 'd' attribute on arcPath.
        ═══════════════════════════════════════════════════════ */
     function createRewindSvg() {
       const ns = 'http://www.w3.org/2000/svg';
       const svg = document.createElementNS(ns, 'svg');
       svg.setAttribute('class', 'term-rewind-icon');
       svg.setAttribute('viewBox', '0 0 24 24');
-      svg.setAttribute('width', '14');    /* ← icon width in pixels */
-      svg.setAttribute('height', '14');   /* ← icon height in pixels */
-      svg.setAttribute('fill', CONFIG.accent); /* filled with goblin green */
-      svg.setAttribute('stroke', 'none');
-      /* left triangle */
-      const t1 = document.createElementNS(ns, 'polygon');
-      t1.setAttribute('points', '11,4 11,20 2,12'); /* ← left triangle coordinates */
-      svg.appendChild(t1);
-      /* right triangle */
-      const t2 = document.createElementNS(ns, 'polygon');
-      t2.setAttribute('points', '22,4 22,20 13,12'); /* ← right triangle coordinates */
-      svg.appendChild(t2);
+      svg.setAttribute('width', '15');
+      svg.setAttribute('height', '15');
+      svg.setAttribute('fill', 'none');
+      svg.setAttribute('stroke', CONFIG.accent);
+      svg.setAttribute('stroke-width', '1.7');
+      svg.setAttribute('stroke-linecap', 'round');
+      svg.setAttribute('stroke-linejoin', 'round');
+
+      /* arc: starts at ~3 o'clock, sweeps anti-clockwise ~285° back toward ~10 o'clock.
+         slight organic wobble via cubic beziers instead of a perfect circle arc. */
+      const arcPath = document.createElementNS(ns, 'path');
+      arcPath.setAttribute('d',
+        'M19,12 C19,7.03 15.19,3 10.5,3 C5.81,3 2,7.03 2,12 C2,16.8 5.55,20.72 10.1,21'
+      );
+      arcPath.setAttribute('fill', 'none');
+
+      /* arrowhead at the tail of the arc (near 10 o'clock position) — two short lines */
+      const arrow = document.createElementNS(ns, 'path');
+      arrow.setAttribute('d', 'M7.5,21.5 L10.1,21 L9.8,18.3');
+      arrow.setAttribute('fill', 'none');
+
+      svg.appendChild(arcPath);
+      svg.appendChild(arrow);
       return svg;
     }
 
@@ -2131,8 +2193,9 @@
       a.onfinish = () => a.cancel();
     }
 
-    /* addLine — appends a new chat line. if it's a user answer, adds the rewind icon
-       with a spin-in animation (the icon rotates 360° and scales up). */
+    /* addLine — appends a new chat line.
+       user answers are added plain; the rewind icon is attached separately
+       by attachRewindIcon() after the answer locks into place. */
     function addLine(classes, html) {
       const el = document.createElement('div');
       el.className = 'term-line ' + (classes || '');
@@ -2142,23 +2205,66 @@
       } else {
         el.innerHTML = html || '';
       }
-      if (classes && classes.includes('term-user')) {
-        const icon = createRewindSvg();
-        el.appendChild(icon);
-        /* spin the rewind icon in after a short delay */
-        setTimeout(() => {
-          const a = icon.animate(
-            [{ opacity: 0, transform: 'rotate(0deg) scale(.3)' },
-            { opacity: 1, transform: 'rotate(360deg) scale(1)' }],
-            { duration: 900, easing: 'cubic-bezier(.16,1,.3,1)', fill: 'forwards' }
-          );
-          a.onfinish = () => { a.cancel(); icon.style.opacity = '1'; };
-        }, 650); /* ← delay before icon appears */
-      }
       termOut.appendChild(el);
       fadeInEl(el, 300);
       scrollTermBottom();
       return el;
+    }
+
+    /* attachRewindIcon — called after the selected answer has locked into place.
+       sequence:
+         0ms    — icon appended but invisible (opacity:0)
+         175ms  — pause beat (answer has settled, nothing happening)
+         175ms  — all three animations start together:
+                   (a) fade + scale  opacity 0→.75, scale .92→1
+                   (b) stroke draw   dashoffset full→0
+                   (c) anti-cw rot   0deg→-195deg  (eased, no overshoot)
+         ~375ms — animations end; icon gets .materialised class; onComplete fires
+    */
+    function attachRewindIcon(answerEl, onComplete) {
+      const PAUSE   = 175;  /* ms before animation starts */
+      const DUR     = 360;  /* ms for the animation itself */
+      const EASE    = 'cubic-bezier(0.22, 1, 0.36, 1)';
+
+      const icon = createRewindSvg();
+      answerEl.appendChild(icon);
+
+      setTimeout(() => {
+        /* measure stroke length for dash animation */
+        const arcPath = icon.querySelectorAll('path')[0];
+        const arcLen  = arcPath.getTotalLength();
+        arcPath.style.strokeDasharray  = arcLen;
+        arcPath.style.strokeDashoffset = arcLen;
+
+        /* run all three effects simultaneously */
+        icon.animate(
+          [
+            { opacity: 0, transform: 'rotate(0deg) scale(0.92)' },
+            { opacity: .75, transform: 'rotate(-195deg) scale(1)' }
+          ],
+          { duration: DUR, easing: EASE, fill: 'forwards' }
+        );
+
+        arcPath.animate(
+          [{ strokeDashoffset: arcLen }, { strokeDashoffset: 0 }],
+          { duration: DUR, easing: EASE, fill: 'forwards' }
+        );
+
+        /* arrowhead fades in with the arc */
+        const arrowPath = icon.querySelectorAll('path')[1];
+        arrowPath.animate(
+          [{ opacity: 0 }, { opacity: 1 }],
+          { duration: DUR * .6, delay: DUR * .4, easing: 'ease', fill: 'forwards' }
+        );
+
+        setTimeout(() => {
+          /* commit final state, remove inline animation */
+          icon.style.opacity   = '.75';
+          icon.style.transform = 'rotate(-195deg) scale(1)';
+          icon.classList.add('materialised');
+          if (onComplete) onComplete();
+        }, DUR);
+      }, PAUSE);
     }
 
     function addBlank() {
@@ -2278,7 +2384,8 @@
           answer.dataset.stepName = stepName;
           answer.dataset.value = opt.value;
           addBlank();
-          if (onSelect) onSelect(opt);
+          /* attach the rewind icon — goblins only reply after it finishes */
+          attachRewindIcon(answer, () => { if (onSelect) onSelect(opt); });
         });
         group.appendChild(row);
       });
@@ -2324,7 +2431,8 @@
         const answer = addLine('term-user', multiline ? val.replace(/\n/g, ' ') : val);
         if (stepName) { answer.dataset.stepName = stepName; answer.dataset.value = val; }
         addBlank();
-        if (onSubmit) onSubmit(val);
+        /* attach the rewind icon — goblins only reply after it finishes */
+        attachRewindIcon(answer, () => { if (onSubmit) onSubmit(val); });
       }
       field.addEventListener('keydown', e => {
         if (e.key !== 'Enter') return;
@@ -2593,7 +2701,7 @@
         case 8:
           markStep(8);
           typeMessage('what should we call you?', () => {
-            showTextInput('name (pronouns welcome)...', val => {
+            showTextInput('name...', val => {
               answers['f-name'] = val;
               setTimeout(() => runStep(9), 400);
             }, false, 'f-name');
@@ -2622,7 +2730,9 @@
           typeMessage('is there anything else we should know?', () => {
             showTextInput('try not to ramble...', val => {
               if (val) answers['f-message'] = val;
-              setTimeout(() => runStep(11), 400);
+              setTimeout(() => typeMessage('noted', () => {
+                setTimeout(() => runStep(11), STEP_GAP);
+              }), 400);
             }, false, 'f-message');
           });
           break;
@@ -2634,7 +2744,6 @@
             'now then',
             'let us make our terms clear',
             'we can only take on select projects alongside our work in publishing',
-            "if we're interested, we may ask for more or invite you for a short coffee before proceeding",
             "so we'll start with a sample assessment at \u00A30.02 per word",  /* \u00A3 = £ */
             "if we're aligned on the vision for your project, we'll agree on a fair payment that works for you and the goblins",
             'creators from lgbtq+ and neurodivergent backgrounds receive a discount as standard',
@@ -2660,7 +2769,7 @@
         /* ── STEP 12: SUBMIT BUTTON ── the → arrow that sends the form */
         case 12: {
           addBlank();
-          const row = document.createElement('div'); row.className = 'term-line visible';
+          const row = document.createElement('div'); row.className = 'term-line visible term-send-wrap';
           const btn = document.createElement('button'); btn.className = 'term-send-btn'; btn.textContent = '\u2192'; /* → */
           btn.addEventListener('click', () => submitForm(btn));
           row.appendChild(btn); termOut.appendChild(row); scrollTermBottom();
@@ -2671,14 +2780,12 @@
 
 
     /* ═══════════════════════════════════════════════════════
-       [SUBMIT] — sends the form data to formspree.
+       [SUBMIT] — sends the form data to the backend API.
        in mock mode: just waits 700ms and pretends it worked.
-       in live mode: POST to formspree, shows error if it fails.
-       after success: types a personalised message based on pronouns,
-       then fades to the receipt screen.
+       in live mode: POST JSON to CONFIG.submitEndpoint (Vercel serverless fn),
+         which sends a confirmation email via Resend.
+       after success: types a personalised message, then fades to receipt.
 
-       TO CHANGE THE FORMSPREE ENDPOINT:
-         replace 'mblndezr' with your new form ID.
        TO GO LIVE:
          change submitMode:'mock' to submitMode:'live' in [CONFIG] above.
        ═══════════════════════════════════════════════════════ */
@@ -2686,10 +2793,10 @@
       btn.textContent = '\u21BB'; /* ↻ spinner */
       if (CONFIG.submitMode === 'live') {
         try {
-          const fd = new FormData();
-          Object.entries(answers).forEach(([k, v]) => fd.append(k, v || ''));
-          const r = await fetch('https://formspree.io/f/mblndezr', {  /* ← FORMSPREE FORM ID */
-            method: 'POST', body: fd, headers: { Accept: 'application/json' }
+          const r = await fetch(CONFIG.submitEndpoint, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(answers),
           });
           if (!r.ok) throw 0;
         } catch { btn.textContent = '\u2192'; return; } /* show arrow again on error */
@@ -2783,17 +2890,26 @@
       /* show the footer after all cells are visible */
       setTimeout(() => foot.classList.add('in'), 300 + cells.length * 140 + 200);
 
-      /* "send me a copy" button — opens a mailto: link with the answers */
+      /* "send me a copy" button — re-sends the confirmation email via the API */
       const sendCopy = document.getElementById('sendCopy');
-      sendCopy.onclick = () => {
-        if (sendCopy.classList.contains('sent')) return;
-        const email = a['f-email'] || '';
-        let body = "here's a copy of what you sent the goblins:\n\n";
-        FIELDS.forEach(f => { if (a[f.key]) body += `${f.label}: ${a[f.key]}\n`; });
-        body += "\n\u2014\nwe aim to respond within 2\u20133 weeks.\npressforgoblins.com";
-        window.location.href = `mailto:${encodeURIComponent(email)}?subject=${encodeURIComponent('your press for goblins submission')}&body=${encodeURIComponent(body)}`;
-        sendCopy.textContent = '>sent<';
-        sendCopy.classList.add('sent');
+      sendCopy.onclick = async () => {
+        if (sendCopy.classList.contains('sent') || sendCopy.classList.contains('sending')) return;
+        sendCopy.classList.add('sending');
+        sendCopy.textContent = '>sending…<';
+        try {
+          const r = await fetch(CONFIG.submitEndpoint, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(a),
+          });
+          if (!r.ok) throw 0;
+          sendCopy.textContent = '>sent<';
+          sendCopy.classList.remove('sending');
+          sendCopy.classList.add('sent');
+        } catch {
+          sendCopy.textContent = '>try again<';
+          sendCopy.classList.remove('sending');
+        }
       };
     }
 
