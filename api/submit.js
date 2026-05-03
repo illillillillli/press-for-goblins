@@ -7,6 +7,20 @@
      RESEND_API_KEY  — from resend.com
    ═══════════════════════════════════════════════════════ */
 
+/* simple in-memory rate limiter — max 3 submissions per IP per hour */
+const hits = new Map();
+function isRateLimited(ip) {
+  const now = Date.now();
+  const window = 60 * 60 * 1000; /* 1 hour */
+  const max = 3;
+  const entry = hits.get(ip) || { count: 0, start: now };
+  if (now - entry.start > window) { hits.set(ip, { count: 1, start: now }); return false; }
+  if (entry.count >= max) return true;
+  entry.count++;
+  hits.set(ip, entry);
+  return false;
+}
+
 const FIELD_LABELS = {
   'writer-type': 'project type',
   'service':     'service',
@@ -145,6 +159,12 @@ export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
   if (req.method === 'OPTIONS') return res.status(204).end();
+
+  /* rate limit by IP */
+  const ip = req.headers['x-forwarded-for']?.split(',')[0].trim() || req.socket?.remoteAddress || '';
+  if (isRateLimited(ip)) {
+    return res.status(429).json({ error: 'too many requests' });
+  }
 
   /* parse body */
   let answers;
