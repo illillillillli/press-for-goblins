@@ -1,9 +1,4 @@
 {
-  "functions": {
-    "api/submit.js": {
-      "runtime": "nodejs20.x"
-    }
-  },
   "headers": [
     {
       "source": "/api/(.*)",
