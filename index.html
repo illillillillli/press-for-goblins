@@ -1235,12 +1235,13 @@
       .term-option {
         min-height: unset;
         padding: 1px 0;
-        margin: 2px 0; /* tighten option list on mobile */
+        margin: 2px 0;
         margin-left: auto;
         white-space: normal;
-        width: 100%; /* full width within max-width cap — ensures consistent [n] alignment */
-        max-width: 85%; /* cap width so multi-line labels don't span full viewport */
-        justify-content: flex-end;
+        display: inline-flex; /* shrink-wrap to content so [n] stays glued to label */
+        width: auto;
+        max-width: 85%;
+        justify-content: flex-start;
         text-align: right;
       }
     }
@@ -1260,10 +1261,8 @@
     .term-option-num {
       color: var(--green);
       margin-right: .4em;
-      flex-shrink: 0; /* never squish the number when text wraps */
+      flex-shrink: 0;
       align-self: flex-start;
-      text-align: right;
-      min-width: 2.2em; /* align all numbers to same column width */
     }
 
     .term-option-label {
