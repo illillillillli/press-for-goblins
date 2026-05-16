@@ -219,6 +219,12 @@
       font-size: 20px;
     }
 
+    @media (max-width: 600px) {
+      html {
+        font-size: 22px; /* +10% on mobile */
+      }
+    }
+
     body {
       line-height: 1.8;
     }
@@ -1252,7 +1258,8 @@
 
     .term-option-num {
       color: var(--green);
-      margin-right: .4em;
+      margin-left: .4em;
+      white-space: nowrap; /* keeps [N] glued to last word of label — never orphaned on its own line */
     }
 
     .term-option-label {
@@ -1305,19 +1312,28 @@
       line-height: 1.4;
     }
 
-    /* send hint — sits below each text input, fades away on submit */
+    /* send hint — sits below each text input. SVG enter arrow, matches rewind icon weight. */
     .term-input-hint {
-      font-family: "Courier New", monospace;
-      font-size: clamp(0.95rem, 1.6svh, 1.1rem); /* matches body copy size */
-      color: rgba(255,255,255,0.69);
-      text-align: right;
-      padding: 2px clamp(20px, 4vw, 32px) 0 0;
-      margin-top: -6px;
+      display: flex;
+      justify-content: flex-end;
+      /* aligns arrow to right edge, mirroring rewind icon position on user answers */
+      padding-right: clamp(20px, 4vw, 32px);
+      margin-top: 4px;
+      color: var(--green);
+      opacity: 0.75;
+      cursor: pointer;
+      transition: opacity 80ms ease;
+    }
+
+    .term-input-hint:hover { opacity: 1; }
+
+    .term-input-hint svg {
+      display: block;
+      flex-shrink: 0;
     }
 
     @media (max-width: 600px) {
       .term-input-hint {
-        font-size: clamp(1rem, 4vw, 1.15rem); /* matches mobile body copy size */
         padding-right: clamp(24px, 6vw, 36px);
       }
     }
@@ -2872,8 +2888,8 @@
       const _rh1 = document.getElementById('receiptH1'); if (_rh1) _rh1.classList.remove('in');
       const _rqh = document.getElementById('receiptQueryHeader'); if (_rqh) _rqh.classList.remove('in');
       rewindGen++;
-      rewindTutorialDone = false; /* reset so tutorial fires again on fresh start */
-      keyboardHintDone = false;
+      rewindTutorialDone = false; /* reset so tutorials fire again on fresh start */
+      inputHintDone = false;
       showScreen('hero');
       replayHero();
     }
@@ -3225,7 +3241,7 @@
       'writer-type': {
         'novel': ['you poor thing'],
         'comic or graphic novel': ['we like pictures'],
-        'video game': ['now you have our attention'],
+        'video game': ['we bet we have more achievements than you'],
         'tabletop game': ["we've seen some campaigns"],
         'something else': ['noted']            /* free text input */
       },
@@ -3234,7 +3250,7 @@
         'creative development': ['plotting, then', 'we have been known to plot'],
         'query/pitch feedback': ['the final boss'],
         'narrative direction': ['fair warning', 'we say what we see'],
-        'writing': ['proceed'],
+        'writing': [],
         'something else': ['noted']
       },
       genre: {
@@ -3475,10 +3491,10 @@
       }, PAUSE);
     }
 
-    /* rewindTutorialDone — guards the one-shot tutorial in reactThenStep */
+    /* rewindTutorialDone — guards moment 2 tutorial (fires after step 2 reaction) */
     let rewindTutorialDone = false;
-    /* keyboardHintDone — one-shot keyboard hint after first options appear, desktop only */
-    let keyboardHintDone = false;
+    /* inputHintDone — guards moment 1 tutorial (fires after step 1 reaction) */
+    let inputHintDone = false;
 
     function addBlank() {
       const el = document.createElement('div');
@@ -3556,35 +3572,50 @@
       }());
     }
 
-    /* reactThenStep — after user picks an answer, play the reaction then move on */
+    /* reactThenStep — after user picks an answer, play the reaction then move on.
+       also handles two one-shot tutorial moments:
+         moment 1 (inputHintDone)    — after step 1 (gate) reaction: keyboard/click hint
+         moment 2 (rewindTutorialDone) — after step 2 (writer-type) reaction: rewind arrow hint */
     function reactThenStep(lines, nextStep) {
       const myGen = rewindGen;
       const d = skipping ? 0 : 300;
+
+      function proceedAfterReaction() {
+        /* moment 1 — fires once, after gate (step 1) reaction, before moving to step 2 */
+        if (!inputHintDone && nextStep === 2) {
+          inputHintDone = true;
+          setTimeout(() => {
+            if (rewindGen !== myGen) return;
+            typeMessages(["click or hit a number, we don't mind"], () => {
+              setTimeout(() => { if (rewindGen === myGen) runStep(nextStep); }, skipping ? 0 : STEP_GAP);
+            });
+          }, skipping ? 0 : 400);
+          return;
+        }
+        /* moment 2 — fires once, after writer-type (step 2) reaction, before moving to step 3 */
+        if (!rewindTutorialDone && nextStep === 3) {
+          rewindTutorialDone = true;
+          setTimeout(() => {
+            if (rewindGen !== myGen) return;
+            typeMessages([
+              'the arrow next to your answer lets you take it back',
+              'if only you had one for real life'
+            ], () => {
+              setTimeout(() => { if (rewindGen === myGen) runStep(nextStep); }, skipping ? 0 : STEP_GAP);
+            });
+          }, skipping ? 0 : 400);
+          return;
+        }
+        /* default — no tutorial, just proceed */
+        setTimeout(() => { if (rewindGen === myGen) runStep(nextStep); }, skipping ? 0 : STEP_GAP);
+      }
+
       if (!lines || !lines.length) {
-        /* no reaction — just move to next step after a short pause */
-        setTimeout(() => { if (rewindGen === myGen) runStep(nextStep); }, d);
+        setTimeout(() => { if (rewindGen === myGen) proceedAfterReaction(); }, d);
       } else {
-        /* type out the reaction messages, then move on */
         setTimeout(() => {
           if (rewindGen !== myGen) return;
-          typeMessages(lines, () => {
-            /* after reaction, fire rewind tutorial once (first answer only), then proceed */
-            if (!rewindTutorialDone) {
-              rewindTutorialDone = true;
-              setTimeout(() => {
-                if (rewindGen !== myGen) return;
-                typeMessages([
-                  'by the way, see the arrow next to your answer?',
-                  'it lets you take it back',
-                  'if only you had one for real life'
-                ], () => {
-                  setTimeout(() => { if (rewindGen === myGen) runStep(nextStep); }, skipping ? 0 : STEP_GAP);
-                });
-              }, skipping ? 0 : 400);
-            } else {
-              setTimeout(() => { if (rewindGen === myGen) runStep(nextStep); }, skipping ? 0 : STEP_GAP);
-            }
-          });
+          typeMessages(lines, () => { proceedAfterReaction(); });
         }, d);
       }
     }
@@ -3601,7 +3632,7 @@
       options.forEach((opt, idx) => {
         const row = document.createElement('div');
         row.className = 'term-line term-option';
-        row.innerHTML = `<span class="term-option-num">[${idx + 1}]</span><span class="term-option-label">${opt.label}</span>`;
+        row.innerHTML = `<span class="term-option-label">${opt.label}<span class="term-option-num">[${idx + 1}]</span></span>`;
         /* stagger the fade-in — each option appears 160ms after the last */
         setTimeout(() => fadeInEl(row, 350, { transform: 'translateY(4px)' }, { transform: 'none' }), idx * 160);
         row.addEventListener('click', () => {
@@ -3619,24 +3650,12 @@
       termOut.appendChild(group);
       requestAnimationFrame(() => { scrollCurrentStepIntoView(); });
 
-      /* one-shot keyboard hint — desktop only, first option group only */
-      if (!keyboardHintDone && !('ontouchstart' in window) && window.matchMedia('(hover: hover)').matches) {
-        keyboardHintDone = true;
-        const optCount = options.length;
-        setTimeout(() => {
-          const myGen = rewindGen;
-          if (rewindGen !== myGen) return;
-          /* dim goblin line — instructional, not character voice */
-          const hint = document.createElement('div');
-          hint.className = 'term-line visible';
-          hint.style.color = 'var(--text-muted)';
-          hint.style.marginTop = '0.6em';
-          hint.innerHTML = `<span class="term-prefix" style="opacity:0.4">></span> click or press 1\u2013${optCount}`;
-          termOut.appendChild(hint);
-          scrollTermBottom();
-        }, options.length * 160 + 400); /* appears after all options have faded in */
-      }
+      /* keyboard/click hint is now handled as moment 1 in reactThenStep — not here */
     }
+
+    /* enter arrow SVG — 15×15, stroke-width 1.4, matches rewind icon weight exactly.
+       shape: horizontal bar across top, vertical drop on right, horizontal hook left at bottom. */
+    const SEND_SVG = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="transform:rotate(45deg)"><path d="M22 2 11 13"/><path d="M22 2 15 22 11 13 2 9l20-7z"/></svg>';
 
     /* showTextInput — displays a text field for free-form input.
        validates on enter. shakes if empty or invalid.
@@ -3656,13 +3675,15 @@
       /* send hint — stays below the field until submitted */
       const hint = document.createElement('div');
       hint.className = 'term-input-hint';
-      hint.textContent = 'send';
+      hint.innerHTML = SEND_SVG;
 
       row.append(field); termOut.appendChild(row); termOut.appendChild(hint);
-      /* scroll to bottom and focus — on mobile this also ensures the field is visible above the keyboard */
+      /* focus — on iOS the keyboard only opens from a synchronous user-gesture chain.
+         call focus() immediately (sync) first, then again in rAF to handle browsers that need the element rendered. */
+      field.focus();
       requestAnimationFrame(() => {
-        scrollTermBottom();
         field.focus();
+        scrollTermBottom();
         /* on mobile, scroll the field itself into view after keyboard raises */
         setTimeout(() => { scrollTermBottom(); field.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); }, 320);
         setTimeout(() => { scrollTermBottom(); field.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); }, 600);
@@ -4003,8 +4024,7 @@
             field1.placeholder = '';
             const hint1 = document.createElement('div');
             hint1.className = 'term-input-hint';
-            hint1.textContent = 'send';
-            hint1.style.cursor = 'pointer';
+            hint1.innerHTML = SEND_SVG;
             row1.appendChild(field1); termOut.appendChild(row1); termOut.appendChild(hint1); scrollTermBottom();
             requestAnimationFrame(() => field1.focus());
 
@@ -4028,7 +4048,7 @@
               row1.remove(); hint1.remove(); addBlank();
 
               /* ── field 2: confirm email ── */
-              typeMessage('type it again, we trust no one', () => {
+              typeMessage('once more', () => {
                 addBlank();
                 const row2 = document.createElement('div');
                 row2.className = 'term-line term-input-line visible';
@@ -4039,8 +4059,7 @@
                 field2.placeholder = '';
                 const hint2 = document.createElement('div');
                 hint2.className = 'term-input-hint';
-                hint2.textContent = 'send';
-                hint2.style.cursor = 'pointer';
+                hint2.innerHTML = SEND_SVG;
                 row2.appendChild(field2); termOut.appendChild(row2); termOut.appendChild(hint2); scrollTermBottom();
                 requestAnimationFrame(() => field2.focus());
 
@@ -4093,7 +4112,7 @@
             field.className = 'term-input-field';
             field.placeholder = '';
             const hint10 = document.createElement('div');
-            hint10.className = 'term-input-hint'; hint10.textContent = 'send'; hint10.style.cursor = 'pointer';
+            hint10.className = 'term-input-hint'; hint10.innerHTML = SEND_SVG;
             row.appendChild(field); termOut.appendChild(row); termOut.appendChild(hint10); scrollTermBottom();
             requestAnimationFrame(() => field.focus());
 
