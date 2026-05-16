@@ -1026,7 +1026,8 @@
     .term-line {
       font-size: clamp(0.95rem, 1.6svh, 1.1rem);
       /* ← svh-aware: shrinks on short screens / high zoom */
-      line-height: 1.45;
+      line-height: 1.6;
+      letter-spacing: 0.02em;
       color: var(--text-primary);
       padding: 1px 0;
       opacity: 0;
@@ -1040,7 +1041,8 @@
     @media (max-width: 600px) {
       .term-line {
         font-size: clamp(1rem, 4vw, 1.15rem);
-        line-height: 1.45;
+        line-height: 1.6;
+        letter-spacing: 0.02em;
         margin: clamp(5px, 1svh, 9px) 0;
       }
     }
@@ -1202,6 +1204,7 @@
     /* option buttons — the multiple choice answers */
     .term-options-group {
       width: 100%;
+      margin-top: clamp(16px, 2.5svh, 28px); /* deliberate pause before user choices */
     }
 
     .term-options-group.collapsed {
@@ -1235,8 +1238,8 @@
         margin: 2px 0; /* tighten option list on mobile */
         margin-left: auto;
         white-space: normal;
-        width: fit-content; /* shrink to content so margin-left: auto right-aligns it */
-        max-width: 100%;
+        width: auto; /* let content determine width; margin-left: auto right-aligns */
+        max-width: 85%; /* cap width so multi-line labels don't span full viewport */
         justify-content: flex-end;
         text-align: right;
       }
@@ -1259,6 +1262,8 @@
       margin-right: .4em;
       flex-shrink: 0; /* never squish the number when text wraps */
       align-self: flex-start;
+      text-align: right;
+      min-width: 2.2em; /* align all numbers to same column width */
     }
 
     .term-option-label {
@@ -3432,29 +3437,13 @@
           icon.style.setProperty('--rot', `${ROT}deg`);
           icon.classList.add('materialised');
           /* type rewind tutorial as a goblin line once, after first icon appears */
-          showRewindTutorial();
           if (onComplete) onComplete();
         }, DUR);
       }, PAUSE);
     }
 
-    /* ═══════════════════════════════════════════════════════
-       [REWIND-TUTORIAL] — one-shot goblin aside typed after first answer locks in.
-       no overlay, no modal — just the goblins breaking the fourth wall briefly.
-       ═══════════════════════════════════════════════════════ */
+    /* rewindTutorialDone — guards the one-shot tutorial in reactThenStep */
     let rewindTutorialDone = false;
-    function showRewindTutorial() {
-      if (rewindTutorialDone) return;
-      rewindTutorialDone = true;
-      /* short delay so the icon materialise animation finishes first */
-      setTimeout(() => {
-        typeMessages([
-          'by the way, see the arrow next to your answer?',
-          'it lets you take it back',
-          'if only you had one for real life'
-        ]);
-      }, 400);
-    }
 
     function addBlank() {
       const el = document.createElement('div');
@@ -3544,7 +3533,22 @@
         setTimeout(() => {
           if (rewindGen !== myGen) return;
           typeMessages(lines, () => {
-            setTimeout(() => { if (rewindGen === myGen) runStep(nextStep); }, skipping ? 0 : STEP_GAP);
+            /* after reaction, fire rewind tutorial once (first answer only), then proceed */
+            if (!rewindTutorialDone) {
+              rewindTutorialDone = true;
+              setTimeout(() => {
+                if (rewindGen !== myGen) return;
+                typeMessages([
+                  'by the way, see the arrow next to your answer?',
+                  'it lets you take it back',
+                  'if only you had one for real life'
+                ], () => {
+                  setTimeout(() => { if (rewindGen === myGen) runStep(nextStep); }, skipping ? 0 : STEP_GAP);
+                });
+              }, skipping ? 0 : 400);
+            } else {
+              setTimeout(() => { if (rewindGen === myGen) runStep(nextStep); }, skipping ? 0 : STEP_GAP);
+            }
           });
         }, d);
       }
