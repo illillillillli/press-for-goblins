@@ -1043,7 +1043,7 @@
         font-size: clamp(1rem, 4vw, 1.15rem);
         line-height: 1.6;
         letter-spacing: 0.02em;
-        margin: clamp(5px, 1svh, 9px) 0;
+        margin: clamp(2px, 0.5svh, 5px) 0; /* halved — consecutive goblin lines were too far apart */
       }
     }
 
@@ -1238,7 +1238,7 @@
         margin: 2px 0; /* tighten option list on mobile */
         margin-left: auto;
         white-space: normal;
-        width: auto; /* let content determine width; margin-left: auto right-aligns */
+        width: 100%; /* full width within max-width cap — ensures consistent [n] alignment */
         max-width: 85%; /* cap width so multi-line labels don't span full viewport */
         justify-content: flex-end;
         text-align: right;
@@ -1291,6 +1291,7 @@
       /* text typed from the right */
       caret-color: #fff;
       min-height: clamp(36px, 5svh, 44px);
+      background: rgba(255, 255, 255, 0.07); /* visible resting state — was invisible on mobile */
       transition: background .3s ease;
     }
 
@@ -1303,7 +1304,7 @@
     }
 
     .term-input-field:focus {
-      background: rgba(255, 255, 255, 0.04);
+      background: rgba(255, 255, 255, 0.11); /* brighter on focus */
     }
 
     /* subtle highlight when focused */
@@ -1318,11 +1319,11 @@
       line-height: 1.4;
     }
 
-    /* ↵ to send hint — sits below each text input, fades away on submit */
+    /* send hint — sits below each text input, fades away on submit */
     .term-input-hint {
       font-family: "Courier New", monospace;
-      font-size: clamp(0.72rem, 1.1vw, 0.82rem);
-      color: rgba(255,255,255,0.22);
+      font-size: clamp(0.95rem, 1.6svh, 1.1rem); /* matches body copy size */
+      color: rgba(255,255,255,0.69);
       text-align: right;
       padding: 2px clamp(20px, 4vw, 32px) 0 0;
       margin-top: -6px;
@@ -1330,7 +1331,7 @@
 
     @media (max-width: 600px) {
       .term-input-hint {
-        font-size: clamp(0.78rem, 3.1vw, 0.9rem);
+        font-size: clamp(1rem, 4vw, 1.15rem); /* matches mobile body copy size */
         padding-right: clamp(24px, 6vw, 36px);
       }
     }
@@ -1843,6 +1844,7 @@
       }
 
       .nav-shadow {
+        height: 80px; /* shorter on mobile — was 150px, was eating last option */
         background: linear-gradient(to bottom, transparent, rgba(0, 0, 0, 0.95) 60%, #000);
       }
     }
@@ -3600,10 +3602,10 @@
       field.placeholder = '';
       if (multiline) { field.rows = 2; field.style.overflow = 'hidden'; }
 
-      /* ↵ hint — stays below the field until submitted */
+      /* send hint — stays below the field until submitted */
       const hint = document.createElement('div');
       hint.className = 'term-input-hint';
-      hint.textContent = '↵ send';
+      hint.textContent = 'send';
 
       row.append(field); termOut.appendChild(row); termOut.appendChild(hint);
       /* scroll to bottom and focus — on mobile this also ensures the field is visible above the keyboard */
@@ -3943,7 +3945,7 @@
             field1.placeholder = '';
             const hint1 = document.createElement('div');
             hint1.className = 'term-input-hint';
-            hint1.textContent = '↵ continue';
+            hint1.textContent = 'continue';
             row1.appendChild(field1); termOut.appendChild(row1); termOut.appendChild(hint1); scrollTermBottom();
             requestAnimationFrame(() => field1.focus());
 
@@ -3977,7 +3979,7 @@
                 field2.placeholder = '';
                 const hint2 = document.createElement('div');
                 hint2.className = 'term-input-hint';
-                hint2.textContent = '↵ send';
+                hint2.textContent = 'send';
                 row2.appendChild(field2); termOut.appendChild(row2); termOut.appendChild(hint2); scrollTermBottom();
                 requestAnimationFrame(() => field2.focus());
 
