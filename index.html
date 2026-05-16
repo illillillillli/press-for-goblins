@@ -1034,8 +1034,8 @@
       /* hidden until .visible is added */
       white-space: pre-wrap;
       word-break: break-word;
-      margin: clamp(4px, 0.8svh, 8px) 0;
-      /* ← tighter gap between chat lines */
+      margin: clamp(2px, 0.4svh, 4px) 0;
+      /* ← tight — consecutive goblin lines should feel like rapid remarks, not paragraphs */
     }
 
     @media (max-width: 600px) {
@@ -1043,7 +1043,7 @@
         font-size: clamp(1rem, 4vw, 1.15rem);
         line-height: 1.6;
         letter-spacing: 0.02em;
-        margin: clamp(2px, 0.5svh, 5px) 0; /* halved — consecutive goblin lines were too far apart */
+        margin: clamp(1px, 0.3svh, 3px) 0; /* tight — rapid fire goblin remarks */
       }
     }
 
@@ -1060,6 +1060,12 @@
     /* the green ">" */
     .term-blank {
       height: .8em;
+    }
+
+    @media (max-width: 600px) {
+      .term-blank {
+        height: .4em; /* half on mobile — blanks were eating too much vertical space */
+      }
     }
 
     /* spacer between chat sections */
@@ -1201,9 +1207,13 @@
       animation: vcrFlash 0.28s steps(5, end) forwards;
     }
 
-    /* option buttons — the multiple choice answers */
+    /* option buttons — user's multiple choice answers, right-aligned like chat bubbles.
+       block + text-align:right (not flex) — [n] and label are inline content, not boxes.
+       flex would split them into separate boxes and break wrapping. */
     .term-options-group {
-      width: 100%;
+      display: block;
+      max-width: 85%;
+      margin-left: auto; /* push group to right edge */
       margin-top: clamp(16px, 2.5svh, 28px); /* deliberate pause before user choices */
     }
 
@@ -1214,30 +1224,18 @@
     /* hidden after user picks one */
     .term-option {
       cursor: pointer;
-      color: var(--text-primary);
-      margin-left: auto;
-      width: fit-content;
-      /* right-aligned */
+      color: rgba(255, 255, 255, 0.6); /* dimmed — pending/not yet chosen, like a draft */
+      width: 100%;
       opacity: 0;
       transform: translateY(4px);
-      /* starts slightly below, fades in */
       transition: color .2s ease;
-      min-height: clamp(26px, 3.5svh, 32px);
-      line-height: 1.3;
-      padding: 2px 0;
-      display: flex;
-      /* keep number anchored to text even on wrap */
-      align-items: flex-start;
-      gap: 0;
-    }
-
-    @media (max-width: 600px) {
-      .term-option {
-        min-height: unset;
-        padding: 1px 0;
-        margin: 2px 0;
-        max-width: 85%; /* cap width — block-level flex + margin-left:auto handles right-alignment */
-      }
+      line-height: 1.6;
+      padding: 1px 0;
+      margin: 2px 0;
+      display: block; /* not flex — whole line including [n] right-aligns as one unit */
+      text-align: right;
+      white-space: normal;
+      word-break: break-word;
     }
 
     .term-option.visible {
@@ -1255,17 +1253,11 @@
     .term-option-num {
       color: var(--green);
       margin-right: .4em;
-      flex-shrink: 0;
-      align-self: flex-start;
     }
 
     .term-option-label {
-      text-align: right;
-      min-width: 0; /* allows text to wrap without escaping the flex container */
-      overflow-wrap: break-word; /* prevents a long single word from overflowing max-width cap */
+      /* inline — flows naturally after [n] */
     }
-
-    /* the [1] [2] etc */
 
     /* text input fields (for name, email, pitch, etc) */
     .term-input-line {
@@ -2881,6 +2873,7 @@
       const _rqh = document.getElementById('receiptQueryHeader'); if (_rqh) _rqh.classList.remove('in');
       rewindGen++;
       rewindTutorialDone = false; /* reset so tutorial fires again on fresh start */
+      keyboardHintDone = false;
       showScreen('hero');
       replayHero();
     }
@@ -3239,8 +3232,8 @@
       service: {
         'editorial assessment': ['there may be footnotes'],
         'creative development': ['plotting, then', 'we have been known to plot'],
-        'pitch / submission / publishing support': ['the final boss'],
-        'narrative consultation': ['fair warning', 'we say what we see'],
+        'query/pitch feedback': ['the final boss'],
+        'narrative direction': ['fair warning', 'we say what we see'],
         'writing': ['proceed'],
         'something else': ['noted']
       },
@@ -3484,6 +3477,8 @@
 
     /* rewindTutorialDone — guards the one-shot tutorial in reactThenStep */
     let rewindTutorialDone = false;
+    /* keyboardHintDone — one-shot keyboard hint after first options appear, desktop only */
+    let keyboardHintDone = false;
 
     function addBlank() {
       const el = document.createElement('div');
@@ -3623,6 +3618,24 @@
       });
       termOut.appendChild(group);
       requestAnimationFrame(() => { scrollCurrentStepIntoView(); });
+
+      /* one-shot keyboard hint — desktop only, first option group only */
+      if (!keyboardHintDone && !('ontouchstart' in window) && window.matchMedia('(hover: hover)').matches) {
+        keyboardHintDone = true;
+        const optCount = options.length;
+        setTimeout(() => {
+          const myGen = rewindGen;
+          if (rewindGen !== myGen) return;
+          /* dim goblin line — instructional, not character voice */
+          const hint = document.createElement('div');
+          hint.className = 'term-line visible';
+          hint.style.color = 'var(--text-muted)';
+          hint.style.marginTop = '0.6em';
+          hint.innerHTML = `<span class="term-prefix" style="opacity:0.4">></span> click or press 1\u2013${optCount}`;
+          termOut.appendChild(hint);
+          scrollTermBottom();
+        }, options.length * 160 + 400); /* appears after all options have faded in */
+      }
     }
 
     /* showTextInput — displays a text field for free-form input.
@@ -3887,12 +3900,12 @@
           markStep(3);
           typeMessage('what do you need?', () => {
             showOptions([
-              { label: 'editorial assessment',                    value: 'editorial assessment' },
-              { label: 'creative development',                    value: 'creative development' },
-              { label: 'pitch / submission / publishing support', value: 'pitch / submission / publishing support' },
-              { label: 'narrative consultation',                  value: 'narrative consultation' },
-              { label: 'writing',                                 value: 'writing' },
-              { label: 'something else',                          value: 'something else' }
+              { label: 'creative development',    value: 'creative development' },
+              { label: 'narrative direction',     value: 'narrative direction' },
+              { label: 'editorial assessment',   value: 'editorial assessment' },
+              { label: 'query/pitch feedback',   value: 'query/pitch feedback' },
+              { label: 'writing',                value: 'writing' },
+              { label: 'something else',         value: 'something else' }
             ], 'service', opt => {
               /* writing track skips genre → goes straight to pitch */
               const nextAfterService = opt.value === 'writing' ? 7 : 4;
