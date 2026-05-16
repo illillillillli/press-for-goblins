@@ -79,7 +79,7 @@ function buildEmailHtml(answers) {
           <!-- eyes -->
           <tr>
             <td style="background:#0d0d0d;padding:0 0 24px 0;" align="center">
-              <img src="https://pressforgoblins.com/assets/images/eyes-blink.gif" alt="" width="130" height="108" style="display:block;border:0;outline:0;image-rendering:pixelated;">
+              <img src="https://pressforgoblins.com/assets/images/eyes-email.png" alt="" width="130" height="108" style="display:block;border:0;outline:0;image-rendering:pixelated;">
             </td>
           </tr>
 

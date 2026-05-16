@@ -1411,11 +1411,7 @@
       cursor: default;
     }
 
-    /* error state — dim red-tinted, shakes once (field-shake already exists) */
-    .term-send-btn.submit-error {
-      color: rgba(255, 100, 100, 0.8);
-      animation: none;
-    }
+    /* submit-error class intentionally removed — no error messages on this site */
 
 
     /* ═══════════════════════════════════════════════════════
@@ -1423,21 +1419,19 @@
    displays all the user's answers in a grid layout.
    ═══════════════════════════════════════════════════════ */
 
-    /* glitch-out — slow fade into the void with two brief flickers.
-       not rapid strobe — just a quiet dissolution. */
+    /* glitch-out — full rewind-style signal collapse. same dramatic effect as
+       the per-element rewind animation, applied to the whole terminal at once. */
     @keyframes glitchOut {
-      0%   { opacity: 1;   transform: translateX(0); }
-      30%  { opacity: 0.8; transform: translateX(0); }
-      32%  { opacity: 0;   transform: translateX(-2px); }  /* flicker 1 */
-      34%  { opacity: 0.7; transform: translateX(0); }
-      60%  { opacity: 0.4; transform: translateX(0); }
-      62%  { opacity: 0;   transform: translateX(1px); }   /* flicker 2 */
-      64%  { opacity: 0.2; transform: translateX(0); }
-      100% { opacity: 0;   transform: translateX(0); }
+      0%   { opacity: 1;    transform: translateX(0) skewX(0deg);     filter: none; }
+      15%  { opacity: 0.9;  transform: translateX(-6px) skewX(-2deg); filter: hue-rotate(80deg) brightness(1.6); }
+      35%  { opacity: 0.65; transform: translateX(9px) skewX(2.5deg); filter: hue-rotate(160deg) brightness(0.5) saturate(3); }
+      55%  { opacity: 0.35; transform: translateX(-4px) skewX(-1deg); filter: brightness(2); }
+      75%  { opacity: 0.1;  transform: translateX(5px) skewX(1.5deg); filter: hue-rotate(240deg) brightness(2.2); }
+      100% { opacity: 0;    transform: translateX(0) skewX(0deg);     filter: none; }
     }
 
     .terminal.glitch-out {
-      animation: glitchOut 1.1s ease-in forwards;
+      animation: glitchOut 1.1s steps(5, end) forwards;
     }
     .receipt-screen {
       align-items: center;
@@ -1455,6 +1449,17 @@
       justify-content: flex-start; /* always start at top — no hidden headers */
       padding-top: clamp(32px, 5vw, 64px);
       padding-bottom: clamp(32px, 5vw, 48px);
+      /* soft top fade so content dissolves under the eye zone rather than hard-clipping */
+      mask-image: linear-gradient(to bottom,
+        transparent 0px,
+        rgba(0,0,0,0.55) 32px,
+        rgba(0,0,0,0.85) 56px,
+        #000 80px);
+      -webkit-mask-image: linear-gradient(to bottom,
+        transparent 0px,
+        rgba(0,0,0,0.55) 32px,
+        rgba(0,0,0,0.85) 56px,
+        #000 80px);
     }
     .receipt::-webkit-scrollbar { display: none; }
 
@@ -1475,7 +1480,10 @@
       margin-bottom: clamp(16px, 2.5vw, 28px);
       letter-spacing: .01em;
       text-align: center;
+      opacity: 0;
+      transition: opacity .6s ease .3s;
     }
+    .receipt h1.in { opacity: 1; }
 
     .receipt h1 .prefix {
       color: var(--text-muted); /* prefix matches — this is narrator, not goblin */
@@ -1565,6 +1573,41 @@
 
 
     /* [REWIND-TUTORIAL-CSS] removed — tutorial is now a goblin inline message */
+
+    /* receipt query-sent header — narrator voice, appears before the grid */
+    .receipt-query-header {
+      font-family: "Courier New", monospace;
+      font-weight: 400;
+      color: var(--text-muted);
+      font-size: clamp(0.78rem, 1.2vw, 0.9rem);
+      text-transform: lowercase;
+      letter-spacing: .05em;
+      margin-bottom: clamp(6px, 1vw, 10px);
+      text-align: center;
+      opacity: 0;
+      transition: opacity .6s ease;
+    }
+    .receipt-query-header.in { opacity: 1; }
+
+    /* receipt goblin typed lines — same as terminal chat style */
+    .receipt-goblin-out {
+      margin-top: clamp(20px, 3vw, 36px);
+      width: 100%;
+    }
+    .receipt-goblin-line {
+      font-family: "Courier New", monospace;
+      font-size: clamp(0.95rem, 1.8vw, 1.30rem);
+      color: var(--text-primary);
+      line-height: 1.6;
+      margin: clamp(2px, 0.5svh, 5px) 0;
+      display: flex;
+      align-items: baseline;
+      gap: .4em;
+    }
+    .receipt-goblin-line .prefix {
+      color: var(--green);
+      flex-shrink: 0;
+    }
 
     /* ═══════════════════════════════════════════════════════
    [404-CSS] — the rejection/error overlay.
@@ -1825,9 +1868,9 @@
       top: 0;
       left: 0;
       width: 100%;
-      height: 160px;
+      height: 120px;
       /* tight to eye zone — fades out well above h1 */
-      background: linear-gradient(to bottom, #000 0%, #000 60%, rgba(0, 0, 0, 0.4) 78%, transparent 100%);
+      background: linear-gradient(to bottom, #000 0%, #000 50%, rgba(0, 0, 0, 0.4) 72%, transparent 100%);
       z-index: 49;
       /* just below eyes (z-index: 50) */
       pointer-events: none;
@@ -2353,11 +2396,10 @@
          to change the footer text: edit "we aim to respond..." below. -->
       <section class="screen receipt-screen" id="screen-receipt" data-screen-label="03 Receipt">
         <div class="receipt">
-          <h1>the goblins are already arguing about your project</h1>
+          <p class="receipt-query-header" id="receiptQueryHeader">query sent</p>
+          <h1 id="receiptH1">the goblins are already arguing about your project</h1>
           <div class="grid" id="receiptGrid"></div>
-          <div class="r-foot" id="receiptFoot">
-            <p class="goblin-line"><span class="prefix">&gt;</span>we aim to respond within 10 days, sooner if we start arguing about it</p>
-          </div>
+          <div class="receipt-goblin-out" id="receiptGoblinOut"></div>
         </div>
       </section>
 
@@ -2840,7 +2882,9 @@
       terminal.style.display = ''; /* restore if hidden by glitch-out sequence */
       terminal.classList.remove('glitch-out');
       document.getElementById('receiptGrid').innerHTML = '';
-      document.getElementById('receiptFoot').classList.remove('in');
+      document.getElementById('receiptGoblinOut').innerHTML = '';
+      const _rh1 = document.getElementById('receiptH1'); if (_rh1) _rh1.classList.remove('in');
+      const _rqh = document.getElementById('receiptQueryHeader'); if (_rqh) _rqh.classList.remove('in');
       rewindGen++;
       rewindTutorialDone = false; /* reset so tutorial fires again on fresh start */
       showScreen('hero');
@@ -3613,8 +3657,14 @@
         scrollTermBottom();
         field.focus();
         /* on mobile, scroll the field itself into view after keyboard raises */
-        setTimeout(() => field.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 320);
+        setTimeout(() => { scrollTermBottom(); field.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); }, 320);
+        setTimeout(() => { scrollTermBottom(); field.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); }, 600);
       });
+
+      /* visualViewport resize — iOS keyboard pushes the viewport smaller.
+         re-scroll so the active field stays above the keyboard. */
+      function _vpResize() { scrollTermBottom(); }
+      if (window.visualViewport) window.visualViewport.addEventListener('resize', _vpResize);
 
       /* keep field alive on blur — refocus unless we're rewinding */
       field.addEventListener('blur', () => {
@@ -3646,6 +3696,7 @@
           }
           return;
         }
+        if (window.visualViewport) window.visualViewport.removeEventListener('resize', _vpResize);
         row.remove(); hint.remove(); addBlank();
         const answer = addLine('term-user', multiline ? val.replace(/\n/g, ' ') : val);
         if (stepName) { answer.dataset.stepName = stepName; answer.dataset.value = val; }
@@ -3945,7 +3996,8 @@
             field1.placeholder = '';
             const hint1 = document.createElement('div');
             hint1.className = 'term-input-hint';
-            hint1.textContent = 'continue';
+            hint1.textContent = 'send';
+            hint1.style.cursor = 'pointer';
             row1.appendChild(field1); termOut.appendChild(row1); termOut.appendChild(hint1); scrollTermBottom();
             requestAnimationFrame(() => field1.focus());
 
@@ -3953,6 +4005,7 @@
               if (rewinding || skipping) return;
               requestAnimationFrame(() => field1.focus());
             });
+            hint1.addEventListener('click', () => submitField1());
 
             function shake(el) {
               el.classList.add('field-shake');
@@ -3980,6 +4033,7 @@
                 const hint2 = document.createElement('div');
                 hint2.className = 'term-input-hint';
                 hint2.textContent = 'send';
+                hint2.style.cursor = 'pointer';
                 row2.appendChild(field2); termOut.appendChild(row2); termOut.appendChild(hint2); scrollTermBottom();
                 requestAnimationFrame(() => field2.focus());
 
@@ -3991,6 +4045,7 @@
                   if (rewinding || skipping) return;
                   requestAnimationFrame(() => field2.focus());
                 });
+                hint2.addEventListener('click', () => submitField2());
 
                 function submitField2() {
                   const val2 = field2.value.trim();
@@ -4030,10 +4085,19 @@
             field.autocomplete = 'off';
             field.className = 'term-input-field';
             field.placeholder = '';
-            row.appendChild(field); termOut.appendChild(row); scrollTermBottom();
+            const hint10 = document.createElement('div');
+            hint10.className = 'term-input-hint'; hint10.textContent = 'send'; hint10.style.cursor = 'pointer';
+            row.appendChild(field); termOut.appendChild(row); termOut.appendChild(hint10); scrollTermBottom();
             requestAnimationFrame(() => field.focus());
 
+            field.addEventListener('blur', () => {
+              if (rewinding || skipping) return;
+              requestAnimationFrame(() => field.focus());
+            });
+            hint10.addEventListener('click', () => submit());
+
             function submit() {
+              hint10.remove();
               const val = field.value.trim();
               row.remove(); addBlank();
               if (val) {
@@ -4103,10 +4167,10 @@
           const _savedTypeMessage = typeMessage;
           typeMessage = _patchedTypeMessage;
           typeMessages([
-            'before we go any further',
-            "we do this alongside day jobs in publishing. we're selective",
-            'we start with a paid sample — editorial, writing, or narrative design',
-            "if it's a good fit, we'll talk gold and scope",
+            'now then',
+            "we're working goblins and are selective about what we take on alongside our work in book publishing",
+            'so we usually start with a paid editorial, writing or narrative design sample',
+            'if we agree on the vision for your project, we can talk gold payment and practicalities',
             'sound good?'
           ], () => {
             typeMessage = _savedTypeMessage; /* restore normal speed inside callback — after all terms lines finish */
@@ -4116,13 +4180,15 @@
             ], 'terms', opt => {
               answers.terms = opt.value;
               if (opt.value === 'i have questions') {
-                /* capture the question, submit anyway, confirm receipt */
-                showTextInput('', val => {
-                  answers['terms-concern'] = val;
-                  setTimeout(() => typeMessage("noted", () => {
-                    setTimeout(() => runStep(12), STEP_GAP);
-                  }), 300);
-                }, false, 'terms');
+                /* say "of course you do" then capture the question */
+                setTimeout(() => typeMessage('of course you do', () => {
+                  showTextInput('', val => {
+                    answers['terms-concern'] = val;
+                    setTimeout(() => typeMessage("noted. expect goblins", () => {
+                      setTimeout(() => runStep(12), STEP_GAP);
+                    }), 300);
+                  }, false, 'terms');
+                }), 300);
               } else {
                 /* "i'm in" — proceed to submit */
                 reactThenStep(REACTIONS.terms[opt.value], 12);
@@ -4166,21 +4232,11 @@
         btn.textContent = '.'.repeat(dotCount || 1);
       }, 380);
 
-      function resetBtn(errorText) {
+      function resetBtn() {
         clearInterval(dotInterval);
         btn.classList.remove('submitting');
+        btn.textContent = originalText;
         btn.disabled = false;
-        if (errorText) {
-          btn.textContent = errorText;
-          btn.classList.add('submit-error');
-          btn.classList.add('field-shake');
-          btn.addEventListener('animationend', () => btn.classList.remove('field-shake'), { once: true });
-          /* reset text after 2s so they can try again */
-          setTimeout(() => {
-            btn.textContent = originalText;
-            btn.classList.remove('submit-error');
-          }, 2000);
-        }
       }
 
       if (CONFIG.submitMode === 'live') {
@@ -4192,8 +4248,8 @@
           });
           if (!r.ok) throw 0;
         } catch {
-          /* API failed — show error state, let them retry */
-          resetBtn('something went wrong');
+          /* API failed — silently re-enable. no error messages on this site. */
+          resetBtn();
           return;
         }
       } else {
@@ -4308,8 +4364,15 @@
 
     function showReceipt(a) {
       const grid = document.getElementById('receiptGrid');
-      const foot = document.getElementById('receiptFoot');
+      const h1   = document.getElementById('receiptH1');
+      const qhdr = document.getElementById('receiptQueryHeader');
+      const goblinOut = document.getElementById('receiptGoblinOut');
       grid.innerHTML = '';
+      goblinOut.innerHTML = '';
+      /* reset header + h1 visibility */
+      qhdr.classList.remove('in');
+      h1.classList.remove('in');
+
       /* build a cell for each field that has an answer */
       FIELDS.forEach(f => {
         const v = a[f.key]; if (!v) return;
@@ -4319,12 +4382,55 @@
         cell.querySelector('.value').textContent = v; /* textContent = safe from XSS */
         grid.appendChild(cell);
       });
-      /* stagger the cell fade-ins — each appears 140ms after the last */
-      const cells = grid.querySelectorAll('.r-cell');
-      cells.forEach((c, i) => setTimeout(() => c.classList.add('in'), 300 + i * 140));
-      /* show the footer after all cells are visible */
-      setTimeout(() => foot.classList.add('in'), 300 + cells.length * 140 + 200);
 
+      /* 1. fade in "query sent" header */
+      setTimeout(() => qhdr.classList.add('in'), 80);
+      /* 2. fade in h1 */
+      setTimeout(() => h1.classList.add('in'), 320);
+      /* 3. stagger the cell fade-ins — each appears 140ms after the last */
+      const cells = grid.querySelectorAll('.r-cell');
+      cells.forEach((c, i) => setTimeout(() => c.classList.add('in'), 600 + i * 140));
+      /* 4. after all cells visible, type the goblin closing lines */
+      const gridDelay = 600 + cells.length * 140 + 300;
+      setTimeout(() => typeReceiptGoblinLines(goblinOut, [
+        "we've received your query human",
+        'expect a reply within 14 days',
+        'your hope is noted but irrelevant'
+      ]), gridDelay);
+    }
+
+    /* typeReceiptGoblinLines — types goblin lines into the receipt screen.
+       same feel as the terminal typewriter but self-contained for the receipt. */
+    function typeReceiptGoblinLines(container, lines) {
+      const perChar = 28;
+      let lineIdx = 0;
+      function nextLine() {
+        if (lineIdx >= lines.length) return;
+        const text = lines[lineIdx++];
+        const row = document.createElement('div');
+        row.className = 'receipt-goblin-line';
+        const prefix = document.createElement('span');
+        prefix.className = 'prefix'; prefix.textContent = '>';
+        const textNode = document.createTextNode('');
+        const cur = document.createElement('span');
+        cur.style.cssText = 'display:inline-block;width:9px;height:1.1em;background:#fff;vertical-align:text-bottom;margin-left:1px;';
+        row.appendChild(prefix); row.appendChild(textNode); row.appendChild(cur);
+        container.appendChild(row);
+        let i = 0;
+        const chars = text.split('');
+        (function tick() {
+          if (i >= chars.length) {
+            cur.remove();
+            /* gap before next line */
+            setTimeout(nextLine, 400);
+            return;
+          }
+          textNode.textContent += chars[i++];
+          setTimeout(tick, perChar);
+        }());
+      }
+      /* brief cursor blink before first line appears */
+      setTimeout(nextLine, 200);
     }
 
 
