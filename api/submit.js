@@ -93,7 +93,7 @@ function buildEmailHtml(answers) {
           <!-- body copy -->
           <tr>
             <td style="background:#0d0d0d;padding:0 0 36px 0;">
-              <p style="margin:0 0 14px;color:#aaaaaa;font-family:'Courier New',Courier,monospace;font-size:15px;line-height:1.7;text-align:center;">one of them will read it eventually</p>
+              <p style="margin:0 0 14px;color:#ffffff;font-family:'Courier New',Courier,monospace;font-size:18px;line-height:1.5;text-align:center;">one of them will read it eventually</p>
             </td>
           </tr>
 
@@ -145,9 +145,9 @@ function buildEmailText(answers) {
     ]);
 
   return [
-    'the goblins are already arguing about your project',
+    'the goblins are already arguing about your project.',
     '',
-    'one of them will read it eventually',
+    'one of them will read it eventually.',
     '',
     ...lines,
     'want to tell us something else? you can reply to this email.',
