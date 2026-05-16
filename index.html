@@ -3581,8 +3581,8 @@
       const d = skipping ? 0 : 300;
 
       function proceedAfterReaction() {
-        /* moment 1 — fires once, after gate (step 1) reaction, before moving to step 2 */
-        if (!inputHintDone && nextStep === 2) {
+        /* moment 1 — fires once, after gate (step 1) reaction, before moving to step 2 or 3 */
+        if (!inputHintDone && (nextStep === 2 || nextStep === 3)) {
           inputHintDone = true;
           setTimeout(() => {
             if (rewindGen !== myGen) return;
@@ -3593,7 +3593,7 @@
           return;
         }
         /* moment 2 — fires once, after writer-type (step 2) reaction, before moving to step 3 */
-        if (!rewindTutorialDone && nextStep === 3) {
+        if (!rewindTutorialDone && nextStep === 3 && inputHintDone) {
           rewindTutorialDone = true;
           setTimeout(() => {
             if (rewindGen !== myGen) return;
