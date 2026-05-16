@@ -1236,13 +1236,7 @@
         min-height: unset;
         padding: 1px 0;
         margin: 2px 0;
-        margin-left: auto;
-        white-space: normal;
-        display: inline-flex; /* shrink-wrap to content so [n] stays glued to label */
-        width: auto;
-        max-width: 85%;
-        justify-content: flex-start;
-        text-align: right;
+        max-width: 85%; /* cap width — block-level flex + margin-left:auto handles right-alignment */
       }
     }
 
@@ -1268,6 +1262,7 @@
     .term-option-label {
       text-align: right;
       min-width: 0; /* allows text to wrap without escaping the flex container */
+      overflow-wrap: break-word; /* prevents a long single word from overflowing max-width cap */
     }
 
     /* the [1] [2] etc */
