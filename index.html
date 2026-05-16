@@ -1317,7 +1317,7 @@
       display: flex;
       justify-content: flex-end;
       /* aligns arrow to right edge, mirroring rewind icon position on user answers */
-      padding-right: clamp(20px, 4vw, 32px);
+      padding-right: 0;
       margin-top: 4px;
       color: var(--green);
       opacity: 0.75;
@@ -3586,7 +3586,7 @@
           inputHintDone = true;
           setTimeout(() => {
             if (rewindGen !== myGen) return;
-            typeMessages(["click or hit a number, we don't mind"], () => {
+            typeMessages(["you can click on your choice or press the corresponding number, we don't mind"], () => {
               setTimeout(() => { if (rewindGen === myGen) runStep(nextStep); }, skipping ? 0 : STEP_GAP);
             });
           }, skipping ? 0 : 400);
