@@ -23,7 +23,7 @@ function isRateLimited(ip) {
 
 const FIELD_LABELS = {
   'writer-type': 'project type',
-  'service':     'service',
+  'service':     'here for',
   'genre':       'genre',
   'f-pitch':     'what is the project?',
   'f-title':     'project name',
