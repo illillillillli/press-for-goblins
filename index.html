@@ -972,6 +972,38 @@
       opacity: 0.92;
     }
 
+    /* post-submit status line — hidden by default, shown after successful submission */
+    .submitted-line {
+      display: none; /* JS sets display:block when hasSubmitted is true */
+      margin-top: clamp(12px, 1.5vw, 18px);
+      font-family: "Courier New", ui-monospace, monospace;
+      font-size: clamp(0.8rem, 1.2vw, 0.9rem);
+      color: var(--text-secondary);
+      letter-spacing: 0.02em;
+      text-align: center;
+      opacity: 0;
+      transition: opacity 0.4s ease;
+    }
+
+    .submitted-line.in {
+      opacity: 1;
+    }
+
+    .submitted-line .receipt-link {
+      color: var(--green);
+      cursor: pointer;
+      background: none;
+      border: 0;
+      font: inherit;
+      font-size: inherit;
+      letter-spacing: inherit;
+      padding: 0;
+    }
+
+    .submitted-line .receipt-link:hover {
+      opacity: 0.7;
+    }
+
 
     /* ═══════════════════════════════════════════════════════
    [TERMINAL-CSS] — the 12-step chat flow screen.
@@ -1168,6 +1200,16 @@
 
     .term-step-done:hover {
       opacity: .55;
+    }
+
+    /* rewind-in — reverse glitch: elements materialise from noise (used on post-submit hero replay) */
+    @keyframes rewindIn {
+      0%   { opacity: 0; transform: translateX(0) skewX(0deg); filter: none; }
+      15%  { opacity: 0.15; transform: translateX(4px) skewX(1deg); filter: hue-rotate(240deg) brightness(2); }
+      35%  { opacity: 0.4; transform: translateX(-3px) skewX(-0.5deg); filter: brightness(1.8); }
+      55%  { opacity: 0.65; transform: translateX(7px) skewX(2deg); filter: hue-rotate(160deg) brightness(0.5); }
+      75%  { opacity: 0.9; transform: translateX(-5px) skewX(-1.5deg); filter: hue-rotate(80deg) brightness(1.5); }
+      100% { opacity: 1; transform: translateX(0) skewX(0deg); filter: none; }
     }
 
     /* rewind-out — glitch dissolve: each element fragments with colour shifts and skew */
@@ -2395,6 +2437,10 @@
               <span class="label">press for goblins</span>
             </button>
           </div>
+          <!-- post-submit state: hidden until user has submitted, then shown on hero return -->
+          <div class="submitted-line" id="submittedLine" aria-live="polite">
+            query received &bull; <button class="receipt-link" id="receiptReturnBtn">receipt</button>
+          </div>
         </div>
       </section>
 
@@ -2931,6 +2977,7 @@
 
     let heroTimers = [];
     let heroSpacePresses = 0;    /* counts spacebar presses on the hero screen */
+    let hasSubmitted = false;     /* true after a successful form submission */
     function clearHeroTimers() { heroTimers.forEach(t => clearTimeout(t)); heroTimers = []; }
 
     function replayEyes() {
@@ -3008,17 +3055,53 @@
     }
 
     /* replayHero — resets and replays the entire hero sequence.
-       called on page load and when navigating back to the hero screen. */
+       called on page load and when navigating back to the hero screen.
+       post-submit: body paragraphs glitch in (rewindIn stagger), submitted-line fades in. */
     function replayHero() {
       clearHeroTimers();
       heroSpacePresses = 0;
       hero.classList.remove('ready');
       resetCorrection();
-      void hero.offsetWidth; /* force reflow so transitions restart cleanly */
-      replayEyes();
-      /* after eyes finish opening, fade in the text */
-      heroTimers.push(setTimeout(() => { hero.classList.add('ready'); document.dispatchEvent(new Event('heroReady')); }, 5200));  /* ← text appears, fires nav bar */
-      heroTimers.push(setTimeout(() => runCorrection(), 7400));              /* ← accelerated: we→i starts 2.2s after text */
+
+      const submittedLine = document.getElementById('submittedLine');
+      const bodyEl = document.getElementById('hero').querySelector('.body');
+
+      if (hasSubmitted && bodyEl && submittedLine) {
+        /* post-submit path: glitch body paragraphs in, show submitted line */
+        const paras = Array.from(bodyEl.querySelectorAll('p'));
+        /* reset paragraph styles so animation can re-fire */
+        paras.forEach(p => { p.style.animation = 'none'; p.style.opacity = '0'; void p.offsetWidth; });
+        submittedLine.classList.remove('in');
+
+        /* eyes still replay normally */
+        replayEyes();
+
+        /* stagger paragraphs oldest-first (natural reading order) */
+        heroTimers.push(setTimeout(() => {
+          hero.classList.add('ready');
+          document.dispatchEvent(new Event('heroReady'));
+          paras.forEach((p, i) => {
+            heroTimers.push(setTimeout(() => {
+              p.style.animation = 'rewindIn 260ms steps(5, end) forwards';
+            }, i * 120));
+          });
+          /* submitted line fades in after paragraphs settle */
+          heroTimers.push(setTimeout(() => {
+            submittedLine.style.display = 'block';
+            void submittedLine.offsetWidth;
+            submittedLine.classList.add('in');
+          }, paras.length * 120 + 200));
+        }, 5200));
+        /* no we→i correction on post-submit return */
+      } else {
+        /* normal first-visit path */
+        if (submittedLine) { submittedLine.style.display = 'none'; submittedLine.classList.remove('in'); }
+        void hero.offsetWidth; /* force reflow so transitions restart cleanly */
+        replayEyes();
+        /* after eyes finish opening, fade in the text */
+        heroTimers.push(setTimeout(() => { hero.classList.add('ready'); document.dispatchEvent(new Event('heroReady')); }, 5200));  /* ← text appears, fires nav bar */
+        heroTimers.push(setTimeout(() => runCorrection(), 7400));              /* ← accelerated: we→i starts 2.2s after text */
+      }
     }
 
     /* [AUTO-HIDE-EYES] — mobile only: hide eyes briefly on scroll down in terminal,
@@ -3111,6 +3194,15 @@
         runStep(1);
       }, 500);
     });
+
+    /* receipt return button — shown in post-submit hero state */
+    const receiptReturnBtn = document.getElementById('receiptReturnBtn');
+    if (receiptReturnBtn) {
+      receiptReturnBtn.addEventListener('click', () => {
+        showScreen('receipt');
+        showReceipt(answers);
+      });
+    }
 
     /* about contact button — toggles tooltip, swaps icon closed/open */
     var aboutContactBtn = document.getElementById('aboutContactBtn');
@@ -4331,6 +4423,7 @@
       const submitDur = (submitReversed.length - 1) * submitStagger + 280;
       setTimeout(() => {
         terminal.style.display = 'none';
+        hasSubmitted = true; /* flag hero to show post-submit state on return */
         /* 1s pause — nothing but the eyes */
         setTimeout(() => {
           showScreen('receipt');
