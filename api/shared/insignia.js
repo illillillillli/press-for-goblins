@@ -8,7 +8,7 @@
 export const ACCENT      = '#89ce8d';
 export const SITE_URL    = 'https://pressforgoblins.com';
 export const EYES_URL    = 'https://pressforgoblins.com/assets/images/eyes.png';
-export const QR_URL      = 'https://pressforgoblins.com/assets/images/qr.png';
+export const QR_URL      = 'https://pressforgoblins.com/assets/images/qr-email-white.png';
 export const ADDRESS_1   = '167-169 Great Portland St';
 export const ADDRESS_2   = 'London W1W 5PF';
 export const FONT_BODY   = "'Courier New', Courier, monospace";
