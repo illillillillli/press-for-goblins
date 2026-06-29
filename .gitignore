@@ -1,0 +1,10 @@
+.DS_Store
+_archive/
+_reference/
+_previews/
+.claude/
+docs/
+qr/
+.vercel
+.env*
+.env*.local
