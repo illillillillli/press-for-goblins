@@ -1,0 +1,5 @@
+# Press for Goblins is public: allow search engines and link-preview crawlers.
+User-agent: *
+Allow: /
+
+Sitemap: https://pressforgoblins.com/sitemap.xml

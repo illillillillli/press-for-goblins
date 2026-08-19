@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="robots" content="noindex,nofollow,noarchive">
+  <title>Dashboard · Press for Goblins</title>
+  <style>
+    @font-face{font-family:"Press Start 2P";src:url("fonts/PressStart2P-Regular.woff2") format("woff2"),url("fonts/PressStart2P-Regular.woff") format("woff");font-display:swap}
+    :root{color-scheme:dark;--green:#89ce8d;--bright:#c5fac8;--text:rgba(255,255,255,.9);--quiet:rgba(255,255,255,.52);--faint:rgba(255,255,255,.13);--black:#000}
+    *{box-sizing:border-box}html,body{min-height:100%;background:#000}body{margin:0;color:var(--text);font:16px/1.55 "Courier New",monospace}
+    button,input{border:0;border-radius:0;font:inherit}.hidden{display:none!important}
+    .access{min-height:100vh;display:grid;place-content:center;padding:24px;background:radial-gradient(circle at 50% 42%,rgba(137,206,141,.045),transparent 28%)}
+    .access-mark{width:42px;margin:0 auto 72px;color:var(--green)}
+    .access-title{margin:0 0 54px;color:var(--green);font:400 11px/1.8 "Press Start 2P",monospace;letter-spacing:.16em;text-align:center}
+    .access-form{display:grid;grid-template-columns:minmax(190px,280px) 44px;gap:18px;align-items:end}
+    .access-form label{display:grid;gap:10px;color:var(--quiet);font-size:11px;letter-spacing:.08em}
+    .access-form input{min-height:46px;padding:8px 0;background:transparent;border-bottom:1px solid rgba(255,255,255,.18);color:var(--text);outline:0;caret-color:var(--green)}
+    .access-form input:focus{border-color:var(--green)}.access-form button{height:46px;background:transparent;color:var(--green);cursor:pointer;font-size:24px}.access-form button:disabled{opacity:.3}
+    .status{min-height:24px;margin:34px 0 0;color:var(--green);font-size:12px;text-align:center}
+
+    .shell{min-height:100vh;background:radial-gradient(circle at 50% -8%,rgba(137,206,141,.055),transparent 32%),#000}
+    .chrome{display:flex;align-items:center;justify-content:space-between;gap:20px;padding:22px 28px;border-bottom:1px solid rgba(255,255,255,.08)}
+    .brand{display:flex;align-items:center;gap:14px;color:var(--green);font:400 10px/1.8 "Press Start 2P",monospace;letter-spacing:.12em}.eyes{width:38px;height:15px;display:block}
+    .meta,.note{color:var(--quiet);font-size:11px}.content{width:min(100%,1120px);margin:auto;padding:32px 30px 44px}
+    .section{margin-top:42px;padding-top:28px;border-top:1px dashed var(--faint)}
+    .heading{display:flex;justify-content:space-between;align-items:end;gap:18px;margin-bottom:18px}.heading h2{margin:0;color:var(--green);font-size:13px;font-weight:400;letter-spacing:.08em}.total{color:var(--quiet);font-size:11px;white-space:nowrap}
+
+    .rune{display:grid;grid-template-columns:1.05fr .95fr;gap:46px;align-items:center}.orbits{display:flex;align-items:end;justify-content:center;gap:26px;min-height:320px}.orbit{display:grid;place-content:center;border-radius:50%;text-align:center}.orbit.large{width:270px;height:270px;border:1px solid rgba(255,255,255,.22);background:radial-gradient(circle,rgba(255,255,255,.035),transparent 70%)}.orbit.small{width:134px;height:134px;border:1px solid var(--green);background:rgba(137,206,141,.16);box-shadow:0 0 32px rgba(137,206,141,.1)}
+    .number{color:var(--bright);font-size:32px;line-height:1}.label{margin-top:7px;color:var(--quiet);font-size:11px}.reading{display:flex;justify-content:space-between;gap:14px;align-items:baseline}.reading strong{color:var(--green);font-size:20px;font-weight:400}
+    .field{display:grid;grid-template-columns:repeat(10,1fr);gap:5px;margin-top:15px}.field span{aspect-ratio:1;border:1px solid rgba(255,255,255,.18)}.field span.active{border-color:var(--green);background:var(--green);box-shadow:inset 0 0 0 2px rgba(0,0,0,.28)}
+
+    .stack-group{display:grid;gap:42px}.chart{min-width:0}.stack{display:grid;width:100%;height:34px;overflow:hidden;background:rgba(255,255,255,.05)}.segment{border-right:2px solid #000}.segment:last-child{border-right:0}.segment:nth-child(1){background:rgba(137,206,141,1)}.segment:nth-child(2){background:rgba(137,206,141,.78)}.segment:nth-child(3){background:rgba(137,206,141,.58)}.segment:nth-child(4){background:rgba(137,206,141,.38)}.segment:nth-child(5){background:rgba(137,206,141,.2)}
+    .direct{display:grid;width:100%}.key{min-width:0;padding:11px 8px 0;border-left:1px solid rgba(137,206,141,.35)}.key:first-child{padding-left:0;border-left:0}.key-name{min-height:29px;color:var(--text);font-size:10px;line-height:1.35;overflow-wrap:anywhere}.key-percent{margin-top:5px;color:var(--green);font-size:14px}.key-count{margin-top:2px;color:var(--quiet);font-size:9px}
+    .empty{padding:24px 0;color:var(--quiet);font-size:11px}
+
+    .actions{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:34px}.action{display:grid;justify-items:center;gap:12px;text-align:center}.donut{--value:0;position:relative;width:clamp(142px,17vw,196px);aspect-ratio:1;display:grid;place-content:center;border-radius:50%;background:conic-gradient(var(--green) calc(var(--value) * 1%),rgba(255,255,255,.09) 0)}.donut:after{content:"";position:absolute;inset:13%;border-radius:50%;background:#000;border:1px solid rgba(255,255,255,.08)}.donut-value{position:relative;z-index:1;color:var(--bright);font-size:26px}.action-name{color:var(--text);font-size:11px}.action-base{color:var(--quiet);font-size:10px;line-height:1.5}.action-base strong{color:var(--green);font-weight:400}.denominator{max-width:760px;margin:24px auto 0;padding:12px 14px;border:1px solid rgba(137,206,141,.2);color:var(--quiet);font-size:10px;line-height:1.55;text-align:center}
+    .footer{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:14px 24px;margin-top:36px;color:var(--quiet);font-size:10px}.footer button{padding:8px 0;background:transparent;color:var(--quiet);cursor:pointer}.footer button:hover,.footer button:focus-visible{color:var(--green);outline:0}
+
+    @media(max-width:760px){.chrome{padding:18px}.brand span{display:none}.content{padding:26px 18px 34px}.rune{grid-template-columns:1fr}.orbits{min-height:255px;gap:15px}.orbit.large{width:210px;height:210px}.orbit.small{width:104px;height:104px}.actions{grid-template-columns:1fr;gap:32px}.donut{width:176px}.heading{align-items:flex-start}.stack-scroll{overflow-x:auto;padding-bottom:8px}.stack-group{min-width:660px}}
+  </style>
+</head>
+<body>
+  <main id="access" class="access">
+    <svg class="access-mark" viewBox="0 0 74 26" aria-hidden="true"><path fill="currentColor" d="M5 6l6-4h25l-4 12-8 7-14-4z"/><path fill="#000" d="M20 5h5v12h-5z"/><path fill="currentColor" d="M69 6l-6-4H38l4 12 8 7 14-4z"/><path fill="#000" d="M49 5h5v12h-5z"/></svg>
+    <section id="login"><h1 class="access-title">dashboard</h1><form id="login-form" class="access-form"><label>email<input id="email" type="email" autocomplete="email" required></label><button aria-label="continue">›</button></form></section>
+    <section id="mfa" class="hidden"><h1 class="access-title">dashboard</h1><form id="mfa-form" class="access-form"><label>code<input id="code" inputmode="numeric" autocomplete="one-time-code" pattern="[0-9]{6}" maxlength="6" required placeholder="000000"></label><button aria-label="continue">›</button></form><img id="qr" class="hidden" alt=""><p id="secret-line" class="hidden"><code id="secret"></code></p></section>
+    <p id="status" class="status" role="status" aria-live="polite"></p>
+  </main>
+
+  <main id="dashboard" class="shell hidden">
+    <header class="chrome"><div class="brand"><svg class="eyes" viewBox="0 0 74 26" aria-hidden="true"><path fill="currentColor" d="M5 6l6-4h25l-4 12-8 7-14-4z"/><path fill="#000" d="M20 5h5v12h-5z"/><path fill="currentColor" d="M69 6l-6-4H38l4 12 8 7 14-4z"/><path fill="#000" d="M49 5h5v12h-5z"/></svg><span>dashboard</span></div><div id="freshness" class="meta">30-day window</div></header>
+    <div class="content">
+      <section class="rune">
+        <div class="orbits" role="img" aria-label="Rune views and solves"><div class="orbit large"><span id="rune-views" class="number">—</span><span class="label">saw the rune</span></div><div class="orbit small"><span id="rune-solves" class="number">—</span><span class="label">decoded it</span></div></div>
+        <div><div class="reading"><span class="note">solves / views</span><strong id="rune-rate">—</strong></div><div id="rune-field" class="field" role="img"></div><p class="note">whole field = rune-view events in this period</p></div>
+      </section>
+
+      <section class="section"><div class="stack-scroll"><div id="stack-group" class="stack-group"></div></div></section>
+
+      <section class="section">
+        <div class="heading"><h2>counted actions</h2><span class="total">action / recorded opportunity</span></div>
+        <div id="actions" class="actions"></div>
+        <div class="denominator">Each circle is one action out of the visits where it was visible. Each is counted once per tab session.</div>
+      </section>
+
+      <footer class="footer"><span>whole bar = every recorded answer to that question in this period</span><span><button id="owner-device">exclude this device</button> · <button id="signout">sign out</button></span></footer>
+    </div>
+  </main>
+
+  <script>
+  (() => {
+    'use strict';
+    let config, accessToken = '', factorId = '';
+    const $ = id => document.getElementById(id);
+    const status = code => { $('status').textContent = code || ''; };
+    const authHeaders = () => ({ apikey:config.key, Authorization:`Bearer ${accessToken}`, 'Content-Type':'application/json' });
+    const definitions = [
+      { metric:'gate', question:'are you in need of goblins?', values:['yes','obviously','you have no idea','are you really goblins?'] },
+      { metric:'writer_type', question:"what's the project?", values:['novel','comic or graphic novel','video game','tabletop game'] },
+      { metric:'service', question:'what do you need?', values:['creative development','narrative direction','editorial assessment','query/pitch feedback','writing'] },
+      { metric:'genre', question:"what's the genre?", values:['sci-fi','fantasy','horror','romance','genre blend'] },
+      { metric:'terms', question:'sound good?', values:["i'm in",'i have questions'] }
+    ];
+
+    async function auth(path, options = {}) {
+      const response = await fetch(`${config.url}/auth/v1${path}`, { ...options, headers:{ ...authHeaders(), ...(options.headers || {}) } });
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error('A1');
+      return data;
+    }
+    function showAccess(id) { ['login','mfa'].forEach(name => $(name).classList.toggle('hidden', name !== id)); }
+    function showDashboard() { $('access').classList.add('hidden'); $('dashboard').classList.remove('hidden'); }
+    function safeRows(data) { return Array.isArray(data?.counts) ? data.counts.filter(row => row && typeof row.metric === 'string' && typeof row.value === 'string') : []; }
+    function total(rows, metric, value) { return rows.filter(row => !row.suppressed && Number.isFinite(Number(row.count)) && row.metric === metric && (value === undefined || row.value === value)).reduce((sum,row) => sum + Number(row.count),0); }
+    function isSuppressed(rows, metric, value) { return rows.some(row => row.suppressed && row.metric === metric && (value === undefined || row.value === value)); }
+    function ratio(part, whole) { return whole > 0 ? Math.min(100,Math.max(0,(part / whole) * 100)) : null; }
+    function displayNumber(value) { return Number.isFinite(value) ? String(value) : '—'; }
+
+    function renderField(value) {
+      const field = $('rune-field'); field.replaceChildren();
+      const filled = value === null ? 0 : Math.round(value);
+      field.setAttribute('aria-label', value === null ? 'No ratio available' : `${value.toFixed(1)} per cent`);
+      for (let index=0; index<100; index+=1) { const cell=document.createElement('span'); if(index<filled) cell.className='active'; field.append(cell); }
+    }
+    function renderStacks(rows) {
+      const group = $('stack-group'); group.replaceChildren();
+      definitions.forEach(definition => {
+        const suppressed=isSuppressed(rows,definition.metric);
+        const values = definition.values.map(value => [value,total(rows,definition.metric,value)]).filter(item => item[1] > 0);
+        const sum = values.reduce((result,item) => result + item[1],0);
+        const chart=document.createElement('section'); chart.className='chart';
+        const heading=document.createElement('div'); heading.className='heading';
+        const title=document.createElement('h2'); title.textContent=definition.question;
+        const count=document.createElement('span'); count.className='total'; count.textContent=`${sum}${suppressed?'+':''} recorded answers`;
+        heading.append(title,count); chart.append(heading);
+        if (!sum) { const empty=document.createElement('div'); empty.className='empty'; empty.textContent='—'; chart.append(empty); group.append(chart); return; }
+        const columns=values.map(item=>`${item[1]}fr`).join(' ');
+        const stack=document.createElement('div'); stack.className='stack'; stack.style.gridTemplateColumns=columns; stack.setAttribute('role','img'); stack.setAttribute('aria-label',values.map(([label,value])=>`${label}: ${value}`).join(', '));
+        const direct=document.createElement('div'); direct.className='direct'; direct.style.gridTemplateColumns=columns;
+        values.forEach(([label,value]) => {
+          const segment=document.createElement('span'); segment.className='segment'; segment.setAttribute('aria-hidden','true'); stack.append(segment);
+          const key=document.createElement('div'); key.className='key';
+          const name=document.createElement('div'); name.className='key-name'; name.textContent=label;
+          const percentage=document.createElement('div'); percentage.className='key-percent'; percentage.textContent=`${Math.round(value/sum*100)}%`;
+          const answerCount=document.createElement('div'); answerCount.className='key-count'; answerCount.textContent=`${value} answers`;
+          key.append(name,percentage,answerCount); direct.append(key);
+        });
+        chart.append(stack,direct); group.append(chart);
+      });
+    }
+    function renderActions(rows) {
+      const definitions = [
+        { name:'email rune', verb:'decodes', numerator:['interaction','email_rune'], denominator:['opportunity','email_rune'] },
+        { name:'linkedin', verb:'opens', numerator:['interaction','linkedin'], denominator:['opportunity','linkedin'] },
+        { name:'field reports +1', verb:'actions', numerator:['interaction','field_reports_signup'], denominator:['opportunity','field_reports_signup'] }
+      ];
+      $('actions').replaceChildren(...definitions.map(item => {
+        const unavailable=isSuppressed(rows,...item.numerator)||isSuppressed(rows,...item.denominator);
+        const numerator=total(rows,...item.numerator), denominator=total(rows,...item.denominator), value=unavailable?null:ratio(numerator,denominator);
+        const action=document.createElement('div'); action.className='action';
+        const donut=document.createElement('div'); donut.className='donut'; donut.style.setProperty('--value',value ?? 0); donut.setAttribute('role','img'); donut.setAttribute('aria-label',value===null?'No ratio available':`${numerator} ${item.name} ${item.verb} out of ${denominator} page-view events, ${Math.round(value)} per cent`);
+        const percentage=document.createElement('span'); percentage.className='donut-value'; percentage.textContent=value===null?'—':`${Math.round(value)}%`; donut.append(percentage);
+        const name=document.createElement('div'); name.className='action-name'; name.textContent=item.name;
+        const base=document.createElement('div'); base.className='action-base';
+        if(value===null) base.textContent='no recorded opportunity'; else { const strongA=document.createElement('strong'); strongA.textContent=displayNumber(numerator); const strongB=document.createElement('strong'); strongB.textContent=displayNumber(denominator); base.append(strongA,` ${item.verb}`,document.createElement('br'),'out of ',strongB,' visits where visible'); }
+        action.append(donut,name,base); return action;
+      }));
+    }
+    async function beginMfa() {
+      const factors=await auth('/factors'); const verified=(factors.totp||[]).filter(factor=>factor.status==='verified');
+      if(verified.length){factorId=verified[0].id;showAccess('mfa');return;}
+      const created=await auth('/factors',{method:'POST',body:JSON.stringify({factor_type:'totp',friendly_name:'Press for Goblins'})});
+      factorId=created.id;$('qr').src=created.totp.qr_code;$('qr').classList.remove('hidden');$('secret').textContent=created.totp.secret;$('secret-line').classList.remove('hidden');showAccess('mfa');
+    }
+    async function loadDashboard() {
+      const response=await fetch('/api/dashboard-data',{headers:{Authorization:`Bearer ${accessToken}`}}); if(!response.ok) throw new Error('A2');
+      const data=await response.json(), rows=safeRows(data); showDashboard();
+      $('freshness').textContent=data.last_accepted_at?`30 days · updated ${new Date(data.last_accepted_at).toLocaleString()}`:'30 days';
+      const views=total(rows,'opportunity','email_rune'), solves=total(rows,'interaction','email_rune'), rate=isSuppressed(rows,'opportunity','email_rune')||isSuppressed(rows,'interaction','email_rune')?null:ratio(solves,views);
+      $('rune-views').textContent=displayNumber(views);$('rune-solves').textContent=displayNumber(solves);$('rune-rate').textContent=rate===null?'—':`${rate.toFixed(1)}%`;renderField(rate);renderStacks(rows);renderActions(rows);status('');
+    }
+
+    $('login-form').addEventListener('submit',async event=>{event.preventDefault();status('…');try{const redirect=`${location.origin}/dashboard`;const response=await fetch(`${config.url}/auth/v1/otp?redirect_to=${encodeURIComponent(redirect)}`,{method:'POST',headers:{apikey:config.key,'Content-Type':'application/json'},body:JSON.stringify({email:$('email').value.trim(),create_user:false})});if(!response.ok)throw new Error('E1');status('✓');}catch{status('E1');}});
+    $('mfa-form').addEventListener('submit',async event=>{event.preventDefault();status('…');try{const challenge=await auth(`/factors/${encodeURIComponent(factorId)}/challenge`,{method:'POST',body:'{}'});const verified=await auth(`/factors/${encodeURIComponent(factorId)}/verify`,{method:'POST',body:JSON.stringify({challenge_id:challenge.id,code:$('code').value})});accessToken=verified.access_token;history.replaceState(null,'','/dashboard');await loadDashboard();}catch{status('E2');}});
+    $('owner-device').addEventListener('click',async()=>{const response=await fetch('/api/dashboard-owner',{method:'POST',headers:{Authorization:`Bearer ${accessToken}`}});$('owner-device').textContent=response.ok?'✓ d6':'! d6';});
+    $('signout').addEventListener('click',()=>{accessToken='';location.replace('/dashboard');});
+    (async()=>{try{config=await fetch('/api/dashboard-config',{cache:'no-store'}).then(response=>{if(!response.ok)throw new Error();return response.json();});const hash=new URLSearchParams(location.hash.slice(1));accessToken=hash.get('access_token')||'';if(accessToken){history.replaceState(null,'','/dashboard');await beginMfa();}}catch{status('E0');}})();
+  })();
+  </script>
+</body>
+</html>
