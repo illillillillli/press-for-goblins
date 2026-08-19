@@ -2,7 +2,7 @@
 /* ═══════════════════════════════════════════════════════
    press for goblins - insignia
    reads constants from insignia.js and patches the
-   <!-- BEGIN INSIGNIA --> block in index.html.
+   <!-- begin insignia --> block in index.html.
    run: node insignia.mjs
    also runs automatically via vercel buildCommand.
    ═══════════════════════════════════════════════════════ */
@@ -26,15 +26,15 @@ import {
 const __dir = dirname(fileURLToPath(import.meta.url));
 const INDEX = join(__dir, 'index.html');
 
-const BEGIN = '<!-- BEGIN INSIGNIA';
-const END   = '<!-- END INSIGNIA -->';
+const BEGIN = '<!-- begin insignia';
+const END   = '<!-- end insignia -->';
 
 /* hash of insignia.js for the sync comment */
 const insigniaSource = readFileSync(join(__dir, 'shared/insignia.mjs'), 'utf8');
 const hash = createHash('sha1').update(insigniaSource).digest('hex').slice(0, 8);
 
 /* the block compositor writes into index.html */
-const block = `<!-- BEGIN INSIGNIA - synced from insignia.js @ ${hash} -->
+const block = `<!-- begin insignia - synced from insignia.js @ ${hash} -->
 <style>
   /* [insignia] single source of truth - edit shared/insignia.mjs, not here */
   :root {
@@ -44,7 +44,7 @@ const block = `<!-- BEGIN INSIGNIA - synced from insignia.js @ ${hash} -->
     --font-display: ${FONT_DISPLAY};
   }
 </style>
-<!-- END INSIGNIA -->`;
+<!-- end insignia -->`;
 
 let html = readFileSync(INDEX, 'utf8');
 

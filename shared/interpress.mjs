@@ -133,7 +133,7 @@ export function stampImg({ src, alt = 'stamp', opacity = 0.69 }) {
 
 /* - stamp SVG - circular ink stamp (apple mail + WebKit only - outlook strips SVG) - */
 /* topText: arc text top (e.g. 'query received' / 'field reports')
-   midText: centre line (e.g. 'UNDER REVIEW' / 'ADMIT ONE')
+   midText: centre line (e.g. 'under review' / 'admit one')
    refNum:  shown below midText
    year:    shown above midText
    id:      unique filter id suffix (avoid SVG filter id collisions across emails) */
