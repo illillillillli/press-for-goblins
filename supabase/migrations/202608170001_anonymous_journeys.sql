@@ -1,4 +1,4 @@
--- Thirty-day anonymous journey ledger. Session identifiers are random in the
+-- thirty-day anonymous journey ledger. session identifiers are random in the
 -- browser, HMACed at the edge and never stored or returned in raw form.
 create table if not exists analytics.session_event (
   session_hash bytea not null check (octet_length(session_hash) = 32),

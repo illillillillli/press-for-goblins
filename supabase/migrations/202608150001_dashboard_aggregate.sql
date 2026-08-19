@@ -1,4 +1,4 @@
--- Aggregate-at-ingestion counting. No visitor or event rows are created.
+-- aggregate-at-ingestion counting. no visitor or event rows are created.
 create extension if not exists pgcrypto with schema extensions;
 create schema if not exists analytics;
 revoke all on schema analytics from public, anon, authenticated;
@@ -170,7 +170,7 @@ grant execute on function public.analytics_ingest(text,text,text,text) to anon, 
 grant execute on function public.issue_owner_exclusion() to authenticated;
 grant execute on function public.dashboard_summary(integer) to authenticated;
 
--- Quarantine the legacy raw rows. They are intentionally retained until Noah
+-- quarantine the legacy raw rows. they are intentionally retained until noah
 -- separately approves their deletion, but no website role may read or mutate them.
 do $$ begin
   if to_regclass('public.seen') is not null then
@@ -180,7 +180,7 @@ do $$ begin
   end if;
 end $$;
 
--- Run the following two statements once through the Supabase SQL editor using
--- freshly generated values. Never commit those values:
+-- run the following two statements once through the supabase SQL editor using
+-- freshly generated values. never commit those values:
 -- update analytics.private_config set ingest_hash = extensions.digest('<capability>', 'sha256') where singleton;
 -- insert into analytics.owner(user_id) select id from auth.users where email = '<owner email>' on conflict do nothing;

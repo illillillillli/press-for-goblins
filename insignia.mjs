@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /* ═══════════════════════════════════════════════════════
-   press for goblins — insignia
+   press for goblins - insignia
    reads constants from insignia.js and patches the
    <!-- BEGIN INSIGNIA --> block in index.html.
    run: node insignia.mjs
@@ -34,9 +34,9 @@ const insigniaSource = readFileSync(join(__dir, 'shared/insignia.mjs'), 'utf8');
 const hash = createHash('sha1').update(insigniaSource).digest('hex').slice(0, 8);
 
 /* the block compositor writes into index.html */
-const block = `<!-- BEGIN INSIGNIA — synced from insignia.js @ ${hash} -->
+const block = `<!-- BEGIN INSIGNIA - synced from insignia.js @ ${hash} -->
 <style>
-  /* [insignia] single source of truth — edit shared/insignia.mjs, not here */
+  /* [insignia] single source of truth - edit shared/insignia.mjs, not here */
   :root {
     --green: ${ACCENT};
     --site-url: "${SITE_URL}";

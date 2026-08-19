@@ -1,4 +1,4 @@
--- Session-deduplicated funnel inputs. The browser deduplicates each event within
+-- session-deduplicated funnel inputs. the browser deduplicates each event within
 -- its tab session; only aggregate counters reach the database.
 create or replace function analytics.metric_allowed(p_metric text, p_value text)
 returns boolean

@@ -1,5 +1,5 @@
 /* ═══════════════════════════════════════════════════════
-   press for goblins — /api/ticket (Vercel endpoint)
+   press for goblins - /api/ticket (vercel endpoint)
    orchestrates user ticket + admin notification
    env vars: RESEND_API_KEY, UPSTASH_REDIS_REST_URL,
              UPSTASH_REDIS_REST_TOKEN

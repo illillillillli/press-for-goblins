@@ -1,4 +1,4 @@
-/* press for goblins local dev server — no dependencies
+/* press for goblins local dev server - no dependencies
    loads .env.local and serves the site plus API handlers on port 3000
    run: node dev.mjs */
 

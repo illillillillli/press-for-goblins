@@ -1,5 +1,5 @@
 /* ═══════════════════════════════════════════════════════
-   press for goblins — query receipt → submitter
+   press for goblins - query receipt → submitter
    env vars: RESEND_API_KEY, UPSTASH_REDIS_REST_URL,
              UPSTASH_REDIS_REST_TOKEN
    ═══════════════════════════════════════════════════════ */
@@ -9,7 +9,7 @@ import {
   breathingZone, dotRow, dotRowHtml, obfuscateEmail, stampSvg, qrFooterBlock, outerShell, nowUtc,
 } from '../shared/interpress.mjs';
 
-/* ── ref counter ── */
+/* - ref counter - */
 export async function makeRefNum() {
   try {
     const res = await fetch(`${process.env.UPSTASH_REDIS_REST_URL}/incr/pfg-query-counter`, {
@@ -103,7 +103,7 @@ function buildChatRows(answers) {
     .join('');
 }
 
-/* goblin-footnote with per-letter jiggly spans — matches preview exactly */
+/* goblin-footnote with per-letter jiggly spans - matches preview exactly */
 const GOBLIN_FOOTNOTE = `<tr><td class="anim-footnote" style="padding:0 0 24px 0;text-align:left;background:#010101;" bgcolor="#000000"><span style="display:block;font-family:'Courier New',Courier,monospace;font-style:normal;font-size:15px;color:rgba(255,255,255,0.88);line-height:1.6;letter-spacing:0.01em;"><sup style="font-size:11px;vertical-align:top;line-height:1;color:rgba(255,255,255,0.88);">*</sup>bonus points may be awarded for big questions, oscar wilde quotes and/or memorable dialogue</span></td></tr>`;
 
 export function buildHtml(answers, refNum) {
@@ -111,16 +111,16 @@ export function buildHtml(answers, refNum) {
   const email = answers['f-email'] || '';
   const chatRows = buildChatRows(answers);
 
-  /* ref number — right-aligned ghost text.
-     MSO conditional: Special Elite loads via <link> which Outlook strips.
-     non-MSO clients get Special Elite at 96px; Outlook gets Courier New at 64px. */
+  /* ref number - right-aligned ghost text.
+     MSO conditional: special elite loads via <link> which outlook strips.
+     non-MSO clients get special elite at 96px; outlook gets courier new at 64px. */
   const refBlock = `<tr>
     <td style="padding:0;text-align:right;background:#010101;" bgcolor="#000000">
       <!--[if !mso]><!-->
       <div class="anim-ref-num" style="font-family:'Special Elite','Courier New',Courier,monospace;font-size:80px;color:rgba(255,255,255,0.12);letter-spacing:0.04em;line-height:1;word-break:break-all;">${escapeHtml(refNum || '')}</div>
       <!--<![endif]-->
       <!--[if mso]>
-      <div style="font-family:'Courier New',Courier,monospace;font-size:56px;color:rgba(255,255,255,0.12);letter-spacing:0.08em;line-height:1;word-break:break-all;">${escapeHtml(refNum || '')}</div>
+      <div style="font-family:'courier new',courier,monospace;font-size:56px;color:rgba(255,255,255,0.12);letter-spacing:0.08em;line-height:1;word-break:break-all;">${escapeHtml(refNum || '')}</div>
       <![endif]-->
     </td>
   </tr>`;

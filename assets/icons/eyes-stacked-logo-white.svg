@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 65 66" shape-rendering="crispEdges">
-  <!-- press for goblins — white logo variant with three stacked pairs of eyes
+  <!-- press for goblins - white logo variant with three stacked pairs of eyes
        and press for goblins wordmark below, all pixels white, transparent background -->
   
   <defs>
@@ -25,7 +25,7 @@
   <use href="#eye-pair" x="0" y="18"/>
   <use href="#eye-pair" x="0" y="36"/>
 
-  <!-- wordmark: press for goblins — Courier New, centred, white -->
+  <!-- wordmark: press for goblins - courier new, centred, white -->
   <text
     x="32.5"
     y="62"

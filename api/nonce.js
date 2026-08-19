@@ -1,7 +1,7 @@
 /* ═══════════════════════════════════════════════════════
-   press for goblins — /api/nonce (Vercel endpoint)
+   press for goblins - /api/nonce (vercel endpoint)
    issues a short-lived HMAC token for form submissions.
-   stateless — no redis required.
+   stateless - no redis required.
    env vars: NONCE_SECRET (min 32 chars)
    ═══════════════════════════════════════════════════════ */
 

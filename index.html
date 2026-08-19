@@ -8,16 +8,16 @@
 
      html
        [meta]          meta tags, og tags, seo, robots
-       [fonts]         @font-face for Press Start 2P pixel font
+       [fonts]         @font-face for press start 2P pixel font
 
      css
-       [colours]       design tokens — green, text opacities
+       [colours]       design tokens - green, text opacities
        [reset]         box-sizing, body defaults, selection colour
        [crt]           the slow scanline sweep effect
        [eyes-css]      pixel eye logo positioning + open/droop/blink
        [layout]        page/stage/screen structure + fade masks
        [hero-css]      title, body text, we→i correction, cta button
-       [terminal-css]  chat flow — lines, options, inputs, rewind fx
+       [terminal-css]  chat flow - lines, options, inputs, rewind fx
        [receipt-css]   submission summary grid + footer
        [a11y]          reduced motion overrides
 
@@ -29,7 +29,7 @@
        [receipt-html]  submission receipt (content is js-generated)
 
      javascript
-       [config]        tweakable settings — droop, accent, crt, etc
+       [config]        tweakable settings - droop, accent, crt, etc
        [screens]       screen switching (hero → terminal → receipt)
        [eye-anim]      eye open sequence + blink + droop personalities
        [we-to-i]       the "we" → "i" strikethrough correction animation
@@ -70,7 +70,7 @@
 Books, Comics and Games
 Sci-fi, Fantasy, Horror, Romance
 Definitely not three goblins in a trenchcoat">
-  <!-- og tags — what humans see when they paste the link into their group chats. we have opinions about this. -->
+  <!-- og tags - what humans see when they paste the link into their group chats. we have opinions about this. -->
   <meta property="og:title" content="Press for Goblins®">
   <meta property="og:description"
     content="Editing, Writing &amp; Narrative Design
@@ -88,16 +88,16 @@ Definitely not three goblins in a trenchcoat">
 Books, Comics and Games
 Sci-fi, Fantasy, Horror, Romance
 Definitely not three goblins in a trenchcoat">
-  <!-- robots — the goblins are ready to be found. -->
+  <!-- robots - the goblins are ready to be found. -->
   <meta name="robots" content="index,follow">
-  <!-- theme-color — this makes the address bar match the void. -->
+  <!-- theme-color - this makes the address bar match the void. -->
   <meta name="theme-color" content="#000000">
   <!-- [dark-mode-lock] the site is already dark.
        if an extension tries to 'help', it turns the eyes into a discoloured mess.
        this lock stops that. -->
   <meta name="color-scheme" content="dark">
   <meta name="darkreader-lock">
-  <!-- canonical — there is one address. this one. the search engines are informed accordingly. -->
+  <!-- canonical - there is one address. this one. the search engines are informed accordingly. -->
   <link rel="canonical" href="https://pressforgoblins.com">
   <script type="application/ld+json">
     {
@@ -116,7 +116,7 @@ Definitely not three goblins in a trenchcoat">
   <!-- [fonts] we've made sure these are loaded before the page wakes up so the title isn't invisible while the font catches up. -->
   <link rel="preload" href="fonts/PressStart2P-Regular.woff2" as="font" type="font/woff2" crossorigin>
 <!-- [icons] the tiny goblin face that lives in your tab. it's the one that appears when humans save the site to their home screens as well. -->
-  <!-- SVG for browsers that can handle it. PNG for Safari (which cannot). -->
+  <!-- SVG for browsers that can handle it. PNG for safari (which cannot). -->
   <link rel="icon" type="image/png" href="assets/icons/favicon.png?v=12">
   <link rel="icon" type="image/svg+xml" href="assets/icons/favicon.svg?v=12">
   <link rel="shortcut icon" href="assets/icons/favicon.png?v=12">
@@ -124,9 +124,9 @@ Definitely not three goblins in a trenchcoat">
 
   <!-- [fonts] pixel font loads via @font-face below -->
 
-  <!-- BEGIN INSIGNIA — synced from insignia.js @ 3aaf35fe -->
+  <!-- BEGIN INSIGNIA - synced from insignia.js @ 3aaf35fe -->
 <style>
-  /* [insignia] single source of truth — edit shared/insignia.mjs, not here */
+  /* [insignia] single source of truth - edit shared/insignia.mjs, not here */
   :root {
     --green: #89ce8d;
     --site-url: "https://pressforgoblins.com";
@@ -137,7 +137,7 @@ Definitely not three goblins in a trenchcoat">
 <!-- END INSIGNIA -->
 
   <style>
-    /* [fonts] hosted locally; no external dependencies. titles and buttons = PressStart2P. Courier New = everything else. */
+    /* [fonts] hosted locally; no external dependencies. titles and buttons = PressStart2P. courier new = everything else. */
     @font-face {
       font-family: 'Press Start 2P';
       src: url('fonts/PressStart2P-Regular.woff2') format('woff2'),
@@ -156,12 +156,12 @@ Definitely not three goblins in a trenchcoat">
       font-display: swap;
     }
 
-    /* [colours] goblin green for ctas, interactive elements and annotations. the text variables are white — just at different opacities. */
+    /* [colours] goblin green for ctas, interactive elements and annotations. the text variables are white - just at different opacities. */
     :root {
       --green: #89ce8d;
       /* the one and only goblin green. change this and everything on pfg changes with it. */
       --text-primary: rgba(255, 255, 255, 0.88);
-      /* main body text — almost white */
+      /* main body text - almost white */
       --text-secondary: rgba(255, 255, 255, 0.55);
       /* secondary text. quieter. */
       --text-muted: rgba(255, 255, 255, 0.35);
@@ -343,7 +343,7 @@ Definitely not three goblins in a trenchcoat">
       will-change: transform;
     }
 
-    /* One broad neutral bloom with no hard core. Ordinary source-over paint means
+    /* one broad neutral bloom with no hard core. ordinary source-over paint means
        the beam never filters, blends with, or removes colour from content beneath. */
     .crt::before {
       top: auto;
@@ -453,7 +453,7 @@ Definitely not three goblins in a trenchcoat">
     }
 
     /* short viewport: hide eyes + their supporting layers + collapse the stage top dead zone.
-       uses body.short-viewport (set by JS) instead of @media (max-height) because Safari
+       uses body.short-viewport (set by JS) instead of @media (max-height) because safari
        desktop reports screen height not window height in CSS media queries. */
     body.short-viewport .eyes,
     body.short-viewport .eyes-blocker,
@@ -589,7 +589,7 @@ Definitely not three goblins in a trenchcoat">
       }
     }
 
-    /* opacity per row — p1 brightest, p3 most faded */
+    /* opacity per row - p1 brightest, p3 most faded */
     .eye-pair.p1 {
       opacity: 1;
     }
@@ -602,7 +602,7 @@ Definitely not three goblins in a trenchcoat">
       opacity: 0.13;
     }
 
-    /* eyes start closed — clip-path squishes them to an invisible line.
+    /* eyes start closed - clip-path squishes them to an invisible line.
    -webkit-clip-path needed for safari animation support. */
     .eye-pair {
       clip-path: inset(50% 0 50% 0);
@@ -616,7 +616,7 @@ Definitely not three goblins in a trenchcoat">
       -webkit-clip-path: inset(0 0 0 0);
     }
 
-    /* p1 and p2 answer the page immediately. The same calm timing is used at
+    /* p1 and p2 answer the page immediately. the same calm timing is used at
        every viewport so desktop never feels like a slower, separate build. */
     .eye-pair.p1.open {
       -webkit-animation: pairOpen .42s cubic-bezier(.22, .8, .3, 1) forwards;
@@ -652,7 +652,7 @@ Definitely not three goblins in a trenchcoat">
       }
     }
 
-    /* p3 droop — opens cleanly, lazily droops to ~27%, then eases back open */
+    /* p3 droop - opens cleanly, lazily droops to ~27%, then eases back open */
     .eye-pair.p3.open {
       -webkit-animation: openBot 1s linear forwards;
       animation: openBot 1s linear forwards;
@@ -708,7 +708,7 @@ Definitely not three goblins in a trenchcoat">
       }
     }
 
-    /* blink — quick close-and-open, used when you click the CTA */
+    /* blink - quick close-and-open, used when you click the CTA */
     .eye-pair.blink {
       -webkit-animation: blink .22s ease-in-out !important;
       animation: blink .22s ease-in-out !important;
@@ -776,12 +776,12 @@ Definitely not three goblins in a trenchcoat">
       flex: 1;
       min-height: 0;
       pointer-events: none;
-      /* iOS Safari: -webkit-mask-image creates a compositing layer that intercepts touch events.
+      /* iOS safari: -webkit-mask-image creates a compositing layer that intercepts touch events.
          pointer-events: none on .stage forces touch routing directly to .screen children,
          which re-enable pointer-events via .is-active. without this, about + portfolio
          tabs cannot be scrolled on iOS regardless of content height. */
       /* dual-sided mask: top kill zone (text dies before eyes) + bottom void fade.
-         hard transparent zone extends to 195px — text cannot reach the eye area even on scroll.
+         hard transparent zone extends to 195px - text cannot reach the eye area even on scroll.
          #000 fully opaque by 240px. */
       mask-image: linear-gradient(to bottom,
           transparent 0px,
@@ -837,7 +837,7 @@ Definitely not three goblins in a trenchcoat">
     /* each screen is absolutely positioned to fill the stage.
    opacity:0 + pointer-events:none = invisible and non-interactive by default.
    .is-active makes it visible and interactive.
-   fixed padding — no vw scaling. content stays locked regardless of window drag. */
+   fixed padding - no vw scaling. content stays locked regardless of window drag. */
     .screen {
       position: absolute;
       inset: 0;
@@ -846,17 +846,15 @@ Definitely not three goblins in a trenchcoat">
       align-items: center;
       opacity: 0;
       pointer-events: none;
-      /* Screens switch atomically. Cross-fading two independently scrolling
-         layers made the shared header collapse in one layer while appearing in
-         the next, producing the desktop tab flicker. The void stays still. */
+      /* screens switch atomically. the shared header and the void stay still. */
       transition: none;
       padding:
         210px
-        /* top — clears eyes + mask full-opacity at 200px, h1 starts safely below */
+        /* top - clears eyes + mask full-opacity at 200px, h1 starts safely below */
         48px
-        /* left/right — side padding */
+        /* left/right - side padding */
         128px;
-      /* bottom — cleared from nav mist */
+      /* bottom - cleared from nav mist */
       overflow-y: auto;
       /* allows scrolling within each screen */
       -webkit-overflow-scrolling: touch;
@@ -889,7 +887,7 @@ Definitely not three goblins in a trenchcoat">
       }
     }
 
-    /* ipad mini (601–900px) — extra top clearance so title clears the eye shadow */
+    /* ipad mini (601-900px) - extra top clearance so title clears the eye shadow */
     @media (min-width: 601px) and (max-width: 900px) {
       .screen {
         padding-top: 240px;
@@ -1000,7 +998,7 @@ Definitely not three goblins in a trenchcoat">
    to change how fast the body text fades in:
      edit transition-delay:2.6s on .hero .body
    to change the title font size:
-     edit the clamp(0.78rem,2.6vw,1.5rem) — (min, preferred, max)
+     edit the clamp(0.78rem,2.6vw,1.5rem) - (min, preferred, max)
    ═══════════════════════════════════════════════════════ */
     .hero {
       max-width: 90vw;
@@ -1055,7 +1053,7 @@ Definitely not three goblins in a trenchcoat">
 
     .hero p {
       font-size: clamp(0.95rem, 1.6svh, 1.1rem);
-      /* *body text size — matches form input scale */
+      /* *body text size - matches form input scale */
       line-height: 2;
       color: var(--text-primary);
     }
@@ -1081,7 +1079,7 @@ Definitely not three goblins in a trenchcoat">
       color: var(--text-secondary);
     }
 
-    /* service highlights — editorial terms + genres. bold white, not green,
+    /* service highlights - editorial terms + genres. bold white, not green,
        so they read as emphasis rather than interactive affordances. */
     .hero p .service-hl {
       color: #fff;
@@ -1091,7 +1089,7 @@ Definitely not three goblins in a trenchcoat">
     /* the "please note" line is dimmer */
 
     /* [we-to-i] the correction. a line draws across 'we'. then 'i' is marked up like an annotation: stalk first, dot second.
-   uses the Web Animations API, so no keyframes in css required.
+   uses the web animations API, so no keyframes in css required.
    the CSS here just sets up the initial hidden states. */
     #subject {
       position: relative;
@@ -1102,7 +1100,7 @@ Definitely not three goblins in a trenchcoat">
       z-index: 5;
     }
 
-    /* hide strikethrough — SVG draws it. span instead of s so reader mode doesn't auto-strike. */
+    /* hide strikethrough - SVG draws it. span instead of s so reader mode doesn't auto-strike. */
     #subject .we-text {
       text-decoration: none;
     }
@@ -1128,7 +1126,7 @@ Definitely not three goblins in a trenchcoat">
 
     #new-subject {
       display: inline-block;
-      /* always in flow at natural width — opacity:0 hides it until animated.
+      /* always in flow at natural width - opacity:0 hides it until animated.
          space is always reserved so surrounding text never reflows.
          line-height:0 prevents the SVG height from expanding the line box. */
       opacity: 0;
@@ -1152,12 +1150,12 @@ Definitely not three goblins in a trenchcoat">
       transform: scale(0);
     }
 
-    /* [cta] the press for goblins button functions as a late-stage title card, a cta AND a pun. a true triple threat.
+    /* [cta] the press for goblins button functions as a late-stage title card, a cta and a pun. a true triple threat.
    breathes (pulses opacity) on idle.
    to change the breathing speed: edit 3.6s in animation:breathe. */
     .cta-wrap {
       margin-top: 0;
-      /* *gap between body and CTA — hero flex gap (16px) */
+      /* *gap between body and CTA - hero flex gap (16px) */
       display: flex;
       justify-content: center;
       opacity: 0;
@@ -1209,7 +1207,7 @@ Definitely not three goblins in a trenchcoat">
     @media (max-width: 600px) {
       .cta-wrap {
         margin-bottom: 0;
-        /* bottom clearance comes from .screen padding-bottom — matches portfolio/about */
+        /* bottom clearance comes from .screen padding-bottom - matches portfolio/about */
       }
 
       .cta {
@@ -1247,7 +1245,7 @@ Definitely not three goblins in a trenchcoat">
       opacity: 0.92;
     }
 
-    /* existence glitch — button cuts to invisible for a few frames, then back.
+    /* existence glitch - button cuts to invisible for a few frames, then back.
        fired event-driven via animationend, never on a timer. */
     @keyframes btnGlitch {
       0% {
@@ -1287,7 +1285,7 @@ Definitely not three goblins in a trenchcoat">
       animation: btnGlitch 0.18s steps(1, end) forwards !important;
     }
 
-    /* post-submit status line — hidden by default, shown after successful submission */
+    /* post-submit status line - hidden by default, shown after successful submission */
     .submitted-line {
       display: none;
       /* JS sets display:block when hasSubmitted is true */
@@ -1340,11 +1338,11 @@ Definitely not three goblins in a trenchcoat">
       scrollbar-width: none;
       padding:
         clamp(264px, 28svh, 320px)
-        /* top — clears eyes + shadow fade zone; increased to push content below shadow */
+        /* top - clears eyes + shadow fade zone; increased to push content below shadow */
         32px
         /* sides */
         clamp(184px, 24svh, 224px);
-      /* bottom — clears nav mist; generous so active questions never hide in shadow */
+      /* bottom - clears nav mist; generous so active questions never hide in shadow */
     }
 
     @media (max-width: 600px) {
@@ -1363,7 +1361,7 @@ Definitely not three goblins in a trenchcoat">
     }
 
     /* flex column so margin-left:auto on .term-user pushes it right along the cross axis.
-       width:100% is required — without it the flex container shrinks to content width at
+       width:100% is required - without it the flex container shrinks to content width at
        narrow viewports, leaving no room for auto margin to push .term-user right. */
     #termOut {
       display: flex;
@@ -1388,16 +1386,14 @@ Definitely not three goblins in a trenchcoat">
       white-space: pre-wrap;
       word-break: break-word;
       margin: clamp(2px, 0.4svh, 4px) 0;
-      /* *tight — consecutive goblin lines should feel like rapid remarks, not paragraphs */
+      /* *tight - consecutive goblin lines should feel like rapid remarks, not paragraphs */
     }
-
-    /* mobile rules for terminal removed from here and moved to the end of the stylesheet to ensure correct loading order overrides */
 
     .term-line.visible {
       opacity: 1;
     }
 
-    /* Reserve a word's final width before its first character appears. The
+    /* reserve a word's final width before its first character appears. the
        browser wraps it once, before typing, instead of moving a half-typed
        word onto the following line. */
     .term-typed-word {
@@ -1441,18 +1437,18 @@ Definitely not three goblins in a trenchcoat">
     @media (max-width: 600px) {
       .term-blank {
         height: .4em;
-        /* half on mobile — blanks were eating too much vertical space */
+        /* half-height spacing on mobile */
       }
     }
 
     /* spacer between chat sections */
 
-    /* user answers — right-aligned, clickable for rewind */
+    /* user answers - right-aligned, clickable for rewind */
     .term-user {
       color: var(--text-primary);
       cursor: pointer;
       align-self: flex-end;
-      /* opt out of flex column stretch — margin-left:auto alone doesn't work when parent stretches children to full width */
+      /* opt out of flex column stretch - margin-left:auto alone doesn't work when parent stretches children to full width */
       width: fit-content;
       max-width: calc(100% - 28px);
       /* leave room for icon without stealing text width */
@@ -1460,7 +1456,7 @@ Definitely not three goblins in a trenchcoat">
       /* flex so icon and text stay on same baseline */
       flex-direction: row;
       align-items: flex-start;
-      /* icon anchors to top of text, not centre — cleaner on multi-line */
+      /* icon anchors to top of text, not centre - cleaner on multi-line */
       justify-content: flex-end;
       gap: 8px;
       word-break: break-word;
@@ -1481,7 +1477,7 @@ Definitely not three goblins in a trenchcoat">
       opacity: .7;
     }
 
-    /* the rewind icon — appears after the answer locks in, stays visible */
+    /* the rewind icon - appears after the answer locks in, stays visible */
     .term-rewind-icon {
       opacity: 0;
       /* starts hidden; JS animates it in */
@@ -1494,7 +1490,7 @@ Definitely not three goblins in a trenchcoat">
       transform-origin: center center;
       will-change: transform, opacity;
       margin-top: 0.2em;
-      /* optical alignment — sits on the cap-height baseline of the first line */
+      /* optical alignment - sits on the cap-height baseline of the first line */
       align-self: flex-start;
       scale: -1 -1;
       /* flip horizontally + vertically */
@@ -1505,7 +1501,7 @@ Definitely not three goblins in a trenchcoat">
       opacity: .85;
     }
 
-    /* hover — slight brightness lift + tiny extra anti-clockwise nudge */
+    /* hover - slight brightness lift + tiny extra anti-clockwise nudge */
     .term-user:hover .term-rewind-icon.materialised {
       opacity: 1;
       filter: brightness(1.25);
@@ -1513,7 +1509,7 @@ Definitely not three goblins in a trenchcoat">
       transition: opacity 120ms ease, filter 120ms ease, transform 180ms cubic-bezier(0.22, 1, 0.36, 1);
     }
 
-    /* active — instant response, no flash */
+    /* active - instant response, no flash */
     .term-user:active .term-rewind-icon.materialised {
       opacity: 0.9;
       filter: brightness(1.1);
@@ -1543,7 +1539,7 @@ Definitely not three goblins in a trenchcoat">
       opacity: .55;
     }
 
-    /* rewind-in — reverse glitch: elements materialise from noise (used on post-submit hero replay + cookie panel) */
+    /* rewind-in - reverse glitch: elements materialise from noise (used on post-submit hero replay + cookie panel) */
     @keyframes rewindIn {
       0% {
         opacity: 0;
@@ -1576,7 +1572,7 @@ Definitely not three goblins in a trenchcoat">
       }
     }
 
-    /* rewind-out — glitch dissolve: fizzle out with colour noise, no skew */
+    /* rewind-out - glitch dissolve: fizzle out with colour noise, no skew */
     @keyframes rewindOut {
       0% {
         opacity: 1;
@@ -1664,7 +1660,7 @@ Definitely not three goblins in a trenchcoat">
       }
     }
 
-    /* rewind off — no animation at all */
+    /* rewind off - no animation at all */
     body.rewind-off .vcr-active {
       animation: none !important;
     }
@@ -1678,8 +1674,8 @@ Definitely not three goblins in a trenchcoat">
       animation: vcrFlash 0.28s steps(5, end) forwards;
     }
 
-    /* option buttons — user's multiple choice answers, right-aligned like chat bubbles.
-       block + text-align:right (not flex) — [n] and label are inline content, not boxes.
+    /* option buttons - user's multiple choice answers, right-aligned like chat bubbles.
+       block + text-align:right (not flex) - [n] and label are inline content, not boxes.
        flex would split them into separate boxes and break wrapping. */
     .term-options-group {
       display: block;
@@ -1698,7 +1694,7 @@ Definitely not three goblins in a trenchcoat">
     .term-option {
       cursor: pointer;
       color: rgba(255, 255, 255, 0.6);
-      /* dimmed — pending/not yet chosen, like a draft */
+      /* dimmed - pending/not yet chosen, like a draft */
       width: 100%;
       opacity: 0;
       transform: translateY(4px);
@@ -1707,7 +1703,7 @@ Definitely not three goblins in a trenchcoat">
       padding: 1px 0;
       margin: 2px 0;
       display: block;
-      /* not flex — whole line including [n] right-aligns as one unit */
+      /* not flex - whole line including [n] right-aligns as one unit */
       text-align: right;
       white-space: normal;
       word-break: break-word;
@@ -1741,7 +1737,7 @@ Definitely not three goblins in a trenchcoat">
     }
 
     .term-option-label {
-      /* inline — flows naturally after [n] */
+      /* inline - flows naturally after [n] */
     }
 
     /* text input fields (for name, email, pitch, etc) */
@@ -1752,7 +1748,7 @@ Definitely not three goblins in a trenchcoat">
       gap: .5em;
       justify-content: flex-end;
       margin-top: clamp(16px, 2.5svh, 28px);
-      /* breathing room above input — matches option group spacing */
+      /* breathing room above input - matches option group spacing */
     }
 
     .term-input-field {
@@ -1773,7 +1769,7 @@ Definitely not three goblins in a trenchcoat">
     @media (max-width: 600px) {
       .term-input-field {
         font-size: 16px;
-        /* 16px minimum prevents iOS Safari zoom on focus */
+        /* 16px minimum prevents iOS safari zoom on focus */
         padding: 9px 12px;
         min-height: 42px;
       }
@@ -1796,7 +1792,7 @@ Definitely not three goblins in a trenchcoat">
       line-height: 1.4;
     }
 
-    /* send hint — inline beside the input field, same height, right edge */
+    /* send hint - inline beside the input field, same height, right edge */
     .term-input-hint {
       display: flex;
       align-items: center;
@@ -1930,14 +1926,14 @@ Definitely not three goblins in a trenchcoat">
       cursor: default;
     }
 
-    /* submit-error class intentionally removed — no error messages on this site */
+    /* errors stay silent */
 
 
     /* ═══════════════════════════════════════════════════════
    [receipt-css] what the human sees after they've finished chatting with the goblins. they get a copy via email as well.
    ═══════════════════════════════════════════════════════ */
 
-    /* glitch-out — full rewind-style signal collapse. same dramatic effect as
+    /* glitch-out - full rewind-style signal collapse. same dramatic effect as
        the per-element rewind animation, applied to the whole terminal at once. */
     @keyframes glitchOut {
       0% {
@@ -2016,7 +2012,7 @@ Definitely not three goblins in a trenchcoat">
       /* *receipt heading size */
       line-height: 1.6;
       color: var(--text-muted);
-      /* narrator voice — not goblin green, not full white */
+      /* narrator voice - not goblin green, not full white */
       margin-bottom: 28px;
       letter-spacing: .01em;
       text-align: center;
@@ -2030,12 +2026,12 @@ Definitely not three goblins in a trenchcoat">
 
     .receipt h1 .prefix {
       color: var(--text-muted);
-      /* prefix matches — this is narrator, not goblin */
+      /* prefix matches - this is narrator, not goblin */
       margin-right: .4em;
     }
 
 
-    /* the answer list — single column, scrollable */
+    /* the answer list - single column, scrollable */
     .receipt-list {
       display: flex;
       flex-direction: column;
@@ -2098,7 +2094,7 @@ Definitely not three goblins in a trenchcoat">
       /* matches receipt h1 */
     }
 
-    /* goblin voice line in receipt footer — green prefix, goblin colour */
+    /* goblin voice line in receipt footer - green prefix, goblin colour */
     .r-foot .goblin-line {
       color: var(--text-primary);
       font-size: 1.30rem;
@@ -2112,9 +2108,7 @@ Definitely not three goblins in a trenchcoat">
 
 
 
-    /* [REWIND-TUTORIAL-CSS] removed — tutorial is now a goblin inline message */
-
-    /* receipt "query sent" — white title, mirrors the principal-title treatment */
+    /* receipt "query sent" - white title, mirrors the principal-title treatment */
     .receipt-query-header {
       font-family: "Press Start 2P", monospace;
       color: #fff;
@@ -2137,7 +2131,7 @@ Definitely not three goblins in a trenchcoat">
     }
 
 
-    /* receipt goblin typed lines — same as terminal chat style */
+    /* receipt goblin typed lines - same as terminal chat style */
     .receipt-goblin-out {
       margin-bottom: 36px;
       width: 100%;
@@ -2236,13 +2230,13 @@ Definitely not three goblins in a trenchcoat">
       -webkit-touch-callout: none;
     }
 
-    /* double ghost press — fades to deep ghost on press */
+    /* double ghost press - fades to deep ghost on press */
     .footer-nav .nav-btn.pressed {
       opacity: 0.13 !important;
       transition: opacity 0.22s ease !important;
     }
 
-    /* half-return — lighter ghost briefly on release */
+    /* half-return - lighter ghost briefly on release */
     .footer-nav .nav-btn.half-return {
       opacity: 0.38 !important;
       transition: opacity 0.18s ease-out !important;
@@ -2309,14 +2303,14 @@ Definitely not three goblins in a trenchcoat">
 
 
 
-    /* top shadow — solid over eyes, fades out before text begins */
+    /* top shadow - solid over eyes, fades out before text begins */
     .eyes-shadow {
       position: fixed;
       top: 0;
       left: 0;
       width: 100%;
       height: 160px;
-      /* tight to eye zone — fades out well above h1 */
+      /* tight to eye zone - fades out well above h1 */
       background: linear-gradient(to bottom, #000 0%, #000 50%, rgba(0, 0, 0, 0.4) 72%, transparent 100%);
       z-index: 201;
       pointer-events: none;
@@ -2347,7 +2341,7 @@ Definitely not three goblins in a trenchcoat">
 
       .nav-shadow {
         height: 80px;
-        /* shorter on mobile — was 150px, was eating last option */
+        /* shorter on mobile so the final option remains visible */
         background: linear-gradient(to bottom, transparent, rgba(0, 0, 0, 0.95) 60%, #000);
       }
 
@@ -2381,7 +2375,7 @@ Definitely not three goblins in a trenchcoat">
    [portfolio-css] portfolio screen: title + body text fade-in + contact line
    ═══════════════════════════════════════════════════════ */
 
-    /* about / portfolio hero wrapper — unified positioning & reduced scale */
+    /* about / portfolio hero wrapper - unified positioning & reduced scale */
     #screen-about,
     #screen-portfolio {
       justify-content: flex-start;
@@ -2401,7 +2395,7 @@ Definitely not three goblins in a trenchcoat">
       gap: 16px;
     }
 
-    /* coming soon on about + portfolio tabs — same font/size as .cta, flickers in then breathes */
+    /* coming soon on about + portfolio tabs - same font/size as .cta, flickers in then breathes */
     .tab-cs {
       font-family: "Press Start 2P", monospace;
       font-size: 1.25rem;
@@ -2427,7 +2421,7 @@ Definitely not three goblins in a trenchcoat">
       }
     }
 
-    /* tab body — about + portfolio secondary text block. mirrors .hero .body fade-in. */
+    /* tab body - about + portfolio secondary text block. mirrors .hero .body fade-in. */
     .tab-body {
       opacity: 0;
       transition: opacity 0.3s ease;
@@ -2515,7 +2509,7 @@ Definitely not three goblins in a trenchcoat">
       }
     }
 
-    /* text content column — matches .hero .body max-width so all tabs share the same left edge */
+    /* text content column - matches .hero .body max-width so all tabs share the same left edge */
     .tab-body-col {
       max-width: var(--content-width);
       width: 100%;
@@ -2527,7 +2521,7 @@ Definitely not three goblins in a trenchcoat">
       /* 32px spacing below top divider */
     }
 
-    /* about — matches field reports tab-body-col gap */
+    /* about - matches field reports tab-body-col gap */
     #about-hero .tab-body-col {
       gap: 16px;
     }
@@ -2541,16 +2535,16 @@ Definitely not three goblins in a trenchcoat">
     #port-signup-row,
     #about-rune-row {
       margin-top: 14px;
-      /* breathing above — matches .cta padding-top */
+      /* breathing above - matches .cta padding-top */
       margin-bottom: 14px;
-      /* breathing below — matches .cta padding-bottom */
+      /* breathing below - matches .cta padding-bottom */
     }
 
     .bottom-rule {
       margin-top: 16px;
       /* 32px spacing below email CTA */
       margin-bottom: 32px;
-      /* Extra padding before ASCII */
+      /* extra padding before the ASCII star field */
     }
 
     @media (max-width: 600px) {
@@ -2558,7 +2552,7 @@ Definitely not three goblins in a trenchcoat">
         margin-top: 16px;
         /* 32px spacing below email CTA */
         margin-bottom: 24px;
-        /* Extra padding before ASCII */
+        /* extra padding before the star field */
       }
 
       /* compensate: zero top margin so body lands same as home */
@@ -2593,8 +2587,8 @@ Definitely not three goblins in a trenchcoat">
       }
     }
 
-    /* [ascii-linkedin] Meet the Goblins keeps its interactive LinkedIn star field.
-       Field Reports has no social ASCII treatment. */
+    /* [ascii-linkedin] meet the goblins keeps its interactive star field.
+       field reports has no social star field. */
     #ascii-output {
       opacity: 0;
       font-family: "Courier New", Courier, monospace;
@@ -2619,7 +2613,7 @@ Definitely not three goblins in a trenchcoat">
       color: #fff;
       text-decoration: none;
       outline: none;
-      /* A touch beginning on the artwork belongs to the artwork. Safari must
+      /* A touch beginning on the artwork belongs to the artwork. safari must
          know this before touchstart, not after native scrolling has begun. */
       touch-action: none;
     }
@@ -2642,7 +2636,7 @@ Definitely not three goblins in a trenchcoat">
       20%, 55%, 100% { opacity: 1; }
     }
 
-    /* violent strobe flicker — kept for nav dot animations */
+    /* violent strobe flicker for nav dot animations */
     @keyframes violentFlicker {
 
       0%,
@@ -2664,7 +2658,7 @@ Definitely not three goblins in a trenchcoat">
       }
     }
 
-    /* desktop-only line breaks — hidden on mobile */
+    /* desktop-only line breaks - hidden on mobile */
     br.desk-br {
       display: inline;
     }
@@ -2675,7 +2669,7 @@ Definitely not three goblins in a trenchcoat">
       }
     }
 
-    /* dashed rule above/below contact block — width: 100% fills the flex container exactly */
+    /* dashed rule above/below contact block - width: 100% fills the flex container exactly */
     .contact-rule {
       display: block;
       width: 100%;
@@ -2785,7 +2779,7 @@ Definitely not three goblins in a trenchcoat">
         min-width: 10ch;
         text-align: left;
         font-size: 16px;
-        /* matches body text size — prevents iOS zoom */
+        /* matches body text size - prevents iOS zoom */
       }
 
       #port-admit-btn {
@@ -2833,9 +2827,9 @@ Definitely not three goblins in a trenchcoat">
     @media (min-width: 601px) {
       .about-rune-row {
         font-size: 1.25rem;
-        /* ~20px desktop — runes only, mobile untouched */
+        /* ~20px desktop - runes only, mobile untouched */
         height: 38px;
-        /* match port-signup-row height exactly — keeps bottom dividers aligned */
+        /* match port-signup-row height exactly - keeps bottom dividers aligned */
         align-items: center;
         box-sizing: border-box;
         overflow: visible;
@@ -2853,7 +2847,7 @@ Definitely not three goblins in a trenchcoat">
 
     @media (min-width: 601px) {
 
-      /* desktop: absolutely positioned — JS sets top/left relative to .screen after rune row is measured */
+      /* desktop: absolutely positioned - JS sets top/left relative to .screen after rune row is measured */
       #pfg-copied-ann-slot {
         position: absolute;
       }
@@ -2897,9 +2891,9 @@ Definitely not three goblins in a trenchcoat">
         max-width: 100%;
       }
 
-      /* bottom dashed rule on about — visible on mobile */
+      /* bottom dashed rule on about - visible on mobile */
 
-      /* no padding-bottom needed — annotation now floats above the rune row */
+      /* the annotation floats above the rune row */
 
       .about-rune-row {
         font-size: clamp(1rem, 4vw, 1.15rem);
@@ -2943,8 +2937,8 @@ Definitely not three goblins in a trenchcoat">
         margin-left: -0.31em;
       }
 
-      /* The path inside every rune cell is horizontally contained as well as
-         optically kerned. This leaves a real gap even when the idle shimmer
+      /* the path inside every rune cell is horizontally contained as well as
+         optically kerned. this leaves a real gap even when the idle shimmer
          chooses two maximally wide glyphs beside one another. */
       .about-rune-row {
         font-size: clamp(0.75rem, 4.65vw, 1.25rem);
@@ -2967,9 +2961,9 @@ Definitely not three goblins in a trenchcoat">
       opacity: 0.75;
     }
 
-    /* spacers around @ and . stay in place throughout decode/encode — never hidden */
+    /* spacers around @ and . stay in place throughout decode/encode - never hidden */
 
-    /* rune link — breathes like the home CTA once visible */
+    /* rune link - breathes like the home CTA once visible */
     #pfg-email-link {
       transition: opacity 0.2s ease;
     }
@@ -2983,7 +2977,7 @@ Definitely not three goblins in a trenchcoat">
       animation: none;
     }
 
-    /* decoded email span — option D: plain HTML, sized independently from rune SVGs */
+    /* decoded email span - option D: plain HTML, sized independently from rune SVGs */
     #pfg-decoded-email {
       display: none;
       font-family: "Courier New", Courier, monospace;
@@ -3033,8 +3027,8 @@ Definitely not three goblins in a trenchcoat">
         min-height: 48px;
       }
 
-      /* The ticket field is a single compact email control, not a terminal
-         answer box. Keep its type iOS-safe at 16px while giving the row a
+      /* the ticket field is a single compact email control, not a terminal
+         answer box. keep its type iOS-safe at 16px while giving the row a
          quieter 40px profile; the adjacent +1 remains an equally tall target. */
       #port-email-input {
         height: 40px;
@@ -3053,11 +3047,11 @@ Definitely not three goblins in a trenchcoat">
         min-height: 48px;
       }
 
-      /* [mobile-keyboard] The visual viewport may halve when iOS raises its
+      /* [mobile-keyboard] the visual viewport may halve when iOS raises its
          keyboard, but the page itself must not be recomposed as a tiny screen.
-         During that brief state the focused row becomes a calm black input
+         during that brief state the focused row becomes a calm black input
          dock. JS places it against the live keyboard edge and restores every
-         property on blur. Removing the void mask here is intentional: it keeps
+         property on blur. removing the void mask here is intentional: it keeps
          the dock legible without changing the normal mist at all. */
       body.mobile-keyboard-open .stage {
         mask-image: none !important;
@@ -3088,8 +3082,8 @@ Definitely not three goblins in a trenchcoat">
         z-index: 260;
       }
 
-      /* Once the decorative eye stack and mist are gone, reclaim their former
-         dead zone for useful context. This is what lets a question and its
+      /* once the decorative eye stack and mist are gone, reclaim their former
+         dead zone for useful context. this is what lets a question and its
          answer field coexist above even the taller iOS autofill keyboard. */
       body.mobile-keyboard-open .screen.is-active {
         padding-top: max(16px, env(safe-area-inset-top)) !important;
@@ -3119,7 +3113,6 @@ Definitely not three goblins in a trenchcoat">
 
       .term-options-group {
         max-width: 100%;
-        /* was 96% — now that terminal has proper padding, no clamp needed */
       }
 
       .term-option {
@@ -3139,8 +3132,8 @@ Definitely not three goblins in a trenchcoat">
       }
     }
 
-    /* Desktop uses the same deliberate reading scale as mobile without inheriting
-       phone-only geometry. Fixed values keep the interface stable across window sizes. */
+    /* desktop uses the same deliberate reading scale as mobile without inheriting
+       phone-only geometry. fixed values keep the interface stable across window sizes. */
     @media (min-width: 601px) {
       .hero p,
       .tab-body,
@@ -3158,8 +3151,8 @@ Definitely not three goblins in a trenchcoat">
       }
     }
 
-    /* [mobile rhythm] One hierarchy for the three principal views.
-       16px groups related content and 24px separates sections. The copied note is
+    /* [mobile rhythm] one hierarchy for the three principal views.
+       16px groups related content and 24px separates sections. the copied note is
        a zero-flow signature on the divider, never a reason to reserve more space. */
     @media (max-width: 600px) {
       .screen {
@@ -3211,7 +3204,7 @@ Definitely not three goblins in a trenchcoat">
         margin-top: var(--mobile-space-section);
       }
 
-      /* The divider closes the contact/rune section. The star field begins a
+      /* the divider closes the contact/rune section. the star field begins a
          new section, so it receives the full 24px section interval. */
       #about-social {
         margin-top: var(--mobile-space-section);
@@ -3295,7 +3288,7 @@ Definitely not three goblins in a trenchcoat">
         <path
           d="M8 3h6v1h-6z M7 4h8v1h-8z M17 4h2v1h-2z M6 5h7v1h-7z M17 5h3v1h-3z M5 6h8v1h-8z M17 6h4v1h-4z M5 7h8v1h-8z M17 7h7v1h-7z M5 8h8v1h-8z M17 8h7v1h-7z M7 9h6v1h-6z M17 9h6v1h-6z M7 10h6v1h-6z M17 10h5v1h-5z M9 11h6v1h-6z M17 11h4v1h-4z M9 12h6v1h-6z M17 12h3v1h-3z"
           fill="#89ce8d" />
-        <!-- right eye of this pair — shifted 37px right -->
+        <!-- right eye of this pair - shifted 37px right -->
         <g transform="translate(37,0)">
           <path
             d="M10 0h1v1h-1z M10 1h1v1h-1z M6 2h1v1h-1z M5 3h2v1h-2z M3 5h2v1h-2z M1 7h2v1h-2z M1 8h1v1h-1z M27 9h1v1h-1z M1 11h1v1h-1z M1 12h1v1h-1z M23 13h1v1h-1z M23 14h1v1h-1z M8 15h1v1h-1z"
@@ -3324,7 +3317,7 @@ Definitely not three goblins in a trenchcoat">
   <div class="eyes-blocker" aria-hidden="true"></div>
 
   <!-- ═══════════════════════════════════════════════════════
-     PAGE STRUCTURE — three screens stacked, only one visible at a time.
+     PAGE STRUCTURE - three screens stacked, only one visible at a time.
      hero → terminal → receipt.
      ═══════════════════════════════════════════════════════ -->
   <div class="page">
@@ -3343,10 +3336,10 @@ Definitely not three goblins in a trenchcoat">
         </div>
       </header>
 
-      <!-- ─────────────────────────────────────────────────
+      <!-- -
          [hero-html] the landing screen. title + intro copy + cta.
-         do not change the copy — it's locked.
-         ───────────────────────────────────────────────── -->
+         do not change the copy - it's locked.
+         - -->
       <section class="screen is-active" id="screen-hero" data-screen-label="01 Hero" aria-label="home"
         aria-hidden="false" tabindex="-1">
         <div class="principal-header-slot" data-principal-view="home"></div>
@@ -3376,7 +3369,7 @@ Definitely not three goblins in a trenchcoat">
               players don't skip.</p>
             <p class="note">please note: the goblins cannot digest poetry or literary fiction.</p>
           </div>
-          <!-- the press for goblins button functions as a late-stage title card, a cta AND a pun. a true triple threat. -->
+          <!-- the press for goblins button functions as a late-stage title card, a cta and a pun. a true triple threat. -->
           <div class="cta-wrap">
             <button class="cta" id="cta" aria-label="press for goblins">
               press for goblins
@@ -3406,9 +3399,9 @@ Definitely not three goblins in a trenchcoat">
       </section>
 
 
-      <!-- ─────────────────────────────────────────────────
+      <!-- -
          [about-html] the about screen. title and body fade and glitch in on arrival.
-         ───────────────────────────────────────────────── -->
+         - -->
       <section class="screen" id="screen-about" data-screen-label="05 About" aria-label="meet the goblins"
         aria-hidden="true" tabindex="-1" inert>
         <div class="principal-header-slot" data-principal-view="about"></div>
@@ -3443,9 +3436,9 @@ Definitely not three goblins in a trenchcoat">
         </div>
       </section>
 
-      <!-- ─────────────────────────────────────────────────
+      <!-- -
          [portfolio-html] portfolio screen: title + body fade-in + contact line.
-         ───────────────────────────────────────────────── -->
+         - -->
       <section class="screen" id="screen-portfolio" data-screen-label="06 Portfolio" aria-label="field reports"
         aria-hidden="true" tabindex="-1" inert>
         <div class="principal-header-slot" data-principal-view="portfolio"></div>
@@ -3469,10 +3462,6 @@ Definitely not three goblins in a trenchcoat">
 
     </div>
   </div>
-
-  <!-- [TERM-INFO] — removed; contact button now lives in the about screen -->
-
-  <!-- rewind tutorial moved to inline goblin message — see [REWIND-TUTORIAL] in JS -->
 
   <!-- [footer-nav] field reports left, home centre, meet the goblins right. JS sets aria-current + active-dot. -->
   <nav class="footer-nav" aria-label="Main navigation">
@@ -3502,7 +3491,7 @@ Definitely not three goblins in a trenchcoat">
     const PREFIX_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8,4 L16,12 L8,20" /></svg>';
 
     /* [screen-state] one owner for what is visible, interactive, exposed to
-       assistive technology and allowed to hold focus. The void may obscure
+       assistive technology and allowed to hold focus. the void may obscure
        content visually; application state itself must never become ambiguous. */
     const APP_SCREEN_IDS = Object.freeze([
       'screen-hero',
@@ -3517,7 +3506,7 @@ Definitely not three goblins in a trenchcoat">
       try {
         screen.focus({ preventScroll: true });
       } catch (_) {
-        /* Older focus implementations ignore the options object. */
+        /* older focus implementations ignore the options object. */
         screen.focus();
       }
     }
@@ -3536,7 +3525,7 @@ Definitely not three goblins in a trenchcoat">
 
       if (id !== 'screen-term' && window._cleanupTerminalInput) window._cleanupTerminalInput();
 
-      /* Make the destination truthful before moving focus away from its source. */
+      /* make the destination truthful before moving focus away from its source. */
       target.inert = false;
       target.removeAttribute('inert');
       target.setAttribute('aria-hidden', 'false');
@@ -3560,7 +3549,7 @@ Definitely not three goblins in a trenchcoat">
     }
     window._setActiveScreenState = setActiveScreenState;
 
-    /* sync divider width + body text max-width to ASCII logo width */
+    /* sync divider width + body text max-width to star field width */
     function syncDividerWidth(w) {
       /* contact-rules track the shared content-width token; no JS override needed */
     }
@@ -3602,9 +3591,9 @@ Definitely not three goblins in a trenchcoat">
       });
     }
 
-    /* ── scheduleGlitch — fires btnGlitch once on el, then reschedules itself
-       via animationend. interval is random 2000–5000ms each cycle.
-       only runs when button is not disabled. no setInterval, no polling. ── */
+    /* - scheduleGlitch - fires btnGlitch once on el, then reschedules itself
+       via animationend. interval is random 2000-5000ms each cycle.
+       only runs when button is not disabled. no setInterval, no polling. - */
     function scheduleGlitch(el) {
       var delay = 2000 + Math.random() * 3000;
       var t = setTimeout(function () {
@@ -3625,7 +3614,7 @@ Definitely not three goblins in a trenchcoat">
               el.removeEventListener('animationend', onGlitchEnd);
               finish();
             });
-            /* Safari fallback: reschedule if animationend doesn't fire within 400ms */
+            /* safari fallback: reschedule if animationend doesn't fire within 400ms */
             setTimeout(finish, 400);
           });
         });
@@ -3709,7 +3698,7 @@ Definitely not three goblins in a trenchcoat">
       }
       window._syncPrincipalHeaderVisibility = syncPrincipalHeaderVisibility;
 
-      /* ── activate a dot, hide others ── */
+      /* - activate a dot, hide others - */
       function setDot(tab) {
         Object.keys(DOTS).forEach(function (k) {
           DOTS[k].style.display = (k === tab) ? 'block' : 'none';
@@ -3723,12 +3712,12 @@ Definitely not three goblins in a trenchcoat">
         });
       }
 
-      /* ── show a screen without touching eye/hero screens ── */
+      /* - show a screen without touching eye/hero screens - */
       function activateScreen(id, options) {
         return window._setActiveScreenState(id, options);
       }
 
-      /* ── violent-flicker a .coming-soon span, then settle into breathe ── */
+      /* - violent-flicker a .coming-soon span, then settle into breathe - */
       /* modified triggerFlicker to handle any element */
       function triggerFlicker(el) {
         if (!el) return;
@@ -3749,13 +3738,13 @@ Definitely not three goblins in a trenchcoat">
               el.removeEventListener('animationend', onEnd);
               applySettled();
             }, { once: true });
-            /* Safari fallback: if animationend doesn't fire within 600ms, settle anyway */
+            /* safari fallback: if animationend doesn't fire within 600ms, settle anyway */
             setTimeout(applySettled, 600);
           });
         });
       }
 
-      /* ── run about tab animation sequence — entrance only fires on first visit ── */
+      /* run about tab animation sequence - entrance only fires on first visit */
       var _aboutAnimFired = false;
       function runAboutAnim() {
         var cs = document.getElementById('about-cs');
@@ -3771,7 +3760,7 @@ Definitely not three goblins in a trenchcoat">
           if (cs && !cs.classList.contains('settled')) triggerFlicker(cs);
         }, 200);
 
-        /* contact line + rune row + address — glitch in on first visit only */
+        /* contact line + rune row + address - glitch in on first visit only */
         setTimeout(function () {
           var contactLine = document.getElementById('about-contact-line');
           var contactLine2 = document.getElementById('about-contact-line-2');
@@ -3785,8 +3774,8 @@ Definitely not three goblins in a trenchcoat">
                 if (addr) addr.classList.add('ready');
                 // scramble-on-miss: taps outside runes/eyes briefly cycle each rune through 2 random glyphs then revert
                 attachRuneScrambleOnMiss(runeRow);
-                // rune glitch — same btnGlitch flicker as the CTA, stops on decode
-                // first glitch fires after 1s; subsequent glitches schedule randomly 2–6s apart
+                // rune glitch - same btnGlitch flicker as the CTA, stops on decode
+                // first glitch fires after 1s; subsequent glitches schedule randomly 2-6s apart
                 var runeLink = document.getElementById('pfg-email-link');
                 if (runeLink) {
                   function fireRuneGlitch() {
@@ -3825,7 +3814,7 @@ Definitely not three goblins in a trenchcoat">
 
       }
 
-      /* ── run portfolio tab animation sequence — replays every visit ── */
+      /* - run portfolio tab animation sequence - replays every visit - */
       function runPortfolioAnim() {
         var cs = document.getElementById('port-cs');
         var dot = DOTS['portfolio'];
@@ -3850,14 +3839,14 @@ Definitely not three goblins in a trenchcoat">
           });
         }, 350);
 
-        /* +1 button glitch — starts after signup row has faded in */
+        /* +1 button glitch - starts after signup row has faded in */
         setTimeout(function () {
           var admitBtn = document.getElementById('port-admit-btn');
           if (admitBtn && !admitBtn._glitchTimeout) scheduleGlitch(admitBtn);
         }, 1000);
       }
 
-      /* ── portfolio newsletter signup ── */
+      /* - portfolio newsletter signup - */
       (function () {
         var btn = document.getElementById('port-admit-btn');
         var input = document.getElementById('port-email-input');
@@ -3912,7 +3901,7 @@ Definitely not three goblins in a trenchcoat">
             row.style.display = 'none';
             confirm.style.display = 'block';
 
-            /* idle cursor — same pattern as contact form step 1:
+            /* idle cursor - same pattern as contact form step 1:
                a proper term-line with > prefix that blinks for 1400ms,
                then is removed and replaced by chained typeMessage calls */
             var idle = document.createElement('div');
@@ -3925,7 +3914,7 @@ Definitely not three goblins in a trenchcoat">
             confirm.appendChild(idle);
             setTimeout(function () {
               idle.remove();
-              skipping = false; /* reset — spacebar skip must not bleed into confirmation lines */
+              skipping = false; /* reset - spacebar skip must not bleed into confirmation lines */
               typeMessage('we have noted your interest', function () {
                 setTimeout(function () {
                   typeMessage('you will receive a field report ticket in due course', function () {
@@ -3938,7 +3927,7 @@ Definitely not three goblins in a trenchcoat">
             }, 1400);
           }
           row.addEventListener('animationend', _onRowGone, { once: true });
-          /* iOS Safari fallback — animationend sometimes doesn't fire for short animations */
+          /* iOS safari fallback - animationend sometimes doesn't fire for short animations */
           setTimeout(_onRowGone, 400);
 
         }
@@ -3949,12 +3938,11 @@ Definitely not three goblins in a trenchcoat">
         });
       }());
 
-      /* ── switch to a tab ── */
+      /* - switch to a tab - */
       function switchTab(tab, instant) {
         if (!PRINCIPAL_VIEWS[tab]) return;
         var heroActive = document.getElementById('screen-hero') && document.getElementById('screen-hero').classList.contains('is-active');
         if (tab === currentTab && !(tab === 'home' && terminalStarted && heroActive)) return;
-        /* no viewport resize cleanup needed — setupInputViewport no longer stores on terminal */
         currentTab = tab;
         renderPrincipalHeader(tab);
         setDot(tab);
@@ -3976,7 +3964,7 @@ Definitely not three goblins in a trenchcoat">
             }
           }
           activateScreen(targetScreen);
-          /* always show nav when switching tabs — scroll state belongs to the new screen */
+          /* always show nav when switching tabs - scroll state belongs to the new screen */
           var _nav = document.querySelector('.footer-nav');
           if (_nav) _nav.classList.remove('hidden');
 
@@ -3996,7 +3984,7 @@ Definitely not three goblins in a trenchcoat">
         doSwitch();
       }
 
-      /* ── eyes click: return to home screen (instant, no replay) ── */
+      /* - eyes click: return to home screen (instant, no replay) - */
       var eyesEl = document.getElementById('eyes');
       if (eyesEl) {
         eyesEl.addEventListener('click', function () {
@@ -4011,7 +3999,7 @@ Definitely not three goblins in a trenchcoat">
             var ctaBtn = document.getElementById('cta');
             if (ctaBtn) ctaBtn.innerText = 'resume chat';
           }
-          /* show hero directly — bypass switchTab's currentTab guard */
+          /* show hero directly - bypass switchTab's currentTab guard */
           activateScreen('screen-hero');
           renderPrincipalHeader('home');
           var _eyeNav = document.querySelector('.footer-nav');
@@ -4019,17 +4007,17 @@ Definitely not three goblins in a trenchcoat">
           setDot('home');
           currentTab = 'home';
           history.replaceState(null, '', window.location.pathname);
-          /* eyes are already open-locked — no replayHero needed */
+          /* eyes are already open-locked - no replayHero needed */
         });
       }
 
-      /* ── determine starting tab from hash ── */
+      /* - determine starting tab from hash - */
       var startTab = 'home';
       var hash = window.location.hash.replace('#', '');
       if (hash === 'about' || hash === 'portfolio') startTab = hash;
 
-      /* ── wire up nav buttons ── */
-      /* double ghost — delegated to footer-nav so listeners survive switchTab() dom updates */
+      /* - wire up nav buttons - */
+      /* double ghost - delegated to footer-nav so listeners survive switchTab() dom updates */
       var navContainer = document.querySelector('.footer-nav');
       if (navContainer) {
         navContainer.addEventListener('touchstart', function (e) {
@@ -4053,7 +4041,7 @@ Definitely not three goblins in a trenchcoat">
         navContainer.addEventListener('touchend', handleRelease, { passive: true });
         navContainer.addEventListener('touchcancel', handleRelease, { passive: true });
 
-        /* desktop press effect — mirrors the touch double-ghost on mouse */
+        /* desktop press effect - mirrors the touch double-ghost on mouse */
         navContainer.addEventListener('mousedown', function (e) {
           var btn = e.target.closest('.nav-btn');
           if (!btn) return;
@@ -4080,7 +4068,7 @@ Definitely not three goblins in a trenchcoat">
         });
       }
 
-      /* ── keyboard navigation ── */
+      /* - keyboard navigation - */
       document.addEventListener('keydown', function (e) {
         var tag = e.target.tagName ? e.target.tagName.toLowerCase() : '';
         var isEditable = tag === 'input' || tag === 'textarea' || e.target.isContentEditable;
@@ -4105,25 +4093,25 @@ Definitely not three goblins in a trenchcoat">
         }
       });
 
-      /* ── handle browser back/forward ── */
+      /* - handle browser back/forward - */
       window.addEventListener('hashchange', function () {
         var h = window.location.hash.replace('#', '');
         var tab = (h === 'about' || h === 'portfolio') ? h : 'home';
         switchTab(tab, false);
       });
 
-      /* ── fade page in on initial load ── */
+      /* - fade page in on initial load - */
       page.style.opacity = '0';
       switchTab(startTab, true);
 
-      /* ── mobile: hide nav on scroll (listens to each .screen, not window) ── */
+      /* - mobile: hide nav on scroll (listens to each .screen, not window) - */
       var nav = document.querySelector('.footer-nav');
       if (nav) {
         /* each screen gets its own lastScrollY so switching tabs can't corrupt state */
         document.querySelectorAll('.screen').forEach(function (scr) {
           var lastScrollY = 0;
           scr.addEventListener('scroll', function () {
-            /* ignore programmatic terminal scrolls — only react to real user gestures */
+            /* ignore programmatic terminal scrolls - only react to real user gestures */
             if (_progScrolling) return;
             var currentY = scr.scrollTop;
             /* receipt screen: nav stays visible always */
@@ -4138,7 +4126,7 @@ Definitely not three goblins in a trenchcoat">
         });
       }
 
-      /* ── CTA flicker on hero ready ── */
+      /* - CTA flicker on hero ready - */
       document.addEventListener('heroReady', function () {
         window._heroReadyFired = true;
         if (currentTab === 'home' && principalTitle) principalTitle.classList.add('is-visible');
@@ -4152,7 +4140,7 @@ Definitely not three goblins in a trenchcoat">
               cta.removeEventListener('animationend', onSettleEnd);
               scheduleGlitch(cta);
             }, { once: true });
-            /* Safari fallback: start glitch after max flicker duration */
+            /* safari fallback: start glitch after max flicker duration */
             setTimeout(function () { if (!cta._glitchTimeout) scheduleGlitch(cta); }, 700);
           }, 500);
         }
@@ -4167,7 +4155,7 @@ Definitely not three goblins in a trenchcoat">
     }());
 
     /* ╔══════════════════════════════════════════════════════════════════════════╗
-       ║  JAVASCRIPT — all the behaviour lives here.                            ║
+       ║  JAVASCRIPT - all the behaviour lives here.                            ║
        ║  everything is vanilla JS, no frameworks, no dependencies.             ║
        ╚══════════════════════════════════════════════════════════════════════════╝ */
 
@@ -4183,10 +4171,10 @@ Definitely not three goblins in a trenchcoat">
       crt: true,              /* *crt sweep on/off */
       rewind: 'vcr',          /* *rewind animation style */
       submitMode: 'live',     /* *mock pretends; live actually sends. */
-      submitEndpoint: '/api/receipt'  /* *relative — works on any deployment URL */
+      submitEndpoint: '/api/receipt'  /* *relative - works on any deployment URL */
     };
 
-    /* applyConfig — pushes the config values into the DOM.
+    /* applyConfig - pushes the config values into the DOM.
        called once on load and again whenever config changes via postMessage. */
     function applyConfig() {
       /* update the CSS variable so the green colour changes everywhere */
@@ -4202,13 +4190,13 @@ Definitely not three goblins in a trenchcoat">
 
     applyConfig();
 
-    /* [short-viewport] CSS max-height media queries use screen height on desktop Safari,
+    /* [short-viewport] CSS max-height media queries use screen height on desktop safari,
        not window height. use JS + body class instead so the eye retraction fires correctly
        when the browser window is resized to a short height.
        keyboard guard: on iOS both innerHeight and visualViewport.height shrink together
        when the keyboard opens, so a simple delta check fails. instead we store a baseline
        on load and treat a large vv drop that diverges from the innerHeight drop as keyboard
-       activity — not a genuine short viewport.
+       activity - not a genuine short viewport.
 
        compact-landscape (width > 600, height < 500): phone rotated, gaming handhelds,
        folded cover screens. eyes animate in first, then retract smoothly after ~5.3s.
@@ -4261,8 +4249,8 @@ Definitely not three goblins in a trenchcoat">
       _mobileKeyboardRow = row;
       row.classList.add('mobile-input-dock');
 
-      /* Measure after the dock styles land, then place its bottom 12px above
-         the visual viewport edge. This works in both Safari modes: whether the
+      /* measure after the dock styles land, then place its bottom 12px above
+         the visual viewport edge. this works in both safari modes: whether the
          keyboard overlays the layout viewport or resizes it. */
       var rowHeight = Math.ceil(row.getBoundingClientRect().height);
       var dockTop = Math.max(visibleTop + 8, visibleTop + visibleHeight - rowHeight - 12);
@@ -4279,8 +4267,8 @@ Definitely not three goblins in a trenchcoat">
         terminalEl.style.paddingBottom = (rowHeight + 36) + 'px';
         terminalEl.scrollTop = terminalEl.scrollHeight;
       } else {
-        /* Keep the line which explains the Portfolio email field visible just
-           above the dock. The input itself is fixed, so this scroll cannot hide it. */
+        /* keep the line which explains the portfolio email field visible just
+           above the dock. the input itself is fixed, so this scroll cannot hide it. */
         var screen = row.closest('.screen');
         var context = row.previousElementSibling;
         if (screen && context) {
@@ -4323,8 +4311,8 @@ Definitely not three goblins in a trenchcoat">
           return;
         }
 
-        /* Keep the stable page geometry through Safari's keyboard-closing
-           animation. Releasing it midway would make the entire site briefly
+        /* keep the stable page geometry through safari's keyboard-closing
+           animation. releasing it midway would make the entire site briefly
            collapse to the half-height visual viewport before expanding again. */
         var vv = window.visualViewport;
         if (vv && vv.scale <= 1.01 && vv.height < _mobileLayoutViewportHeight - 80 && attempt < 10) {
@@ -4365,11 +4353,9 @@ Definitely not three goblins in a trenchcoat">
       var isKeyboardSession = _mobileKeyboardSessionActive() || body.classList.contains('mobile-keyboard-open');
       var liveViewportHeight = Math.round(vv ? vv.height : window.innerHeight);
 
-      /* Pinch zoom shrinks visualViewport.height even though the page's layout
-         viewport has not changed. Rebuilding the void aperture from that
-         shrunken number made the two masks overlap and turned most of the page
-         black. Preserve the last unscaled layout height while zoomed; Safari can
-         then magnify and pan the real page normally. */
+      /* pinch zoom shrinks visualViewport.height without changing the page's
+         layout viewport. preserve the unscaled layout height while zoomed so
+         safari can magnify and pan the page normally. */
       if (!isPinchZoomed && !isKeyboardSession) _mobileLayoutViewportHeight = liveViewportHeight;
       var viewportHeight = (isPinchZoomed || isKeyboardSession) ? _mobileLayoutViewportHeight : liveViewportHeight;
 
@@ -4383,7 +4369,7 @@ Definitely not three goblins in a trenchcoat">
       delete body.dataset.mobileZoom;
 
       /* A keyboard resize is temporary occlusion, not a new screen geometry.
-         Keep the last real aperture intact; CSS removes its mask only while the
+         keep the last real aperture intact; CSS removes its mask only while the
          focused input dock is visible. */
       if (isKeyboardSession) {
         body.classList.remove('mobile-short-viewport');
@@ -4456,14 +4442,14 @@ Definitely not three goblins in a trenchcoat">
 
     function updateShortViewport() {
       updateMobileAperture();
-      /* mobile: never apply either class — auto-hide-eyes handles eyes on narrow viewports */
+      /* mobile: never apply either class - auto-hide-eyes handles eyes on narrow viewports */
       if (window.innerWidth <= 600) {
         document.body.classList.remove('short-viewport', 'compact-landscape');
         if (_clDeferTimer) { clearTimeout(_clDeferTimer); _clDeferTimer = null; }
         _applyClNav(false);
         return;
       }
-      if (_isKeyboardOpen()) return; /* keyboard opening on tablet — ignore */
+      if (_isKeyboardOpen()) return; /* keyboard opening on tablet - ignore */
 
       var h = window.innerHeight;
       var isCompact = h < 500;   /* wide + very short: compact landscape devices */
@@ -4475,7 +4461,7 @@ Definitely not three goblins in a trenchcoat">
         _applyCompactLandscape(false);
         _applyClNav(true);
       } else {
-        /* not compact — cancel any pending defer and clear the class */
+        /* not compact - cancel any pending defer and clear the class */
         if (_clDeferTimer) { clearTimeout(_clDeferTimer); _clDeferTimer = null; }
         document.body.classList.remove('compact-landscape');
         document.body.classList.toggle('short-viewport', isShort);
@@ -4660,7 +4646,7 @@ Definitely not three goblins in a trenchcoat">
        then the open state locks in so the random blinking interval timer can take over.
 
        one timing at every viewport: p1 is immediate, then p2 at 220ms,
-       p3 at 440ms, lock at 1500ms. Desktop and mobile are one experience.
+       p3 at 440ms, lock at 1500ms. desktop and mobile are one experience.
        ═══════════════════════════════════════════════════════ */
     const eyes = Array.from(document.querySelectorAll('.eye-pair'));
     const hero = document.getElementById('hero');
@@ -4692,10 +4678,10 @@ Definitely not three goblins in a trenchcoat">
 
     /* ═══════════════════════════════════════════════════════
        [we-to-i] the correction. a line draws across 'we'. then 'i' is marked up like an annotation: stalk first, dot second.
-       uses the Web Animations API, so no keyframes in css required.
+       uses the web animations API, so no keyframes in css required.
 
-       resetCorrection() — hides everything, cancels running animations.
-       runCorrection()  — plays the full sequence.
+       resetCorrection() - hides everything, cancels running animations.
+       runCorrection()  - plays the full sequence.
 
        timing (all in ms, tweak these):
          1200 = duration of the strikethrough line drawing
@@ -4714,7 +4700,7 @@ Definitely not three goblins in a trenchcoat">
       if (strikePath) strikePath.style.strokeDashoffset = '31';
       if (iStalk) iStalk.style.strokeDashoffset = '13';
       if (iDot) { iDot.style.opacity = '0'; iDot.style.transform = 'scale(0)'; }
-      /* snap back to hidden — instant, no transition */
+      /* snap back to hidden - instant, no transition */
       newSubjectEl.style.transition = 'none';
       newSubjectEl.style.opacity = '0';
     }
@@ -4731,7 +4717,7 @@ Definitely not three goblins in a trenchcoat">
         { duration: 1200, easing: 'cubic-bezier(0.4,0,0.2,1)', fill: 'forwards' }
       );
       /* step 2: after 1400ms, fade the "i" in and start drawing the stalk.
-         no display toggle or width change — text never reflows. */
+         no display toggle or width change - text never reflows. */
       const t1 = setTimeout(() => {
         newSubjectEl.style.transition = 'opacity 200ms ease';
         newSubjectEl.style.opacity = '1';
@@ -4755,7 +4741,7 @@ Definitely not three goblins in a trenchcoat">
       heroTimers.push(t1);
     }
 
-    /* replayHero — resets and replays the entire hero sequence.
+    /* replayHero - resets and replays the entire hero sequence.
        called on page load and when navigating back to the hero screen.
        post-submit: body paragraphs glitch in (rewindIn stagger), submitted-line fades in. */
     function replayHero() {
@@ -4795,7 +4781,7 @@ Definitely not three goblins in a trenchcoat">
         }, HERO_READY_MS));
         /* no we→i correction on post-submit return */
       } else {
-        /* normal path — hero runs immediately, cookie panel is a pure overlay */
+        /* normal path - hero runs immediately, cookie panel is a pure overlay */
         if (submittedLine) { submittedLine.style.display = 'none'; submittedLine.classList.remove('in'); }
         void hero.offsetWidth;
         replayEyes();
@@ -4833,10 +4819,10 @@ Definitely not three goblins in a trenchcoat">
       function setEyeZone(hide) {
         eyesEl.classList.toggle('hidden-mobile', hide);
         if (blockerEl) blockerEl.classList.toggle('hidden-mobile', hide);
-        /* shadowEl intentionally NOT toggled so the void gradient persists as a hard-line fix */
+        /* shadowEl stays put so the void gradient keeps its hard line */
       }
 
-      /* called by terminal start — eyes stay visible for the q&a */
+      /* called by terminal start - eyes stay visible for the q&a */
       window._lockEyesVisible = function () {
         eyesLockedVisible = true;
         setEyeZone(false);
@@ -4853,7 +4839,7 @@ Definitely not three goblins in a trenchcoat">
         if (Math.abs(delta) < MIN_DELTA) return; /* not enough movement */
 
         if (delta > 0 && current > 50 && !hidden) {
-          /* scrolling down — hide eyes briefly, then restore after 1s */
+          /* scrolling down - hide eyes briefly, then restore after 1s */
           hidden = true;
           setEyeZone(true);
           locked = true;
@@ -4876,7 +4862,7 @@ Definitely not three goblins in a trenchcoat">
        [cta-js] what happens when you click "press for goblins".
        eyes blink, hero fades out, terminal fades in, chat begins.
        ═══════════════════════════════════════════════════════ */
-    /* CTA visibility gate — button only fires once it's scrolled into view */
+    /* CTA visibility gate - button only fires once it's scrolled into view */
     let ctaVisible = false;
     const ctaWrap = document.querySelector('.cta-wrap');
     if (ctaWrap && 'IntersectionObserver' in window) {
@@ -4888,7 +4874,7 @@ Definitely not three goblins in a trenchcoat">
     }
 
     cta.addEventListener('click', () => {
-      if (!ctaVisible) return; /* swallow click — not yet in view */
+      if (!ctaVisible) return; /* swallow click - not yet in view */
       /* make all eyes blink */
       eyes.forEach(e => { e.classList.add('blink'); setTimeout(() => e.classList.remove('blink'), 250); });
 
@@ -4899,7 +4885,7 @@ Definitely not three goblins in a trenchcoat">
         showScreen('term', { focus: 'context' });
         hero.style.opacity = '';
         if (terminalStarted) {
-          /* resuming a session — restore exactly as left, no wipe */
+          /* resuming a session - restore exactly as left, no wipe */
           terminalPaused = false;
           terminal.style.display = '';
           terminal.classList.remove('glitch-out');
@@ -4918,7 +4904,7 @@ Definitely not three goblins in a trenchcoat">
       }, 500);
     });
 
-    /* receipt return button — shown in post-submit hero state */
+    /* receipt return button - shown in post-submit hero state */
     const receiptReturnBtn = document.getElementById('receiptReturnBtn');
     if (receiptReturnBtn) {
       receiptReturnBtn.addEventListener('click', () => {
@@ -4928,10 +4914,10 @@ Definitely not three goblins in a trenchcoat">
     }
 
 
-    /* start the hero sequence — skip animation on return visits (single site-wide key) */
+    /* start the hero sequence - skip animation on return visits (single site-wide key) */
     (function () {
       if (pfgAnalyticsEnabled() && sessionStorage.getItem('pfg-loaded')) {
-        /* return visit with consent — immediately open all eyes and show hero content */
+        /* return visit with consent - immediately open all eyes and show hero content */
         eyes.forEach(function (e) { e.classList.add('open-locked'); });
         hero.classList.add('ready');
         window._heroReadyFired = true;
@@ -4971,7 +4957,6 @@ Definitely not three goblins in a trenchcoat">
 
     /* ═══════════════════════════════════════════════════════
        [reactions] our responses to the human.
-       to change what we say: edit the strings. empty array = we say nothing and move on.
        ═══════════════════════════════════════════════════════ */
     const REACTIONS = {
       gate: {
@@ -5003,7 +4988,7 @@ Definitely not three goblins in a trenchcoat">
         'genre blend': ['of course it is'],
         'something else': ['good to know']
       },
-      terms: { "i'm in": ['splendid'], "i have questions": [] }   /* no reactions — handled inline */
+      terms: { "i'm in": ['splendid'], "i have questions": [] }   /* no reactions - handled inline */
     };
 
 
@@ -5014,7 +4999,7 @@ Definitely not three goblins in a trenchcoat">
     const MSG_GAP = 400;   /* *pause between our lines. adjust to taste. */
     const STEP_GAP = 600;  /* *how long after reacting before the next question appears. */
 
-    /* step number lookup — maps step names to numbers for rewind */
+    /* step number lookup - maps step names to numbers for rewind */
     const STEP_NUM = {
       gate: 1, 'writer-type': 2, service: 3, genre: 4,
       'f-pitch': 7, 'f-title': 7, 'f-name': 8,
@@ -5044,7 +5029,7 @@ Definitely not three goblins in a trenchcoat">
     let isAutoAnswering = false; /* true when spacebar is held to auto-answer */
     let spaceHoldTimer = null;
     let autoAnswerInterval = null;
-    let rewindGen = 0;           /* increments on rewind — orphaned animations check this to self-cancel */
+    let rewindGen = 0;           /* increments on rewind - orphaned animations check this to self-cancel */
     let emailPrefill = '';       /* set by rewindTo(9) so step 9 re-fills field1 with the previous email */
     let activeInputCleanup = null; /* one keyboard/viewport observer set at a time */
     window._cleanupTerminalInput = function () {
@@ -5053,7 +5038,7 @@ Definitely not three goblins in a trenchcoat">
       if (focused && focused.closest && focused.closest('#screen-term')) focused.blur();
     };
     terminalStarted = false; /* true once the chat has been started */
-    let _progScrolling = false;  /* true during programmatic scroll — prevents nav hide-on-scroll */
+    let _progScrolling = false;  /* true during programmatic scroll - prevents nav hide-on-scroll */
 
     /* auto-scroll the terminal to the bottom after each new message */
     function scrollTermBottom() {
@@ -5063,7 +5048,7 @@ Definitely not three goblins in a trenchcoat">
       requestAnimationFrame(function () { _progScrolling = false; });
     }
 
-    /* scrollCurrentStepIntoView — positions the current question near the top
+    /* scrollCurrentStepIntoView - positions the current question near the top
        of the terminal so it stays visible above options/input fields.
        uses the hidden [data-step-start] marker inserted by markStep(). */
     function scrollCurrentStepIntoView(offset) {
@@ -5071,7 +5056,7 @@ Definitely not three goblins in a trenchcoat">
       const markers = termOut.querySelectorAll('[data-step-start]');
       const marker = markers[markers.length - 1];
       if (!marker) { scrollTermBottom(); return; }
-      /* use the element after the marker — height-0 divs still have geometry,
+      /* use the element after the marker - height-0 divs still have geometry,
          but nextElementSibling (the goblin question line) is more reliable */
       const target = marker.nextElementSibling || marker;
       const containerRect = terminal.getBoundingClientRect();
@@ -5080,7 +5065,7 @@ Definitely not three goblins in a trenchcoat">
       const relativeTop = targetRect.top - containerRect.top;
       _progScrolling = true;
       terminal.scrollTo({ top: Math.max(0, terminal.scrollTop + relativeTop - offset), behavior: 'smooth' });
-      /* smooth scroll may take several frames — hold flag for ~400ms */
+      /* smooth scroll may take several frames - hold flag for ~400ms */
       setTimeout(function () { _progScrolling = false; }, 400);
     }
 
@@ -5090,7 +5075,7 @@ Definitely not three goblins in a trenchcoat">
        makeCursor() builds the blinking rectangle. typeMessage() does one string. typeMessages() does several in order.
        ═══════════════════════════════════════════════════════ */
 
-    /* makeCursor — creates a cursor element with .solid(), .blink(), .kill() methods */
+    /* makeCursor - creates a cursor element with .solid(), .blink(), .kill() methods */
     function makeCursor() {
       const el = document.createElement('span');
       el.className = 'term-cursor';
@@ -5121,7 +5106,7 @@ Definitely not three goblins in a trenchcoat">
       svg.setAttribute('stroke-linecap', 'round');
       svg.setAttribute('stroke-linejoin', 'round');
 
-      /* single curved anti-clockwise arrow — thin, slightly organic */
+      /* single curved anti-clockwise arrow - thin, slightly organic */
       const arcPath = document.createElementNS(ns, 'path');
       arcPath.setAttribute('d', 'M20,12 C20,7.2 16.5,3.2 11.5,3 C6.5,2.8 2.5,7.5 2.2,12.5 C2,17.5 6.2,21.5 11.2,21.2');
       arcPath.setAttribute('fill', 'none');
@@ -5154,7 +5139,7 @@ Definitely not three goblins in a trenchcoat">
       a.onfinish = () => a.cancel();
     }
 
-    /* addLine — appends a new chat line.
+    /* addLine - appends a new chat line.
        user answers are added plain; the rewind icon is attached separately
        by attachRewindIcon() after the answer locks into place. */
     function addLine(classes, html) {
@@ -5173,15 +5158,15 @@ Definitely not three goblins in a trenchcoat">
       return el;
     }
 
-    /* attachRewindIcon — called after the selected answer has locked into place.
+    /* attachRewindIcon - called after the selected answer has locked into place.
        sequence:
-         0ms    — icon appended but invisible (opacity:0)
-         175ms  — pause beat (answer has settled, nothing happening)
-         175ms  — all three animations start together:
+         0ms    - icon appended but invisible (opacity:0)
+         175ms  - pause beat (answer has settled, nothing happening)
+         175ms  - all three animations start together:
                    (a) fade + scale  opacity 0→.75, scale .92→1
                    (b) stroke draw   dashoffset full→0
                    (c) anti-cw rot   0deg→-195deg  (eased, no overshoot)
-         ~375ms — animations end; icon gets .materialised class; onComplete fires
+         ~375ms - animations end; icon gets .materialised class; onComplete fires
     */
     function attachRewindIcon(answerEl, onComplete) {
       const PAUSE = 180;  /* ms perceptual beat before appearance */
@@ -5244,9 +5229,9 @@ Definitely not three goblins in a trenchcoat">
       }, PAUSE);
     }
 
-    /* rewindTutorialDone — guards moment 2 tutorial (fires after step 2 reaction) */
+    /* rewindTutorialDone - guards moment 2 tutorial (fires after step 2 reaction) */
     let rewindTutorialDone = false;
-    /* inputHintDone — guards moment 1 tutorial (fires after "what's the project?", before options) */
+    /* inputHintDone - guards moment 1 tutorial (fires after "what's the project?", before options) */
     let inputHintDone = false;
     /* device type for tutorial copy variants */
     const isMobile = window.matchMedia('(pointer: coarse)').matches || window.innerWidth <= 600;
@@ -5286,7 +5271,7 @@ Definitely not three goblins in a trenchcoat">
     let sessionTyposCommitted = 0;
     let globalMessageCount = 0;
 
-    /* typeMessage — the core typing engine.
+    /* typeMessage - the core typing engine.
        1. shows a blinking cursor for a beat
        2. types the message character by character with occasional goblin typos
        3. on typo: overshoots, pauses, backspaces, corrects
@@ -5317,9 +5302,9 @@ Definitely not three goblins in a trenchcoat">
       let activeWord = null;
       let inErrorState = false;
 
-      /* Open one token at a time. A word gets an invisible full-width twin,
+      /* open one token at a time. A word gets an invisible full-width twin,
          which makes the browser choose its line before the visible letters are
-         typed. Whitespace remains ordinary text so wrapping stays natural. */
+         typed. whitespace remains ordinary text so wrapping stays natural. */
       function openPart() {
         if (partIndex >= parts.length || activeTextNode) return;
         const part = parts[partIndex];
@@ -5347,8 +5332,8 @@ Definitely not three goblins in a trenchcoat">
 
       function closePart() {
         if (activeWord) {
-          /* Collapse the temporary measuring wrapper once the word is complete.
-             This leaves clean text for selection and assistive technology. */
+          /* collapse the temporary measuring wrapper once the word is complete.
+             this leaves clean text for selection and assistive technology. */
           const completed = document.createTextNode(activeTextNode.data);
           cursor.remove();
           activeWord.replaceWith(completed);
@@ -5466,7 +5451,7 @@ Definitely not three goblins in a trenchcoat">
       return el;
     }
 
-    /* typeMessages — types an array of messages one after another.
+    /* typeMessages - types an array of messages one after another.
        optional perChar overrides the default 35ms/char (e.g. step 11 uses a slower rate). */
     function typeMessages(msgs, cb, perChar) {
       const myGen = rewindGen; let i = 0;
@@ -5480,7 +5465,7 @@ Definitely not three goblins in a trenchcoat">
       }());
     }
 
-    /* typeMessagesTo — types messages into an arbitrary container using the same engine as typeMessage */
+    /* typeMessagesTo - types messages into an arbitrary container using the same engine as typeMessage */
     function typeMessagesTo(container, msgs, cb) {
       let i = 0;
       (function next() {
@@ -5489,7 +5474,7 @@ Definitely not three goblins in a trenchcoat">
       }());
     }
 
-    /* reactThenStep — after user picks an answer, play the reaction then move on. */
+    /* reactThenStep - after user picks an answer, play the reaction then move on. */
     function reactThenStep(lines, nextStep) {
       const myGen = rewindGen;
 
@@ -5510,12 +5495,12 @@ Definitely not three goblins in a trenchcoat">
     function setupInputViewport(field, row) {
       if (!window.visualViewport) return () => { };
 
-      /* Only one field can be active. Clear an orphaned observer/listener before
+      /* only one field can be active. clear an orphaned observer/listener before
          creating the next one (especially important after rewind). */
       if (activeInputCleanup) activeInputCleanup();
 
-      /* ResizeObserver fires after layout settles. Observing the row ensures a
-         multiline answer is remeasured and remains docked as it grows. The one
+      /* ResizeObserver fires after layout settles. observing the row ensures a
+         multiline answer is remeasured and remains docked as it grows. the one
          shared mobile keyboard controller owns all viewport dimensions, so this
          helper cannot fight it with a second idea of the available height. */
       const ro = new ResizeObserver(() => requestAnimationFrame(function () {
@@ -5544,7 +5529,7 @@ Definitely not three goblins in a trenchcoat">
       return cleanup;
     }
 
-    /* showOptions — displays multiple choice buttons (right-aligned).
+    /* showOptions - displays multiple choice buttons (right-aligned).
        each option fades in with a stagger delay.
        clicking one collapses the group and records the answer. */
     function showOptions(options, stepName, onSelect) {
@@ -5559,9 +5544,9 @@ Definitely not three goblins in a trenchcoat">
         const row = document.createElement('button');
         row.type = 'button';
         row.className = 'term-line term-option';
-        /* [N] prefix before label — number leads, text follows */
+        /* [N] prefix before label - number leads, text follows */
         row.innerHTML = `<span class="term-option-num">[${idx + 1}]</span><span class="term-option-label">${opt.label.trim()}</span>`;
-        /* stagger the fade-in — each option appears 160ms after the last */
+        /* stagger the fade-in - each option appears 160ms after the last */
         setTimeout(() => fadeInEl(row, 350, { transform: 'translateY(4px)' }, { transform: 'none' }), idx * 160);
         row.addEventListener('click', () => {
           skipping = false;
@@ -5572,7 +5557,7 @@ Definitely not three goblins in a trenchcoat">
           answer.dataset.stepName = stepName;
           answer.dataset.value = opt.value;
           addBlank();
-          /* attach the rewind icon — goblins only reply after it finishes */
+          /* attach the rewind icon - goblins only reply after it finishes */
           attachRewindIcon(answer, () => { if (onSelect) onSelect(opt); });
         });
         group.appendChild(row);
@@ -5580,16 +5565,15 @@ Definitely not three goblins in a trenchcoat">
       termOut.appendChild(group);
       requestAnimationFrame(() => { scrollCurrentStepIntoView(); });
 
-      /* keyboard/click hint is now handled as moment 1 in reactThenStep — not here */
     }
 
-    /* paper-plane send SVG — 15×15, stroke-width 1.4, matches rewind icon exactly.
+    /* paper-plane send SVG - 15×15, stroke-width 1.4, matches rewind icon exactly.
        shape: paper-plane pointing right with centre crease line. */
     const SEND_SVG = '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 12 L2 4 L7 12 L2 20 Z"/><path d="M7 12 L22 12"/></svg>';
 
-    /* showTextInput — displays a text field for free-form input.
+    /* showTextInput - displays a text field for free-form input.
        validates on enter. shakes if empty or invalid.
-       field stays in DOM until submitted — blur refocuses silently. */
+       field stays in DOM until submitted - blur refocuses silently. */
     function showTextInput(placeholder, onSubmit, multiline, stepName, validate, validationMsg) {
       rewinding = false;
       const row = document.createElement('div');
@@ -5614,7 +5598,7 @@ Definitely not three goblins in a trenchcoat">
       field.spellcheck = stepName !== 'f-name';
       if (multiline) { field.rows = 2; field.style.overflowY = 'hidden'; }
 
-      /* send hint — stays below the field until submitted */
+      /* send hint - stays below the field until submitted */
       const hint = document.createElement('button');
       hint.type = 'button';
       hint.setAttribute('aria-label', 'send answer');
@@ -5625,7 +5609,7 @@ Definitely not three goblins in a trenchcoat">
 
       const cleanupViewport = setupInputViewport(field, row);
 
-      /* focus synchronously — iOS only opens keyboard from a direct user-gesture chain. */
+      /* focus synchronously - iOS only opens keyboard from a direct user-gesture chain. */
       field.focus();
 
       /* auto-resize textarea as user types and perfectly sync scroll to prevent jitter */
@@ -5640,8 +5624,8 @@ Definitely not three goblins in a trenchcoat">
         this.style.height = newHeight + 'px';
         this.style.overflowY = this.scrollHeight > maxHeight ? 'auto' : 'hidden';
 
-        /* Setting height:auto briefly resets an overflowing textarea to its
-           first line in iOS. If the human is typing at the end, restore the
+        /* setting height:auto briefly resets an overflowing textarea to its
+           first line in iOS. if the human is typing at the end, restore the
            caret end after the resize so the newest words never disappear. */
         if (this.scrollHeight > maxHeight && this.selectionEnd === this.value.length) {
           this.scrollTop = this.scrollHeight;
@@ -5681,7 +5665,7 @@ Definitely not three goblins in a trenchcoat">
         const answer = addLine('term-user', multiline ? val.replace(/\n/g, ' ') : val);
         if (stepName) { answer.dataset.stepName = stepName; answer.dataset.value = val; }
         addBlank();
-        /* attach the rewind icon — goblins only reply after it finishes */
+        /* attach the rewind icon - goblins only reply after it finishes */
         attachRewindIcon(answer, () => { if (onSubmit) onSubmit(val); });
       }
       field.addEventListener('keydown', e => {
@@ -5689,12 +5673,12 @@ Definitely not three goblins in a trenchcoat">
         if (multiline && e.shiftKey) return; /* shift+enter = newline in textarea */
         e.preventDefault(); submit();
       });
-      /* tapping the hint also submits — useful on mobile */
+      /* tapping the hint also submits - useful on mobile */
       hint.style.cursor = 'pointer';
       hint.addEventListener('click', () => submit());
     }
 
-    /* markStep — drops an invisible marker in the DOM.
+    /* markStep - drops an invisible marker in the DOM.
        rewindTo() looks for these markers to know where each step starts. */
     function markStep(n) {
       const el = document.createElement('div');
@@ -5728,22 +5712,22 @@ Definitely not three goblins in a trenchcoat">
         runStep(stepNum);
         return;
       }
-      /* glitch dissolve rewind — staggered removal newest-to-oldest with signal-collapse flash */
+      /* glitch dissolve rewind - staggered removal newest-to-oldest with signal-collapse flash */
       const kids = Array.from(termOut.children);
       let cut = -1;
       for (let i = 0; i < kids.length; i++) if (kids[i].dataset.stepStart == stepNum) { cut = i; break; }
       if (cut < 0) { rewinding = false; return; }
       const toRemove = kids.slice(cut);
       const reversed = [...toRemove].reverse();
-      /* stagger: newest elements glitch out first — signal collapsing backwards.
+      /* stagger: newest elements glitch out first - signal collapsing backwards.
          glitch animation is 260ms so we allow a bit more gap between elements. */
       const stagger = Math.min(28, Math.floor(560 / Math.max(reversed.length, 1)));
       const totalDur = (reversed.length - 1) * stagger + 280; /* 280 = glitch anim duration */
       rewindGen++;
-      /* glitch burst the terminal container — corrupted signal look */
+      /* glitch burst the terminal container - corrupted signal look */
       terminal.classList.add('vcr-active');
       setTimeout(() => terminal.classList.remove('vcr-active'), 280);
-      /* cascade the glitch-out — newest to oldest */
+      /* cascade the glitch-out - newest to oldest */
       reversed.forEach((el, i) => setTimeout(() => el.classList.add('rewind-out'), i * stagger));
       /* after all exits complete, clean up and re-run the step instantly (no re-typing) */
       setTimeout(() => {
@@ -5751,12 +5735,12 @@ Definitely not three goblins in a trenchcoat">
         /* preserve email for pre-fill if rewinding to step 9 */
         if (stepNum === 9) emailPrefill = answers['f-email'] || '';
         Object.keys(STEP_NUM).forEach(k => { if (STEP_NUM[k] >= stepNum) delete answers[k]; });
-        skipping = true; /* skip goblin message re-typing — go straight to options */
+        skipping = true; /* skip goblin message re-typing - go straight to options */
         runStep(stepNum);
       }, totalDur);
     }
 
-    /* MutationObserver — automatically attaches click-to-rewind handlers
+    /* MutationObserver - automatically attaches click-to-rewind handlers
        to every new user answer that gets added to the terminal.
        stored so it can be disconnected after submission. */
     const termObserver = new MutationObserver(ms => {
@@ -5778,25 +5762,23 @@ Definitely not three goblins in a trenchcoat">
        to change a question: edit the string in typeMessage().
        to change the options: edit the {label, value} objects in showOptions().
        to add a new step: add a new case and update STEP_NUM above.
-       TO CHANGE THE ORDER: renumber the cases and update reactThenStep() calls.
-       TO CHANGE A PLACEHOLDER: edit the string in showTextInput().
+       to change the order: renumber the cases and update reactThenStep() calls.
+       to change a placeholder: edit the string in showTextInput().
 
-       step 1:  gate        — yes/no/are you really goblins?
-       step 2:  writer-type — novel/comic/game/tabletop/something else
+       step 1:  gate        - yes/no/are you really goblins?
+       step 2:  writer-type - novel/comic/game/tabletop/something else
                               note: "are you really goblins?" skips this step → goes to step 3
-       step 3:  service     — creative development/narrative direction/editorial assessment/query pitch feedback/writing/something else
+       step 3:  service     - creative development/narrative direction/editorial assessment/query pitch feedback/writing/something else
                               note: writing service skips genre(4) → goes to pitch(7) directly
-       step 4:  genre       — sci-fi/fantasy/horror/romance/genre blend/something else
-       step 5:  [removed]   — stage step cut; didn't serve all client types
-       step 6:  [removed]   — scale step cut
-       step 7:  f-pitch     — "what's it about?" (free text, multiline)
-       step 8:  f-name      — "what should we call you?" (free text)
-       step 9:  f-email     — "where shall we send the verdict?" (email, validated)
-       step 10: f-message   — "is there anything else we should know?" (free text, optional)
-       step 11: terms       — pricing info + "sound good?" (i'm in / i have questions)
-       step 12: submit      — "feed the goblins" button
+       step 4:  genre       - sci-fi/fantasy/horror/romance/genre blend/something else
+       step 7:  f-pitch     - "what's it about?" (free text, multiline)
+       step 8:  f-name      - "what should we call you?" (free text)
+       step 9:  f-email     - "where shall we send the verdict?" (email, validated)
+       step 10: f-message   - "is there anything else we should know?" (free text, optional)
+       step 11: terms       - pricing info + "sound good?" (i'm in / i have questions)
+       step 12: submit      - "feed the goblins" button
        ═══════════════════════════════════════════════════════ */
-    /* Session-deduplicated aggregate counting. No visitor or journey identifier leaves the browser. */
+    /* session-deduplicated aggregate counting. no visitor or journey identifier leaves the browser. */
     const PFG_ANALYTICS_CHOICES = {
       gate: ['gate', new Set(['yes', 'obviously', 'you have no idea', 'are you really goblins?'])],
       'writer-type': ['writer_type', new Set(['novel', 'comic or graphic novel', 'video game', 'tabletop game', 'something else'])],
@@ -5880,21 +5862,21 @@ Definitely not three goblins in a trenchcoat">
 
     function runStep(n) {
       pfgCount('query_step', String(n));
-      /* skipping fix — rewindTo sets skipping=true for instant replay; reset it here so it
+      /* rewindTo sets skipping=true for instant replay; reset it here so it
          never leaks beyond the current step. step 1 reads wasSkipping to still bypass its
          idle cursor on rewind (the 1.4s dead zone). goblin messages in the rewound step
-         type at normal speed — options/inputs still appear immediately after. */
+         type at normal speed - options/inputs still appear immediately after. */
       const wasSkipping = skipping;
       skipping = false;
       switch (n) {
 
-        /* ── STEP 1: GATE ── yes / no / are you really goblins? */
+        /* - step 1: gate - yes / no / are you really goblins? */
         case 1: {
           markStep(1);
           /* show a blinking cursor for 1.4s before the goblins start talking */
           const g = rewindGen;
           if (wasSkipping) {
-            /* rewind — inputHintDone already true, skip tutorial, show options immediately */
+            /* rewind - inputHintDone already true, skip tutorial, show options immediately */
             typeMessage('ew', () => {
               typeMessage("a human", () => {
                 typeMessage('are you in need of goblins?', () => {
@@ -5903,7 +5885,7 @@ Definitely not three goblins in a trenchcoat">
               });
             });
           } else {
-            /* normal first load — idle cursor then staggered typing */
+            /* normal first load - idle cursor then staggered typing */
             const idle = document.createElement('div');
             idle.className = 'term-line visible';
             const pre = document.createElement('span'); pre.className = 'term-prefix'; pre.innerHTML = PREFIX_SVG;
@@ -5928,7 +5910,7 @@ Definitely not three goblins in a trenchcoat">
             }, 1400, () => g); /* *initial pause (blinking cursor) */
           }
 
-          /* show gate options — with tutorial 1 on first visit (desktop only) */
+          /* show gate options - with tutorial 1 on first visit (desktop only) */
           function showGateOptions() {
             if (rewindGen !== g) return;
             function doShowOptions() {
@@ -5948,7 +5930,7 @@ Definitely not three goblins in a trenchcoat">
           break;
         }
 
-        /* ── STEP 2: WRITER TYPE ── novel/comic/game/tabletop/something else */
+        /* - step 2: writer type - novel/comic/game/tabletop/something else */
         case 2: {
           markStep(2);
           const myGen2 = rewindGen;
@@ -5986,12 +5968,12 @@ Definitely not three goblins in a trenchcoat">
           break;
         }
 
-        /* ── STEP 3: SERVICE ── creative development/narrative direction/editorial assessment/query pitch feedback/writing/something else */
+        /* - step 3: service - creative development/narrative direction/editorial assessment/query pitch feedback/writing/something else */
         case 3: {
           markStep(3);
           const myGen3 = rewindGen;
           typeMessage('what do you need?', () => {
-            /* moment 2 — fires once after "what do you need?", before options appear.
+            /* moment 2 - fires once after "what do you need?", before options appear.
                on rewind rewindTutorialDone is true so options show immediately. */
             function showServiceOptions() {
               if (rewindGen !== myGen3) return;
@@ -6033,7 +6015,7 @@ Definitely not three goblins in a trenchcoat">
           break;
         }
 
-        /* ── STEP 4: GENRE ── sci-fi/fantasy/horror/romance/genre blend/something else */
+        /* - step 4: genre - sci-fi/fantasy/horror/romance/genre blend/something else */
         case 4:
           markStep(4);
           typeMessage("what's the genre?", () => {
@@ -6059,14 +6041,14 @@ Definitely not three goblins in a trenchcoat">
           });
           break;
 
-        /* ── STEP 7: PITCH ── free text, multiline */
+        /* - step 7: pitch - free text, multiline */
         case 7:
           markStep(7);
           typeMessages(["what's it about?", "we'll need enough to want more"], () => {
             showTextInput('', val => {
               answers['f-pitch'] = val;
               setTimeout(() => typeMessage("we've read worse", () => {
-                /* ── inline: project name (optional) ── */
+                /* - inline: project name (optional) - */
                 setTimeout(() => typeMessages([
                   "does it have a name?",
                   "if not, give us a working title or a comp",
@@ -6084,7 +6066,7 @@ Definitely not three goblins in a trenchcoat">
           });
           break;
 
-        /* ── STEP 8: NAME ── free text */
+        /* - step 8: name - free text */
         case 8:
           markStep(8);
           typeMessage('what should we call you?', () => {
@@ -6097,7 +6079,7 @@ Definitely not three goblins in a trenchcoat">
           });
           break;
 
-        /* ── STEP 9: EMAIL ── "where shall we send the verdict?" then confirm */
+        /* - step 9: email - "where shall we send the verdict?" then confirm */
         case 9: {
           markStep(9);
           typeMessage('where shall we send the verdict?', () => {
@@ -6106,7 +6088,7 @@ Definitely not three goblins in a trenchcoat">
 
             let badFormatCount = 0;
 
-            /* spawnField1 — creates the first email input. called on entry and after a bad-format retry. */
+            /* spawnField1 - creates the first email input. called on entry and after a bad-format retry. */
             function spawnField1() {
               const row1 = document.createElement('div');
               row1.className = 'term-line term-input-line visible';
@@ -6120,7 +6102,7 @@ Definitely not three goblins in a trenchcoat">
               field1.setAttribute('aria-label', 'your email address');
               field1.className = 'term-input-field';
               field1.placeholder = '░';
-              /* pre-fill with previous email if rewinding — user can see and correct it */
+              /* pre-fill with previous email if rewinding - user can see and correct it */
               if (emailPrefill) { field1.value = emailPrefill; }
               const hint1 = document.createElement('button');
               hint1.type = 'button';
@@ -6137,7 +6119,7 @@ Definitely not three goblins in a trenchcoat">
                 if (submitting1) return;
                 const val = field1.value.trim();
                 if (!val) {
-                  /* empty — shake in place */
+                  /* empty - shake in place */
                   field1.classList.add('field-shake');
                   field1.addEventListener('animationend', () => field1.classList.remove('field-shake'), { once: true });
                   return;
@@ -6182,7 +6164,7 @@ Definitely not three goblins in a trenchcoat">
                 field1.blur();
                 cleanupViewport();
                 row1.remove(); addBlank();
-                /* valid format — show email as sent bubble so user can see it during confirm */
+                /* valid format - show email as sent bubble so user can see it during confirm */
                 addLine('term-user', val);
                 addBlank();
                 /* then move to confirm */
@@ -6193,7 +6175,7 @@ Definitely not three goblins in a trenchcoat">
               field1.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); submitField1(); } });
             }
 
-            /* spawnField2 — creates the confirm input. called after valid field1, and after a mismatch retry. */
+            /* spawnField2 - creates the confirm input. called after valid field1, and after a mismatch retry. */
             function spawnField2(val) {
               typeMessage('once more', () => {
                 addBlank();
@@ -6233,7 +6215,7 @@ Definitely not three goblins in a trenchcoat">
                   cleanupViewport();
                   row2.remove(); addBlank();
                   if (val2.toLowerCase() !== val.toLowerCase()) {
-                    /* mismatch — show as sent bubble, goblin reacts, new confirm field */
+                    /* mismatch - show as sent bubble, goblin reacts, new confirm field */
                     const answer = addLine('term-user', val2);
                     answer.dataset.stepName = 'f-email'; answer.dataset.value = val2;
                     attachRewindIcon(answer, null);
@@ -6244,7 +6226,7 @@ Definitely not three goblins in a trenchcoat">
                     });
                     return;
                   }
-                  /* match — lock in the email */
+                  /* match - lock in the email */
                   const answer = addLine('term-user', val);
                   answer.dataset.stepName = 'f-email'; answer.dataset.value = val;
                   addBlank();
@@ -6264,7 +6246,7 @@ Definitely not three goblins in a trenchcoat">
           break;
         }
 
-        /* ── STEP 10: MESSAGE ── "anything else we should know?" (optional) */
+        /* - step 10: message - "anything else we should know?" (optional) */
         case 10:
           markStep(10);
           typeMessage('is there anything else we should know?', () => {
@@ -6306,7 +6288,7 @@ Definitely not three goblins in a trenchcoat">
                 const answer = addLine('term-user', val);
                 answer.dataset.stepName = 'f-message'; answer.dataset.value = val;
                 addBlank();
-                attachRewindIcon(answer, null); /* icon only — runStep(11) fires from typeMessages callback */
+                attachRewindIcon(answer, null); /* icon only - runStep(11) fires from typeMessages callback */
                 typeMessages(["we'll keep that in mind"], () => {
                   setTimeout(() => runStep(11), STEP_GAP);
                 });
@@ -6321,10 +6303,10 @@ Definitely not three goblins in a trenchcoat">
           });
           break;
 
-        /* ── STEP 11: TERMS ── the pricing/terms monologue + "keeping up so far?" */
+        /* - step 11: terms - the pricing/terms monologue + "keeping up so far?" */
         case 11: {
           markStep(11);
-          /* This is the densest passage in the journey. Keep the typing legible
+          /* this is the densest passage in the journey. keep the typing legible
              without making a mobile visitor wait through a twenty-second wall. */
           const _termsPerChar = 30;
           typeMessages([
@@ -6350,7 +6332,7 @@ Definitely not three goblins in a trenchcoat">
                   }, false, 'terms');
                 }), 300);
               } else {
-                /* "i'm in" — proceed to submit */
+                /* "i'm in" - proceed to submit */
                 reactThenStep(REACTIONS.terms[opt.value], 12);
               }
             });
@@ -6358,7 +6340,7 @@ Definitely not three goblins in a trenchcoat">
           break;
         }
 
-        /* ── STEP 12: SUBMIT BUTTON ── "feed the goblins" */
+        /* - step 12: submit button - "feed the goblins" */
         case 12: {
           addBlank();
           const row = document.createElement('div'); row.className = 'term-line visible term-send-wrap';
@@ -6371,7 +6353,7 @@ Definitely not three goblins in a trenchcoat">
             btn.removeEventListener('animationend', onSendBtnIn);
             scheduleGlitch(btn);
           });
-          /* Safari fallback: start glitch after sendBtnIn max duration */
+          /* safari fallback: start glitch after sendBtnIn max duration */
           setTimeout(function () { if (!btn._glitchTimeout) scheduleGlitch(btn); }, 1100);
           break;
         }
@@ -6420,7 +6402,7 @@ Definitely not three goblins in a trenchcoat">
           submittedRef = data.ref || null;
           submittedHtml = data.html || null;
         } catch {
-          /* API failed — re-enable and type a goblin error line */
+          /* API failed - re-enable and type a goblin error line */
           resetBtn();
           typeMessage("something went wrong on our end. try again, or email us directly.");
           return;
@@ -6431,7 +6413,7 @@ Definitely not three goblins in a trenchcoat">
 
       clearInterval(dotInterval);
       btn.classList.remove('submitting');
-      /* glitch the terminal into the void — same rewindOut stagger as the rewind system,
+      /* glitch the terminal into the void - same rewindOut stagger as the rewind system,
          applied to every child of termOut newest-to-oldest, then the terminal hides */
       const submitKids = Array.from(termOut.children);
       const submitReversed = [...submitKids].reverse();
@@ -6443,7 +6425,7 @@ Definitely not three goblins in a trenchcoat">
         terminal.style.display = 'none';
         hasSubmitted = true; /* flag hero to show post-submit state on return */
         pfgCount('query_complete', 'yes');
-        /* 1s pause — nothing but the eyes */
+        /* 1s pause - nothing but the eyes */
         setTimeout(() => {
           showScreen('receipt', { focus: 'context' });
           showReceipt(answers, submittedHtml);
@@ -6456,7 +6438,7 @@ Definitely not three goblins in a trenchcoat">
        [keyboard] spacebar skips the typing animations. number keys select options.
        neither works if the human is already typing in a field.
        ═══════════════════════════════════════════════════════ */
-    /* skipHero — immediately completes all hero animations without waiting */
+    /* skipHero - immediately completes all hero animations without waiting */
     function skipHero() {
       clearHeroTimers();
       eyes.forEach(e => { e.classList.remove('open'); e.classList.add('open-locked'); });
@@ -6465,7 +6447,7 @@ Definitely not three goblins in a trenchcoat">
       heroTimers.push(setTimeout(() => runCorrection(), 1500));
     }
 
-    /* skipTabAnim — immediately completes about or portfolio animation sequence */
+    /* skipTabAnim - immediately completes about or portfolio animation sequence */
     function skipTabAnim(tab) {
       if (tab === 'about') {
         var cs = document.getElementById('about-cs');
@@ -6666,7 +6648,7 @@ Definitely not three goblins in a trenchcoat">
       { key: 'f-message', label: 'anything else', span: true }  /* spans both columns */
     ];
 
-    /* demo answers — used when previewing the receipt via the tweaks panel jump */
+    /* demo answers - used when previewing the receipt via the tweaks panel jump */
     const DEMO_ANSWERS = {
       'writer-type': 'novel', service: 'editorial assessment', genre: 'fantasy',
       stage: 'work in progress',
@@ -6676,7 +6658,7 @@ Definitely not three goblins in a trenchcoat">
 
     function showReceipt(a, htmlStr) {
       const container = document.querySelector('.receipt');
-      /* ensure nav is visible on receipt — no scroll-hiding here */
+      /* ensure nav is visible on receipt - no scroll-hiding here */
       const _nav = document.querySelector('.footer-nav');
       if (_nav) _nav.classList.remove('hidden');
 
@@ -6707,7 +6689,7 @@ Definitely not three goblins in a trenchcoat">
           }
 
           /* inject structural overrides + cursor style (mirrors .term-cursor exactly).
-             no font-size overrides — email's native sizes match the preview exactly. */
+             no font-size overrides - email's native sizes match the preview exactly. */
           const style = doc.createElement('style');
           style.textContent = `
             table { border: none !important; max-width: none !important; width: 100% !important; }
@@ -6715,7 +6697,7 @@ Definitely not three goblins in a trenchcoat">
             body > table > tbody > tr > td > table > tbody > tr > td { padding: 0 16px !important; }
             /* hide goblin lines until typewriter reveals them */
             .anim-hw { visibility: hidden; }
-            /* cursor — same spec as .term-cursor in parent */
+            /* cursor - same spec as .term-cursor in parent */
             .pfg-cur {
               display: inline-block;
               width: 9px;
@@ -6727,7 +6709,7 @@ Definitely not three goblins in a trenchcoat">
           `;
           doc.head.appendChild(style);
 
-          /* typewriter — mirrors the contact form typeMessage() logic exactly.
+          /* typewriter - mirrors the contact form typeMessage() logic exactly.
              runs inside the iframe so no access to parent makeCursor/skipping etc. */
           function pfgMakeCursor() {
             const el = doc.createElement('span');
@@ -6747,7 +6729,7 @@ Definitely not three goblins in a trenchcoat">
             el.innerHTML = prefixHtml;
             const cursor = pfgMakeCursor();
             el.appendChild(cursor);
-            /* 1 blink cycle before typing — same as contact form */
+            /* 1 blink cycle before typing - same as contact form */
             cursor.style.opacity = '0';
             setTimeout(() => {
               cursor.style.opacity = '1';
@@ -6813,9 +6795,9 @@ Definitely not three goblins in a trenchcoat">
       /* ref string = longest line of the home h1 ("goblins in a trenchcoat").
          sizing to this line ensures it never wraps to a third line at any width. */
       var REF_STRING = 'goblins in a trenchcoat';
-      var REF_SIZE = 16; /* px — probe size */
-      var MAX_SIZE = 28; /* px — never larger than this */
-      var MIN_SIZE = 10; /* px — never smaller than this */
+      var REF_SIZE = 16; /* px - probe size */
+      var MAX_SIZE = 28; /* px - never larger than this */
+      var MIN_SIZE = 10; /* px - never smaller than this */
 
       function fitTitle() {
         /* measure the full reference string at REF_SIZE in the real display font */
@@ -6834,7 +6816,7 @@ Definitely not three goblins in a trenchcoat">
         var parent = el.closest('.principal-header-inner') || el.parentElement;
         var available = parent ? parent.getBoundingClientRect().width : window.innerWidth;
 
-        /* bail if parent hasn't been painted yet — avoids locking to MIN_SIZE */
+        /* bail if parent hasn't been painted yet - avoids locking to MIN_SIZE */
         if (available === 0) return;
 
         var ideal = (available / stringW) * REF_SIZE * 0.92;
@@ -6856,12 +6838,12 @@ Definitely not three goblins in a trenchcoat">
         window.addEventListener('resize', fitTitle);
       }
 
-      /* re-run when fonts finish loading — probe may have measured fallback font */
+      /* re-run when fonts finish loading - probe may have measured fallback font */
       if (document.fonts && document.fonts.ready) {
         document.fonts.ready.then(fitTitle);
       }
 
-      /* re-run when element enters viewport — catches cases where parent had 0 width on parse */
+      /* re-run when element enters viewport - catches cases where parent had 0 width on parse */
       if (window.IntersectionObserver) {
         new IntersectionObserver(function (entries) {
           entries.forEach(function (entry) { if (entry.isIntersecting) fitTitle(); });
@@ -6910,16 +6892,16 @@ Definitely not three goblins in a trenchcoat">
       window._pfgRunes = RUNES;
       // [rot13] the plaintext address is not in the DOM at load. bots that scrape emails get nothing. humans who click get everything.
       function rot13(s) { return s.replace(/[a-zA-Z]/g, function (c) { return String.fromCharCode((c <= 'Z' ? 90 : 122) >= (c = c.charCodeAt(0) + 13) ? c : c - 26); }); }
-      var _ER = 'uryyb@cerffsbetboyvaf.pbz'; // ROT13 — plaintext never in DOM until click
+      var _ER = 'uryyb@cerffsbetboyvaf.pbz'; // ROT13 - plaintext never in DOM until click
       var GREEN = '#89ce8d', WHITE = '#e8ffe8', GRAY = '#fff';
       // sized in em so glyphs scale with .about-contact-line font-size
-      // viewBox is 12×16; a Courier New char is ~0.6em wide × 1em tall
+      // viewBox is 12×16; a courier new char is ~0.6em wide × 1em tall
       var _isMobileGlyph = window.innerWidth <= 600;
       var RW = _isMobileGlyph ? '1.08em' : '0.9em', ATW = _isMobileGlyph ? '1.08em' : '1.2em', DOTW = _isMobileGlyph ? '0.48em' : '0.6em', RH = '1.5em', SP = '0.15em';
 
       function svgNS(tag) { return document.createElementNS('http://www.w3.org/2000/svg', tag); }
 
-      // glyphs are built from the ROT13 string — dual layer: rune path (green) + latin text (gray, hidden)
+      // glyphs are built from the ROT13 string - dual layer: rune path (green) + latin text (gray, hidden)
       // latin text is injected at click time via revealGlyphs(); never in DOM at page load
       function makeGlyph(encodedCh, isSpecial) {
         var ch = encodedCh;
@@ -6960,7 +6942,7 @@ Definitely not three goblins in a trenchcoat">
           svg._orig = null; svg._correct = '';
           return svg;
         }
-        // letter glyph — rune path layer
+        // letter glyph - rune path layer
         runeEl = svgNS('path');
         runeEl.setAttribute('d', RUNES[k] || RUNES[KEYS[0]]); runeEl.setAttribute('stroke', GREEN);
         runeEl.setAttribute('stroke-width', _isMobileGlyph ? '0.78' : '1.05'); runeEl.setAttribute('opacity', '1');
@@ -6969,7 +6951,7 @@ Definitely not three goblins in a trenchcoat">
           runeEl.setAttribute('vector-effect', 'non-scaling-stroke');
         }
         svg.appendChild(runeEl);
-        // latin text layer — hidden until decode reveals it
+        // latin text layer - hidden until decode reveals it
         // y=8 + dominant-baseline:central pins text to SVG geometric centre, matching rune path visual centre
         var latinEl = svgNS('text');
         latinEl.setAttribute('x', '6'); latinEl.setAttribute('y', '8');
@@ -6996,7 +6978,7 @@ Definitely not three goblins in a trenchcoat">
         return s;
       }
 
-      // build row from ROT13 string — DOM never contains the real email at page load
+      // build row from ROT13 string - DOM never contains the real email at page load
       function buildRow(container) {
         var glyphs = [];
         for (var i = 0; i < _ER.length; i++) {
@@ -7008,7 +6990,7 @@ Definitely not three goblins in a trenchcoat">
         return glyphs;
       }
 
-      // inject real characters into glyphs — called only on click, never at init
+      // inject real characters into glyphs - called only on click, never at init
       function revealGlyphs(glyphs) {
         var real = rot13(_ER);
         for (var i = 0; i < glyphs.length; i++) {
@@ -7076,7 +7058,7 @@ Definitely not three goblins in a trenchcoat">
       }
 
       function _afterDecode(glyphs, onAllDone) {
-        // apply layout class now — after all glyphs have settled into latin text,
+        // apply layout class now - after all glyphs have settled into latin text,
         // so the mobile spacing change (spacers/margins) fires after animation, not during
         if (link) link.classList.add('pfg-layout-decoded');
         if (onAllDone) onAllDone();
@@ -7090,7 +7072,7 @@ Definitely not three goblins in a trenchcoat">
         glyphs.forEach(function (g, i) {
           var jit = (Math.random()*2-1)*P.jitter;
           var t = setTimeout(function () {
-            // revert layout class on first glyph fire — layout compresses in sync with scramble start
+            // revert layout class on first glyph fire - layout compresses in sync with scramble start
             if (!layoutReverted) { layoutReverted = true; if (link) link.classList.remove('pfg-layout-decoded'); }
             if (g._isAt || g._isDot) {
               g._rune.setAttribute('fill', GREEN);
@@ -7133,7 +7115,7 @@ Definitely not three goblins in a trenchcoat">
       if (!link) return;
 
       // idle shimmer: while encoded, randomly cycle 1-3 glyphs through a few rune shapes
-      // every 3-7s — visual hint that the runes are interactive / pressable
+      // every 3-7s - visual hint that the runes are interactive / pressable
       var _idleShimmerTid = null;
       function _idleShimmerCycle() {
         if (decoding) return; // stop if decoded
@@ -7179,7 +7161,7 @@ Definitely not three goblins in a trenchcoat">
         var ns = 'http://www.w3.org/2000/svg';
 
         var PASS_MS = 160;  // duration of each individual sweep
-        var OVERLAP = 50;   // ms each pass starts before the previous finishes — overlapping = scrubby
+        var OVERLAP = 50;   // ms each pass starts before the previous finishes - overlapping = scrubby
         var STEP = PASS_MS - OVERLAP;
         var TOTAL_MS = PASS_MS + STEP * 2 + 60; // three passes + small buffer
 
@@ -7199,7 +7181,7 @@ Definitely not three goblins in a trenchcoat">
         // eraser rect is black (erases), starts offscreen, sweeps across, ends offscreen other side
         // R→L: starts at x=vw, ends at x=-vw (eraser enters from right, exits left)
         // L→R: starts at x=-vw, ends at x=vw
-        var ERASER_W = vw * 0.7; // eraser width — wide enough to look like a felt eraser
+        var ERASER_W = vw * 0.7; // eraser width - wide enough to look like a felt eraser
         var passes = [
           { from: vw, to: -vw - ERASER_W },          // pass 1: R→L
           { from: -ERASER_W, to: vw },                // pass 2: L→R
@@ -7222,7 +7204,7 @@ Definitely not three goblins in a trenchcoat">
           a.setAttribute('fill', 'freeze');
           a.setAttribute('calcMode', 'spline');
           a.setAttribute('keyTimes', '0;1');
-          // ease-in-out: starts and ends a touch slower — arm decelerates at end of stroke
+          // ease-in-out: starts and ends a touch slower - arm decelerates at end of stroke
           a.setAttribute('keySplines', '0.4 0 0.6 1');
           er.appendChild(a);
           mask.appendChild(er);
@@ -7255,7 +7237,7 @@ Definitely not three goblins in a trenchcoat">
         if (e.pointerType === '' && Date.now() - _pageLoadTime < 2000) return;
 
         if (decoding) {
-          // already decoded — re-copy and flash the copied annotation
+          // already decoded - re-copy and flash the copied annotation
           var email2 = rot13(_ER);
           if (navigator.clipboard) navigator.clipboard.writeText(email2).catch(function () { });
           var copiedSlot2 = document.getElementById('pfg-copied-ann-slot');
@@ -7269,7 +7251,7 @@ Definitely not three goblins in a trenchcoat">
         link.classList.add('pfg-decoded');
         // stop idle shimmer the moment decode begins
         if (_idleShimmerTid) { clearTimeout(_idleShimmerTid); _idleShimmerTid = null; }
-        // decode ROT13 only at click — real email never in DOM before this point
+        // decode ROT13 only at click - real email never in DOM before this point
         var email = rot13(_ER);
         if (navigator.clipboard) navigator.clipboard.writeText(email).catch(function () { });
         revealGlyphs(glyphs);
@@ -7277,7 +7259,7 @@ Definitely not three goblins in a trenchcoat">
         if (timerId) { clearTimeout(timerId); timerId = null; }
 
         currentTids = decode(glyphs, function () {
-          // draw "copied" annotation — fires only after decode completes
+          // draw "copied" annotation - fires only after decode completes
           var copiedSlot = document.getElementById('pfg-copied-ann-slot');
           if (!copiedSlot) return;
           var existingAnn = copiedSlot.querySelector('.pfg-copied-ann');
@@ -7322,7 +7304,7 @@ Definitely not three goblins in a trenchcoat">
           copiedSlot.appendChild(ann);
 
           if (isMobile) {
-            /* Treat "copied" as a handwritten signature on the closing rule. The
+            /* treat "copied" as a handwritten signature on the closing rule. the
                normal 24px section gap remains untouched; the note may cross the rule. */
             var mobileRuneRow = document.getElementById('about-rune-row');
             var aboutHero = document.getElementById('about-hero');
@@ -7398,9 +7380,8 @@ Definitely not three goblins in a trenchcoat">
        ═══════════════════════════════════════════════════════ */
     (function () {
       var COLS = 61;
-      /* logo shape — spaces define the linkedin logo, stars fill the rest */
-      /* trimmed from 69→61 cols (4 all-star cols removed each side) for ~1:1 display */
-      /* 61 cols × 61 rows — square grid, logo centred vertically */
+      /* logo shape - spaces define the linkedin logo, stars fill the rest */
+      /* 61 cols × 61 rows - square field, logo centred vertically */
       var LOGO_ART = [
         '*************************************************************',
         '*************************************************************',
@@ -7425,11 +7406,11 @@ Definitely not three goblins in a trenchcoat">
         '*************************************************************'
       ].join('\n');
 
-      /* fully-covered version — all stars, no logo visible */
+      /* fully-covered version - all stars, no logo visible */
       var ART = LOGO_ART.replace(/ /g, '*');
 
-      var RIPPLE_RADIUS = 39;  /* px — outward scatter radius on click */
-      var RIPPLE_STRENGTH = 38;  /* px — max push distance for nearby stars */
+      var RIPPLE_RADIUS = 39;  /* px - outward scatter radius on click */
+      var RIPPLE_STRENGTH = 38;  /* px - max push distance for nearby stars */
 
       /* radius varies by input device: finger needs more tolerance than mouse cursor */
       var TAP_RADIUS_MOUSE = 34;
@@ -7477,9 +7458,9 @@ Definitely not three goblins in a trenchcoat">
         window.addEventListener('resize', fitSize);
       }
 
-      /* fly the ASCII in: flicker animation then settle at opacity:1 */
+      /* fly the star field in: flicker animation then settle at opacity:1 */
       el._runFlyIn = function () {
-        if (el.classList.contains('settled')) return; /* already visible — skip */
+        if (el.classList.contains('settled')) return; /* already visible - skip */
         el.classList.remove('flicker', 'settled');
         void el.offsetWidth; /* force reflow so animation re-fires */
         el.classList.add('flicker');
@@ -7523,7 +7504,7 @@ Definitely not three goblins in a trenchcoat">
         if (shouldNavigate) window.location.href = LINKEDIN_URL;
       }
 
-      /* 90% threshold — link unlocks and opens immediately (finger may still be down) */
+      /* 90% threshold - link unlocks and opens immediately (finger may still be down) */
       function checkAllRevealed() {
         if (allRevealed) return;
         var rc = 0;
@@ -7548,7 +7529,7 @@ Definitely not three goblins in a trenchcoat">
             var s = document.createElement('span');
             s.textContent = ch;
             s.style.display = 'inline-block';
-            /* spring transition for the fly-in reveal only — flash uses opacity directly */
+            /* spring transition for the fly-in reveal only - flash uses opacity directly */
             s.style.transition = 'transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1)';
             el.appendChild(s);
             if (ch === '*') {
@@ -7561,7 +7542,7 @@ Definitely not three goblins in a trenchcoat">
         }
       }
 
-      /* Browser-back and reload must preserve the completed reveal. Once the
+      /* browser-back and reload must preserve the completed reveal. once the
          visitor has found LinkedIn, this artwork is a normal reusable link. */
       function restoreUnlockedState() {
         var wasRevealed = false;
@@ -7583,7 +7564,7 @@ Definitely not three goblins in a trenchcoat">
 
       restoreUnlockedState();
 
-      /* outward scatter from (cx,cy) — stars pushed away then CSS springs them back.
+      /* outward scatter from (cx,cy) - stars pushed away then CSS springs them back.
          logo-position stars within the radius are permanently flung and faded. */
       function doRipple(cx, cy, boost) {
         var radiusNow = RIPPLE_RADIUS * (boost || 1);
@@ -7617,10 +7598,10 @@ Definitely not three goblins in a trenchcoat">
             sp.el.style.opacity = '0';
             sp.el.style.pointerEvents = 'none';
           } else {
-            /* non-logo star: explosive scatter — random angle wobble, varied distance, staggered spring-back */
+            /* non-logo star: explosive scatter - random angle wobble, varied distance, staggered spring-back */
             var basePush = (1 - dist / radiusNow) * strengthNow;
             var wobble = (Math.random() - 0.5) * 1.4;  /* angle noise ±0.7 rad */
-            var scatter = basePush * (0.6 + Math.random() * 1.2); /* 60–180% of base push */
+            var scatter = basePush * (0.6 + Math.random() * 1.2); /* 60-180% of base push */
             var angle = Math.atan2(dy, dx) + wobble;
             var tx = Math.cos(angle) * scatter;
             var ty = Math.sin(angle) * scatter;
@@ -7670,7 +7651,7 @@ Definitely not three goblins in a trenchcoat">
         doRipple(scx, scy, boost);
       }
 
-      /* ── MOUSE ── */
+      /* - MOUSE - */
       var mouseIsDown = false;
       var hasMoved = false;
       var MOVE_THRESH = 6;
@@ -7721,10 +7702,8 @@ Definitely not three goblins in a trenchcoat">
         if (!allRevealed) e.preventDefault();
       });
 
-      /* ── TOUCH ──
-         A gesture that begins on the star field belongs to the artwork. Waiting
-         to infer horizontal intent made Safari begin native scrolling first,
-         so the page and artwork fought for the same finger. */
+      /* - touch -
+         a gesture that begins on the star field belongs to the artwork. */
       var touchActive = false;
       var lastScrubMsTouch = 0;
 

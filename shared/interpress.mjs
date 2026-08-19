@@ -1,5 +1,5 @@
 /* ═══════════════════════════════════════════════════════
-   press for goblins — shared email scaffolding
+   press for goblins - shared email scaffolding
    imported by receipt-user.js, receipt-notif.js,
    ticket-user.js, ticket-notif.js
    constants: insignia.mjs
@@ -15,9 +15,9 @@ export function escapeHtml(str) {
     .replace(/"/g, '&quot;');
 }
 
-/* ── email address obfuscation ── */
-/* splits "user@domain.com" across two <span> elements so iOS Mail / Gmail /
-   Outlook cannot auto-detect it as a tappable mailto link.
+/* - email address obfuscation - */
+/* splits "user@domain.com" across two <span> elements so iOS mail / gmail /
+   outlook cannot auto-detect it as a tappable mailto link.
    the zero-width joiner between the spans is invisible but breaks the regex. */
 export function obfuscateEmail(email) {
   const safe = escapeHtml(email);
@@ -28,13 +28,13 @@ export function obfuscateEmail(email) {
   return `<span style="unicode-bidi:embed;">${local}</span>&#8203;<span style="unicode-bidi:embed;">@${domain}</span>`;
 }
 
-/* ── preheader (invisible preview text) ── */
-/* display:none directly on the element — no outer max-height:0 wrapper.
-   outer wrapper caused iOS Mail to treat the subtree as unrendered and skip it.
-   padding uses &#8203;&#8288;&#160; (zero-width space + word joiner + nbsp) —
-   these are not stripped by iOS Mail unlike &zwnj; which gets discarded as invisible.
+/* - preheader (invisible preview text) - */
+/* display:none directly on the element - no outer max-height:0 wrapper.
+   outer wrapper caused iOS mail to treat the subtree as unrendered and skip it.
+   padding uses &#8203;&#8288;&#160; (zero-width space + word joiner + nbsp) -
+   these are not stripped by iOS mail unlike &zwnj; which gets discarded as invisible.
    fallback block after: visible to DOM but zero-height, not display:none,
-   so iOS Mail preview extractor stops scanning at body content. */
+   so iOS mail preview extractor stops scanning at body content. */
 export function preheaderSpan(text) {
   const padding = '&#8203;&#8288;&#160;'.repeat(150);
   const hidden = `<div style="display:none;font-size:1px;line-height:1px;max-height:0;max-width:0;opacity:0;overflow:hidden;visibility:hidden;">${escapeHtml(text)}${padding}</div>`;
@@ -42,8 +42,8 @@ export function preheaderSpan(text) {
   return `${hidden}\n${fallback}`;
 }
 
-/* ── ghost ref number header ── */
-/* metaLine optional — shown below ref in admin emails only */
+/* - ghost ref number header - */
+/* metaLine optional - shown below ref in admin emails only */
 export function ghostHeader(refNum, metaLine) {
   const ref = `<div style="font-family:${FONT_DISPLAY};font-size:72px;color:rgba(255,255,255,0.12);letter-spacing:0.04em;line-height:1;word-break:break-all;">${escapeHtml(refNum || '')}</div>`;
   const meta = metaLine
@@ -56,13 +56,13 @@ export function ghostHeader(refNum, metaLine) {
   </tr>`;
 }
 
-/* ── tear line (25px spacer + dashed rule) ── */
+/* - tear line (25px spacer + dashed rule) - */
 export function tearLine() {
   return `<tr><td style="padding:0 0 25px 0;font-size:1px;line-height:1px;background:#010101;" bgcolor="#000000">&nbsp;</td></tr>
   <tr><td style="padding:0 0 32px 0;border-top:1px dashed rgba(255,255,255,0.18);font-size:1px;line-height:1px;background:#010101;" bgcolor="#000000">&nbsp;</td></tr>`;
 }
 
-/* ── eyes image block ── */
+/* - eyes image block - */
 export function eyesBlock() {
   return `<tr>
     <td class="anim-eyes" style="padding:0;text-align:center;background:#010101;" align="center" bgcolor="#000000">
@@ -71,12 +71,12 @@ export function eyesBlock() {
   </tr>`;
 }
 
-/* ── breathing zone spacer ── */
+/* - breathing zone spacer - */
 export function breathingZone(px) {
   return `<tr><td style="padding:0 0 ${px}px 0;font-size:1px;line-height:1px;background:#010101;" bgcolor="#000000">&nbsp;</td></tr>`;
 }
 
-/* ── dot leader row: label · · · value ── */
+/* - dot leader row: label · · · value - */
 export function dotRow(label, value) {
   const labelStyle = `font-family:${FONT_BODY};font-size:13px;color:rgba(255,255,255,0.55);line-height:1.9;white-space:nowrap;padding-right:6px;`;
   const dotStyle   = `font-family:${FONT_BODY};font-size:13px;color:rgba(255,255,255,0.2);line-height:1.9;width:100%;overflow:hidden;letter-spacing:2px;`;
@@ -101,7 +101,7 @@ export function dotRowHtml(label, valueHtml) {
   </tr>`;
 }
 
-/* ── ticket stub block: email centered white | asterisk rule | admitted on date+time ── */
+/* - ticket stub block: email centered white | asterisk rule | admitted on date+time - */
 /* email: bearer address. dateStr: e.g. "14 jun 2026". timeStr: e.g. "@ 20:00"          */
 export function stubBlock(email, dateStr, timeStr) {
   /* asterisk row: always one star wider each side than the admitted line.
@@ -121,7 +121,7 @@ export function stubBlockHtml(emailHtml, dateStr, timeStr) {
   </td></tr>`;
 }
 
-/* ── stamp PNG — static image fallback (renders in Outlook iOS + all clients) ── */
+/* - stamp PNG - static image fallback (renders in outlook iOS + all clients) - */
 /* src: full URL to hosted PNG. alt: accessible label. opacity: default 0.69. */
 export function stampImg({ src, alt = 'stamp', opacity = 0.69 }) {
   return `<tr>
@@ -131,7 +131,7 @@ export function stampImg({ src, alt = 'stamp', opacity = 0.69 }) {
   </tr>`;
 }
 
-/* ── stamp SVG — circular ink stamp (Apple Mail + WebKit only — Outlook strips SVG) ── */
+/* - stamp SVG - circular ink stamp (apple mail + WebKit only - outlook strips SVG) - */
 /* topText: arc text top (e.g. 'query received' / 'field reports')
    midText: centre line (e.g. 'UNDER REVIEW' / 'ADMIT ONE')
    refNum:  shown below midText
@@ -187,7 +187,7 @@ export function stampSvg({ topText, midText, refNum, year, id = 'a' }) {
   </tr>`;
 }
 
-/* ── QR + footer block ── */
+/* - QR + footer block - */
 export function qrFooterBlock() {
   return `<tr class="anim-qr-footer">
     <td style="padding:0 0 28px 0;text-align:center;background:#010101;" bgcolor="#000000">
@@ -197,9 +197,9 @@ export function qrFooterBlock() {
   </tr>`;
 }
 
-/* ── outer HTML shell — wraps everything ── */
+/* - outer HTML shell - wraps everything - */
 /* title: <title> tag text
-   extraFonts: additional Google Fonts href fragment ('' if none)
+   extraFonts: additional google fonts href fragment ('' if none)
    innerRows: assembled <tr> blocks for the inner table */
 export function outerShell({ title, extraFonts = '', innerRows, preheader = '' }) {
   const families = `Special+Elite${extraFonts}`;
@@ -236,7 +236,7 @@ export function outerShell({ title, extraFonts = '', innerRows, preheader = '' }
 </html>`;
 }
 
-/* ── date/time helpers ── */
+/* - date/time helpers - */
 export function nowUtc() {
   const now = new Date();
   const day   = String(now.getUTCDate()).padStart(2, '0');
@@ -251,13 +251,13 @@ export function nowUtc() {
   };
 }
 
-/* ── body text block (Courier New — matches goblin chat messages) ── */
+/* - body text block (courier new - matches goblin chat messages) - */
 /* lines: array of strings. last line gets margin:0. */
 export function hwBlock(lines) {
   const baseStyle = `font-family:${FONT_BODY};font-size:16px;line-height:1.6;letter-spacing:0.03em;color:${ACCENT};text-align:left;`;
   const rows = lines.map((line, i) => {
     const margin = i < lines.length - 1 ? 'margin:0 0 5px 0;' : 'margin:0;';
-    /* last line may contain a superscript asterisk — passed as raw HTML */
+    /* last line may contain a superscript asterisk - passed as raw HTML */
     return `<p class="anim-hw" style="${margin}${baseStyle}">${line}</p>`;
   }).join('\n');
   return `<tr>

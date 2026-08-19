@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 65 30" shape-rendering="crispEdges">
-  <!-- press for goblins — white logo variant for partner/client grids
+  <!-- press for goblins - white logo variant for partner/client grids
        eyes only (pair 1, open state) with pressforgoblins wordmark below
        all pixels white, transparent background -->
 
@@ -17,7 +17,7 @@
     <path d="M15 3h1v1h-1z M19 3h1v1h-1z M10 4h2v1h-2z M14 4h8v1h-8z M9 5h3v1h-3z M16 5h7v1h-7z M8 6h4v1h-4z M16 6h8v1h-8z M5 7h7v1h-7z M16 7h8v1h-8z M5 8h7v1h-7z M16 8h8v1h-8z M5 9h7v1h-7z M16 9h6v1h-6z M7 10h5v1h-5z M16 10h6v1h-6z M8 11h4v1h-4z M14 11h6v1h-6z M9 12h3v1h-3z M14 12h6v1h-6z" fill="#fff"/>
   </g>
 
-  <!-- wordmark: pressforgoblins — Courier New, centred, white -->
+  <!-- wordmark: pressforgoblins - courier new, centred, white -->
   <text
     x="32.5"
     y="27"

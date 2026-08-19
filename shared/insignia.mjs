@@ -1,5 +1,5 @@
 /* ═══════════════════════════════════════════════════════
-   press for goblins — insignia
+   press for goblins - insignia
    single source of truth for all shared constants.
    consumed by: interpress.js (email scaffold)
                 compositor.mjs (patches index.html at build time)

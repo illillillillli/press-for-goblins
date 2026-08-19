@@ -1,5 +1,5 @@
 /* ═══════════════════════════════════════════════════════
-   press for goblins — /api/receipt (Vercel endpoint)
+   press for goblins - /api/receipt (vercel endpoint)
    orchestrates both user receipt + admin notification
    env vars: RESEND_API_KEY, UPSTASH_REDIS_REST_URL,
              UPSTASH_REDIS_REST_TOKEN
@@ -23,7 +23,7 @@ export default async function handler(req, res) {
     return res.status(error.status || 400).json({ error: error.message || 'bad request' });
   }
 
-  /* honeypot — bots fill every field, humans don't see this one */
+  /* honeypot - bots fill every field, humans don't see this one */
   if (answers['_gotcha']) return res.status(400).json({ error: 'bad request' });
 
   const email = answers['f-email'];

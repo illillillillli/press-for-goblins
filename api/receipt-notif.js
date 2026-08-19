@@ -1,5 +1,5 @@
 /* ═══════════════════════════════════════════════════════
-   press for goblins — query notification → admin
+   press for goblins - query notification → admin
    env vars: RESEND_API_KEY, UPSTASH_REDIS_REST_URL,
              UPSTASH_REDIS_REST_TOKEN
    ═══════════════════════════════════════════════════════ */
@@ -100,16 +100,16 @@ export function buildHtml(answers, refNum) {
   const chatRows = buildChatRows(answers);
   const pitch = answers['f-pitch'] || '';
 
-  /* ref number — right-aligned ghost text.
-     MSO conditional: Special Elite loads via <link> which Outlook strips.
-     non-MSO clients get Special Elite at 96px; Outlook gets Courier New at 64px. */
+  /* ref number - right-aligned ghost text.
+     MSO conditional: special elite loads via <link> which outlook strips.
+     non-MSO clients get special elite at 96px; outlook gets courier new at 64px. */
   const refBlock = `<tr>
     <td style="padding:0;text-align:right;background:#010101;" bgcolor="#000000">
       <!--[if !mso]><!-->
       <div style="font-family:'Special Elite','Courier New',Courier,monospace;font-size:80px;color:rgba(255,255,255,0.12);letter-spacing:0.04em;line-height:1;word-break:break-all;">${escapeHtml(refNum || '')}</div>
       <!--<![endif]-->
       <!--[if mso]>
-      <div style="font-family:'Courier New',Courier,monospace;font-size:56px;color:rgba(255,255,255,0.12);letter-spacing:0.08em;line-height:1;word-break:break-all;">${escapeHtml(refNum || '')}</div>
+      <div style="font-family:'courier new',courier,monospace;font-size:56px;color:rgba(255,255,255,0.12);letter-spacing:0.08em;line-height:1;word-break:break-all;">${escapeHtml(refNum || '')}</div>
       <![endif]-->
     </td>
   </tr>`;
@@ -140,7 +140,7 @@ export function buildHtml(answers, refNum) {
     /* stamp */
     stampSvg({ topText: 'query received', midText: 'UNDER REVIEW', refNum, year, id: 'rn' }),
     breathingZone(36),
-    /* qr + address footer — no goblin-footnote on admin notif */
+    /* qr + address footer - no goblin-footnote on admin notif */
     qrFooterBlock(),
   ].join('\n');
 

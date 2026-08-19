@@ -1,10 +1,10 @@
 #!/usr/bin/env node
 /* ═══════════════════════════════════════════════════════
-   press for goblins — impressions
+   press for goblins - impressions
    generates the master preview + all four standalone email HTMLs
    usage: node impressions.mjs
-   output: ~/Documents/_forge/impressions.html (master)
-           ~/Documents/_forge/{receipt-user,receipt-notif,ticket-user,ticket-notif}.html
+   output: ~/documents/_forge/impressions.html (master)
+           ~/documents/_forge/{receipt-user,receipt-notif,ticket-user,ticket-notif}.html
    ═══════════════════════════════════════════════════════ */
 
 import { writeFileSync } from 'fs';
@@ -19,7 +19,7 @@ import { buildHtml as ticketNotifHtml } from './api/ticket-notif.js';
 const OUT = join(homedir(), 'Documents', '_forge');
 const REF = '#0009';
 
-/* absolute file:// path to index.html — works from _forge/ which is in a different tree */
+/* absolute file:// path to index.html - works from _forge/ which is in a different tree */
 const SITE_PATH = join(homedir(), 'iCloud', '_Codex', 'press for goblins', 'index.html')
   .split(' ').join('%20');
 const SITE_URL = `file://${SITE_PATH}`;
@@ -52,19 +52,19 @@ for (const { name, html } of emails) {
   console.log(`wrote ${name}`);
 }
 
-/* write combined impressions.html — site previews + all four emails */
+/* write combined impressions.html - site previews + all four emails */
 function toSrcdoc(html) {
   return html.replace(/&/g, '&amp;').replace(/"/g, '&quot;');
 }
 
-/* terminal: MacBook Pro 14" logical viewport 1512×900, scaled to 0.7× */
+/* terminal: MacBook pro 14" logical viewport 1512×900, scaled to 0.7× */
 const TERMINAL_IFRAME_W = 1512;
 const TERMINAL_IFRAME_H = 900;
 const TERMINAL_SCALE = 0.7;
 const TERMINAL_DISPLAY_W = Math.round(TERMINAL_IFRAME_W * TERMINAL_SCALE); /* 1058px */
 const TERMINAL_DISPLAY_H = Math.round(TERMINAL_IFRAME_H * TERMINAL_SCALE); /* 630px */
 
-/* slate: iPhone 15 Plus logical pixels 430×932 */
+/* slate: iPhone 15 plus logical pixels 430×932 */
 const SLATE_W = 430;
 const SLATE_H = 932;
 
@@ -139,7 +139,7 @@ ${emailCols}
   </div></div>
   <script>
     /* horizontal wheel always scrolls the page, even when cursor is over an iframe.
-       iframes swallow wheel events by default — this fires on the outer document only.
+       iframes swallow wheel events by default - this fires on the outer document only.
        vertical scroll is unaffected (iframes handle it internally). */
     window.addEventListener('wheel', function(e) {
       if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) {
