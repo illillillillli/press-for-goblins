@@ -86,6 +86,14 @@ test('principal tab changes are atomic and use the settled opening cadence every
   assert.match(source, /setTimeout\(\(\) => eyes\[2\]\.classList\.add\('open'\), 440\)/);
 });
 
+test('principal headings begin below the fully opaque top mist at every viewport', () => {
+  assert.match(source, /transparent 155px,[\s\S]{0,300}#000 200px/);
+  assert.match(source, /padding:\s*210px/);
+  assert.match(source, /--mobile-mist-top-zero:\s*120px/);
+  assert.match(source, /--mobile-mist-top-opaque:\s*140px/);
+  assert.match(source, /padding-top:\s*calc\(var\(--mobile-mist-top-zero,[\s\S]{0,100}var\(--mobile-content-inset/);
+});
+
 test('Meet the Goblins alone owns the interactive social star field', () => {
   assert.match(source, /id="linkedin-ascii-link"/);
   assert.match(source, /id="ascii-output"/);
