@@ -29,6 +29,14 @@ test('all executable inline scripts parse', () => {
   }
 });
 
+test('search and social descriptions use the approved company introduction', () => {
+  const description = 'A narrative studio working with writers, comic creators, game developers, publishers and the occasional unknown entity.';
+  assert.equal((source.match(new RegExp(description.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g')) || []).length, 4);
+  assert.match(source, new RegExp(`<meta name="description"\\s+content="${description.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}">`));
+  assert.match(source, new RegExp(`<meta property="og:description"\\s+content="${description.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}">`));
+  assert.match(source, new RegExp(`<meta name="twitter:description"\\s+content="${description.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}">`));
+});
+
 test('initial screen markup is isolated before JavaScript runs', () => {
   const hero = openingTag('screen-hero');
   assert.match(hero, /class="screen is-active"/);
