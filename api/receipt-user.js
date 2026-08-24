@@ -57,7 +57,7 @@ const GOBLIN_PROMPTS = {
 const REACTIONS = {
   gate: {
     yes: 'we can tell', obviously: "this one's spicy",
-    'you have no idea': 'you do look pretty desperate', 'are you really goblins?': 'three of them',
+    'you have no idea': 'you do look pretty desperate', 'are you really goblins?': 'definitely not',
   },
   'writer-type': {
     novel: 'you poor thing', 'comic or graphic novel': 'we bet you were really cool in school',
