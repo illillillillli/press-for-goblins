@@ -5,7 +5,7 @@
                 compositor.mjs (patches index.html at build time)
    ═══════════════════════════════════════════════════════ */
 
-export const ACCENT      = '#89ce8d';
+export const ACCENT      = '#72d087';
 export const SITE_URL    = 'https://pressforgoblins.com';
 export const EYES_URL    = 'https://pressforgoblins.com/assets/images/eyes.png';
 export const QR_URL      = 'https://pressforgoblins.com/assets/images/qr.png';

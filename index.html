@@ -46,7 +46,7 @@
        [receipt-js]    builds the receipt grid from answers
 
     fyi
-     * change the goblin green: search [colours] → change --green:#89ce8d
+     * change the goblin green: search [colours] → change --green:#72d087
      * change what the goblins say: search [reactions] → edit the text arrays
      * change the chat questions: search [steps] → each case is one step
      * change typing speed: search [timing] → MSG_GAP, STEP_GAP
@@ -120,7 +120,7 @@
 <style>
   /* [insignia] single source of truth - edit shared/insignia.mjs, not here */
   :root {
-    --green: #89ce8d;
+    --green: #72d087;
     --site-url: "https://pressforgoblins.com";
     --font-body: 'Courier New', Courier, monospace;
     --font-display: 'Special Elite', 'Courier New', Courier, monospace;
@@ -150,7 +150,7 @@
 
     /* [colours] goblin green for ctas, interactive elements and annotations. the text variables are white - just at different opacities. */
     :root {
-      --green: #89ce8d;
+      --green: #72d087;
       /* the one and only goblin green. change this and everything on pfg changes with it. */
       --text-primary: rgba(255, 255, 255, 0.88);
       /* main body text - almost white */
@@ -3352,13 +3352,13 @@
             <p>yes, hello. this is noah grey. please ignore the shifting height; nothing to see here. <span id="subject"
                 aria-hidden="true"><span class="we-text">we</span><svg id="strikethrough-svg" viewBox="0 0 30 8"
                   preserveAspectRatio="none" aria-hidden="true" focusable="false">
-                  <path d="M0 4 Q15 3.8,26 4 Q28 3,30 2.5" fill="none" stroke="#89ce8d" stroke-width="1.6"
+                  <path d="M0 4 Q15 3.8,26 4 Q28 3,30 2.5" fill="none" stroke="#72d087" stroke-width="1.6"
                     stroke-linecap="round" />
                 </svg></span><span id="new-subject" aria-hidden="true"><svg viewBox="0 0 12 22" width="9" height="15"
                   aria-hidden="true" focusable="false">
-                  <ellipse class="i-dot" cx="5.8" cy="3" rx="1.8" ry="2.2" fill="#89ce8d"
+                  <ellipse class="i-dot" cx="5.8" cy="3" rx="1.8" ry="2.2" fill="#72d087"
                     transform="rotate(-6,5.8,3)" />
-                  <path class="i-stalk" d="M 6.3 9 C 6.0 12,6.4 16,6.1 20" stroke="#89ce8d" stroke-width="1.8"
+                  <path class="i-stalk" d="M 6.3 9 C 6.0 12,6.4 16,6.1 20" stroke="#72d087" stroke-width="1.8"
                     fill="none" stroke-linecap="round" />
                 </svg></span><span class="sr-only">i</span> run a narrative studio from a dimly lit room in london.
               with five years' experience at a big four publisher and counting, i work with <span
@@ -4179,7 +4179,7 @@
        ═══════════════════════════════════════════════════════ */
     const CONFIG = {
       droop: 'awakened',      /* *p3's mood. awakened, lazy, or alert. */
-      accent: '#89ce8d',      /* *the green. this is the one value that colours everything. */
+      accent: '#72d087',      /* *the green. this is the one value that colours everything. */
       crt: true,              /* *crt sweep on/off */
       rewind: 'vcr',          /* *rewind animation style */
       submitMode: 'live',     /* *mock pretends; live actually sends. */
@@ -6913,7 +6913,7 @@
       // [rot13] the plaintext address is not in the DOM at load. bots that scrape emails get nothing. humans who click get everything.
       function rot13(s) { return s.replace(/[a-zA-Z]/g, function (c) { return String.fromCharCode((c <= 'Z' ? 90 : 122) >= (c = c.charCodeAt(0) + 13) ? c : c - 26); }); }
       var _ER = 'uryyb@cerffsbetboyvaf.pbz'; // ROT13 - plaintext never in DOM until click
-      var GREEN = '#89ce8d', WHITE = '#e8ffe8', GRAY = '#fff';
+      var GREEN = '#72d087', WHITE = '#e8ffe8', GRAY = '#fff';
       // sized in em so glyphs scale with .about-contact-line font-size
       // viewBox is 12×16; a courier new char is ~0.6em wide × 1em tall
       var _isMobileGlyph = window.innerWidth <= 600;
