@@ -237,7 +237,7 @@
 
     @media (max-width: 600px) {
       :root {
-        --principal-title-height: 56px;
+        --principal-title-height: 124px;
         --principal-divider-gap: var(--mobile-space-group);
       }
 
@@ -968,7 +968,17 @@
 
     @media (max-width: 600px) {
       .principal-title {
-        font-size: var(--home-h1-size, 14px);
+        font-size: var(--home-h1-size, var(--reading-size));
+        line-height: 1.55;
+      }
+
+      .principal-title-envelope {
+        align-items: flex-end;
+      }
+
+      .principal-title-line {
+        white-space: normal;
+        text-wrap: balance;
       }
 
       .hero {
@@ -3320,8 +3330,9 @@
         <div class="principal-header-inner">
           <div class="principal-title-envelope">
             <h1 class="principal-title" id="principal-title" data-variant="home">
-              <span class="principal-title-line" id="principal-title-line-1">definitely not three</span>
-              <span class="principal-title-line" id="principal-title-line-2">goblins in a trenchcoat</span>
+              <span class="principal-title-line" id="principal-title-line-1">definitely not</span>
+              <span class="principal-title-line" id="principal-title-line-2">three goblins</span>
+              <span class="principal-title-line" id="principal-title-line-3">in a trenchcoat</span>
             </h1>
           </div>
           <span class="principal-divider" id="principal-divider" aria-hidden="true"></span>
@@ -3630,7 +3641,8 @@
       var PRINCIPAL_VIEWS = {
         home: {
           screen: 'screen-hero', hash: '', nav: 'home', variant: 'home',
-          titleLines: ['definitely not three', 'goblins in a trenchcoat']
+          titleLines: ['definitely not three', 'goblins in a trenchcoat'],
+          mobileTitleLines: ['definitely not', 'three goblins', 'in a trenchcoat']
         },
         about: {
           screen: 'screen-about', hash: '#about', nav: 'about', variant: 'single',
@@ -3656,6 +3668,8 @@
       var principalTitle = document.getElementById('principal-title');
       var principalTitleLine1 = document.getElementById('principal-title-line-1');
       var principalTitleLine2 = document.getElementById('principal-title-line-2');
+      var principalTitleLine3 = document.getElementById('principal-title-line-3');
+      var principalMobileQuery = window.matchMedia('(max-width: 600px)');
       var principalGeneration = 0;
 
       var currentTab = null;
@@ -3670,8 +3684,10 @@
         principalHeader.hidden = false;
         principalHeader.setAttribute('aria-hidden', 'false');
         principalTitle.dataset.variant = view.variant;
-        principalTitleLine1.textContent = view.titleLines[0];
-        principalTitleLine2.textContent = view.titleLines[1];
+        var titleLines = principalMobileQuery.matches && view.mobileTitleLines ? view.mobileTitleLines : view.titleLines;
+        principalTitleLine1.textContent = titleLines[0] || '';
+        principalTitleLine2.textContent = titleLines[1] || '';
+        principalTitleLine3.textContent = titleLines[2] || '';
         /* the title reveal belongs only to the first home awakening. tab changes update
            the same visible node atomically: no opacity reset, forced reflow or replay. */
         if (tab === 'home' && !window._heroReadyFired) {
@@ -3681,6 +3697,10 @@
         }
         document.dispatchEvent(new CustomEvent('principalTitleChanged', { detail: { tab: tab, generation: principalGeneration } }));
       }
+
+      principalMobileQuery.addEventListener('change', function () {
+        if (currentTab) renderPrincipalHeader(currentTab);
+      });
 
       function syncPrincipalHeaderVisibility(activeId) {
         if (!principalHeader) return;
@@ -6792,6 +6812,14 @@
       var MIN_SIZE = 10; /* px - never smaller than this */
 
       function fitTitle() {
+        if (window.matchMedia('(max-width: 600px)').matches) {
+          var mobilePx = getComputedStyle(document.documentElement).getPropertyValue('--reading-size').trim() || '20px';
+          el.style.setProperty('font-size', mobilePx, 'important');
+          document.documentElement.style.setProperty('--home-h1-size', mobilePx);
+          document.documentElement.style.setProperty('--h1-size', mobilePx);
+          return;
+        }
+
         /* measure the full reference string at REF_SIZE in the real display font */
         var probe = document.createElement('span');
         probe.textContent = REF_STRING;
