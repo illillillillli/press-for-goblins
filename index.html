@@ -6335,10 +6335,13 @@
               answers.terms = opt.value;
               if (opt.value === 'i have questions') {
                 /* say "of course you do" then capture the question */
-                setTimeout(() => typeMessage('of course you do', () => {
+                setTimeout(() => typeMessages([
+                  'of course you do',
+                  "ask as many as you like. we'll answer them in our email reply."
+                ], () => {
                   showTextInput('', val => {
                     answers['terms-concern'] = val;
-                    setTimeout(() => typeMessage("noted. expect goblins", () => {
+                    setTimeout(() => typeMessage('noted.', () => {
                       setTimeout(() => runStep(12), STEP_GAP);
                     }), 300);
                   }, false, 'terms');
