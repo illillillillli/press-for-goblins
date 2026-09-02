@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import dashboardData from '../api/dashboard-data.js';
 import dashboardOwner from '../api/dashboard-owner.js';
-import dashboardLogin from '../api/dashboard-login.js';
+import dashboardConfig from '../api/dashboard-config.js';
 
 function responseRecorder() {
   return {
@@ -70,13 +70,13 @@ test('dashboard login is same-origin and sends only for the configured owner', a
   try {
     let req={method:'POST',headers:{origin:'https://pressforgoblins.com'},body:{email:'OWNER@example.test'}};
     let res=responseRecorder();
-    await dashboardLogin(req,res);
+    await dashboardConfig(req,res);
     assert.equal(res.statusCode,204);
     assert.equal(calls,1);
 
     req={method:'POST',headers:{origin:'https://pressforgoblins.com'},body:{email:'somebody@example.test'}};
     res=responseRecorder();
-    await dashboardLogin(req,res);
+    await dashboardConfig(req,res);
     assert.equal(res.statusCode,204);
     assert.equal(calls,1);
   } finally { globalThis.fetch=originalFetch; }
