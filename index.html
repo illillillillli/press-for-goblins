@@ -66,11 +66,11 @@
   <!-- *this makes pfg usable on the glowing rectangles humans are always staring at. it stops the typing apparatus from pushing everything upwards as well. -->
   <title>Press for Goblins®</title>
   <meta name="description"
-    content="A narrative studio working with writers, comic creators, game developers, publishers and the occasional unknown entity.">
+    content="A narrative studio for writers, comic creators, game developers, publishers and the occasional unknown entity.">
   <!-- og tags - what humans see when they paste the link into their group chats. we have opinions about this. -->
   <meta property="og:title" content="Press for Goblins®">
   <meta property="og:description"
-    content="A narrative studio working with writers, comic creators, game developers, publishers and the occasional unknown entity.">
+    content="A narrative studio for writers, comic creators, game developers, publishers and the occasional unknown entity.">
   <meta property="og:site_name" content="Press for Goblins®">
   <meta property="og:url" content="https://pressforgoblins.com">
   <meta property="og:type" content="website">
@@ -78,7 +78,7 @@
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Press for Goblins®">
   <meta name="twitter:description"
-    content="A narrative studio working with writers, comic creators, game developers, publishers and the occasional unknown entity.">
+    content="A narrative studio for writers, comic creators, game developers, publishers and the occasional unknown entity.">
   <!-- robots - the goblins are ready to be found. -->
   <meta name="robots" content="index,follow">
   <!-- theme-color - this makes the address bar match the void. -->
@@ -93,11 +93,33 @@
   <script type="application/ld+json">
     {
       "@context": "https://schema.org",
-      "@type": "WebSite",
-      "url": "https://pressforgoblins.com/",
-      "name": "Press for Goblins®",
-      "alternateName": "Press for Goblins",
-      "description": "A narrative studio working with writers, comic creators, game developers, publishers and the occasional unknown entity."
+      "@graph": [
+        {
+          "@type": "Organization",
+          "@id": "https://pressforgoblins.com/#organization",
+          "url": "https://pressforgoblins.com/",
+          "name": "Press for Goblins®",
+          "alternateName": "Press for Goblins",
+          "description": "A narrative studio for writers, comic creators, game developers, publishers and the occasional unknown entity.",
+          "logo": {
+            "@type": "ImageObject",
+            "url": "https://pressforgoblins.com/assets/icons/favicon.png",
+            "width": 512,
+            "height": 512
+          }
+        },
+        {
+          "@type": "WebSite",
+          "@id": "https://pressforgoblins.com/#website",
+          "url": "https://pressforgoblins.com/",
+          "name": "Press for Goblins®",
+          "alternateName": "Press for Goblins",
+          "description": "A narrative studio for writers, comic creators, game developers, publishers and the occasional unknown entity.",
+          "publisher": {
+            "@id": "https://pressforgoblins.com/#organization"
+          }
+        }
+      ]
     }
   </script>
   <!-- [csp] the page only loads what it built itself. nothing from outside.
@@ -108,10 +130,9 @@
   <!-- [fonts] we've made sure these are loaded before the page wakes up so the title isn't invisible while the font catches up. -->
   <link rel="preload" href="fonts/PressStart2P-Regular.woff2" as="font" type="font/woff2" crossorigin>
 <!-- [icons] the tiny goblin face that lives in your tab. it's the one that appears when humans save the site to their home screens as well. -->
-  <!-- SVG for browsers that can handle it. PNG for safari (which cannot). -->
-  <link rel="icon" type="image/png" href="assets/icons/favicon.png?v=12">
-  <link rel="icon" type="image/svg+xml" href="assets/icons/favicon.svg?v=12">
-  <link rel="shortcut icon" href="assets/icons/favicon.png?v=12">
+  <!-- High-contrast PNG remains legible on the light search-result favicon ground. -->
+  <link rel="icon" type="image/png" href="assets/icons/favicon.png?v=13">
+  <link rel="shortcut icon" href="assets/icons/favicon.png?v=13">
   <link rel="apple-touch-icon" href="assets/icons/shortcut.png?v=12">
 
   <!-- [fonts] pixel font loads via @font-face below -->
@@ -3349,7 +3370,7 @@
         <div class="hero" id="hero">
           <div class="body" id="home-body">
             <!-- [we > i strikethrough]. this was the first bit of flair noah came up with during the earliest pfg build. it might be his favourite part of the code. -->
-            <p>yes, hello. this is noah grey. please ignore the shifting height; nothing to see here. <span id="subject"
+            <p data-nosnippet>yes, hello. this is noah grey. please ignore the shifting height; nothing to see here. <span id="subject"
                 aria-hidden="true"><span class="we-text">we</span><svg id="strikethrough-svg" viewBox="0 0 30 8"
                   preserveAspectRatio="none" aria-hidden="true" focusable="false">
                   <path d="M0 4 Q15 3.8,26 4 Q28 3,30 2.5" fill="none" stroke="#72d087" stroke-width="1.6"
