@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import dashboardData from '../api/dashboard-data.js';
 import dashboardOwner from '../api/dashboard-owner.js';
+import dashboardLogin from '../api/dashboard-login.js';
 
 function responseRecorder() {
   return {
@@ -59,4 +60,24 @@ test('each owner device receives an independent anonymous marker', async () => {
     assert.match(res.headers['Set-Cookie'],/^pfg_owner=a{64};/);
     assert.doesNotMatch(res.headers['Set-Cookie'],/12abef/);
   } finally { globalThis.fetch = originalFetch; }
+});
+
+test('dashboard login is same-origin and sends only for the configured owner', async () => {
+  Object.assign(process.env, { SUPABASE_URL:'https://db.test', SUPABASE_ANON_KEY:'public-key', DASHBOARD_OWNER_EMAIL:'owner@example.test' });
+  const originalFetch = globalThis.fetch;
+  let calls=0;
+  globalThis.fetch = async () => { calls += 1; return { ok:true }; };
+  try {
+    let req={method:'POST',headers:{origin:'https://pressforgoblins.com'},body:{email:'OWNER@example.test'}};
+    let res=responseRecorder();
+    await dashboardLogin(req,res);
+    assert.equal(res.statusCode,204);
+    assert.equal(calls,1);
+
+    req={method:'POST',headers:{origin:'https://pressforgoblins.com'},body:{email:'somebody@example.test'}};
+    res=responseRecorder();
+    await dashboardLogin(req,res);
+    assert.equal(res.statusCode,204);
+    assert.equal(calls,1);
+  } finally { globalThis.fetch=originalFetch; }
 });
