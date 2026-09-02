@@ -17,10 +17,11 @@ export default async function handler(req, res) {
       body: '{}',
     });
     if (!upstream.ok) return res.status(403).end();
-    const token = await upstream.json();
-    if (typeof token !== 'string' || !/^[a-f0-9]{64}$/.test(token)) return res.status(503).end();
-    res.setHeader('Set-Cookie', `pfg_owner=${token}; Max-Age=15552000; Path=/; SameSite=Strict; Secure; HttpOnly`);
-    return res.status(204).end();
+    const marker = await upstream.json();
+    if (!marker || typeof marker.token !== 'string' || !/^[a-f0-9]{64}$/.test(marker.token)
+        || typeof marker.device !== 'string' || !/^[a-f0-9]{6}$/.test(marker.device)) return res.status(503).end();
+    res.setHeader('Set-Cookie', `pfg_owner=${marker.token}; Max-Age=15552000; Path=/; SameSite=Strict; Secure; HttpOnly`);
+    return res.status(200).json({ device: marker.device });
   } catch {
     return res.status(503).end();
   }

@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import dashboardData from '../api/dashboard-data.js';
+import dashboardOwner from '../api/dashboard-owner.js';
 
 function responseRecorder() {
   return {
@@ -42,5 +43,20 @@ test('dashboard data rejects foreign hosts and cross-site requests before provid
       assert.equal(res.statusCode,403);
     }
     assert.equal(called,false);
+  } finally { globalThis.fetch = originalFetch; }
+});
+
+test('each owner device receives an independent anonymous marker', async () => {
+  Object.assign(process.env, { SUPABASE_URL:'https://db.test', SUPABASE_ANON_KEY:'public-key' });
+  const originalFetch = globalThis.fetch;
+  globalThis.fetch = async () => ({ ok:true, json:async () => ({ token:'a'.repeat(64), device:'12abef' }) });
+  try {
+    const req = { method:'POST', headers:{ origin:'https://pressforgoblins.com', authorization:bearer } };
+    const res = responseRecorder();
+    await dashboardOwner(req,res);
+    assert.equal(res.statusCode,200);
+    assert.deepEqual(res.body,{ device:'12abef' });
+    assert.match(res.headers['Set-Cookie'],/^pfg_owner=a{64};/);
+    assert.doesNotMatch(res.headers['Set-Cookie'],/12abef/);
   } finally { globalThis.fetch = originalFetch; }
 });
