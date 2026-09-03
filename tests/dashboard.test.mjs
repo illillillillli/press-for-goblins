@@ -40,3 +40,8 @@ test('private dashboard has one canonical route and no legacy internal name', ()
   assert.match(dashboard, /\/api\/dashboard-data/);
   assert.ok(!`${dashboard}\n${config}`.toLowerCase().includes(forbidden));
 });
+
+test('dashboard preserves a valid email session while repairing incomplete second-factor enrolment', () => {
+  assert.match(dashboard, /status!=='verified'.*method:'DELETE'/s);
+  assert.match(dashboard, /await beginMfa\(\);history\.replaceState/);
+});

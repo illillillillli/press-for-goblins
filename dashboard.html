@@ -148,8 +148,9 @@
       }));
     }
     async function beginMfa() {
-      const factors=await auth('/factors'); const verified=(factors.totp||[]).filter(factor=>factor.status==='verified');
+      const factors=await auth('/factors'); const totp=factors.totp||[]; const verified=totp.filter(factor=>factor.status==='verified');
       if(verified.length){factorId=verified[0].id;showAccess('mfa');return;}
+      for(const factor of totp.filter(item=>item.status!=='verified')) await auth(`/factors/${encodeURIComponent(factor.id)}`,{method:'DELETE'});
       const created=await auth('/factors',{method:'POST',body:JSON.stringify({factor_type:'totp',friendly_name:'Press for Goblins'})});
       factorId=created.id;$('qr').src=created.totp.qr_code;$('qr').classList.remove('hidden');$('secret').textContent=created.totp.secret;$('secret-line').classList.remove('hidden');showAccess('mfa');
     }
@@ -165,7 +166,7 @@
     $('mfa-form').addEventListener('submit',async event=>{event.preventDefault();status('…');try{const challenge=await auth(`/factors/${encodeURIComponent(factorId)}/challenge`,{method:'POST',body:'{}'});const verified=await auth(`/factors/${encodeURIComponent(factorId)}/verify`,{method:'POST',body:JSON.stringify({challenge_id:challenge.id,code:$('code').value})});accessToken=verified.access_token;history.replaceState(null,'','/dashboard');await loadDashboard();}catch{status('E2');}});
     $('owner-device').addEventListener('click',async()=>{const response=await fetch('/api/dashboard-owner',{method:'POST',headers:{Authorization:`Bearer ${accessToken}`}});if(!response.ok){$('owner-device').textContent='! d6';return;}const marker=await response.json();$('owner-device').textContent=`✓ d6 ${marker.device}`;});
     $('signout').addEventListener('click',()=>{accessToken='';location.replace('/dashboard');});
-    (async()=>{try{config=await fetch('/api/dashboard-config',{cache:'no-store'}).then(response=>{if(!response.ok)throw new Error();return response.json();});const hash=new URLSearchParams(location.hash.slice(1));accessToken=hash.get('access_token')||'';if(accessToken){history.replaceState(null,'','/dashboard');await beginMfa();}}catch{status('E0');}})();
+    (async()=>{try{config=await fetch('/api/dashboard-config',{cache:'no-store'}).then(response=>{if(!response.ok)throw new Error();return response.json();});const hash=new URLSearchParams(location.hash.slice(1));accessToken=hash.get('access_token')||'';if(accessToken){await beginMfa();history.replaceState(null,'','/dashboard');}}catch{status('E0');}})();
   })();
   </script>
 </body>
