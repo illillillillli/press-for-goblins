@@ -155,7 +155,7 @@
       factorId=created.id;$('qr').src=created.totp.qr_code;$('qr').classList.remove('hidden');$('secret').textContent=created.totp.secret;$('secret-line').classList.remove('hidden');showAccess('mfa');
     }
     async function loadDashboard() {
-      const response=await fetch('/api/dashboard-data',{headers:{Authorization:`Bearer ${accessToken}`}}); if(!response.ok) throw new Error('A2');
+      const headers=accessToken?{Authorization:`Bearer ${accessToken}`}:{}, response=await fetch('/api/dashboard-data',{headers}); if(!response.ok) throw new Error('A2');
       const data=await response.json(), rows=safeRows(data); showDashboard();
       $('freshness').textContent=data.last_accepted_at?`30 days · updated ${new Date(data.last_accepted_at).toLocaleString()}`:'30 days';
       const views=total(rows,'opportunity','email_rune'), solves=total(rows,'interaction','email_rune'), rate=isSuppressed(rows,'opportunity','email_rune')||isSuppressed(rows,'interaction','email_rune')?null:ratio(solves,views);
@@ -166,7 +166,7 @@
     $('mfa-form').addEventListener('submit',async event=>{event.preventDefault();status('…');try{const challenge=await auth(`/factors/${encodeURIComponent(factorId)}/challenge`,{method:'POST',body:'{}'});const verified=await auth(`/factors/${encodeURIComponent(factorId)}/verify`,{method:'POST',body:JSON.stringify({challenge_id:challenge.id,code:$('code').value})});accessToken=verified.access_token;history.replaceState(null,'','/dashboard');await loadDashboard();}catch{status('E2');}});
     $('owner-device').addEventListener('click',async()=>{const response=await fetch('/api/dashboard-owner',{method:'POST',headers:{Authorization:`Bearer ${accessToken}`}});if(!response.ok){$('owner-device').textContent='! d6';return;}const marker=await response.json();$('owner-device').textContent=`✓ d6 ${marker.device}`;});
     $('signout').addEventListener('click',()=>{accessToken='';location.replace('/dashboard');});
-    (async()=>{try{config=await fetch('/api/dashboard-config',{cache:'no-store'}).then(response=>{if(!response.ok)throw new Error();return response.json();});const hash=new URLSearchParams(location.hash.slice(1));accessToken=hash.get('access_token')||'';if(accessToken){await beginMfa();history.replaceState(null,'','/dashboard');}}catch{status('E0');}})();
+    (async()=>{try{config=await fetch('/api/dashboard-config',{cache:'no-store'}).then(response=>{if(!response.ok)throw new Error();return response.json();});const hash=new URLSearchParams(location.hash.slice(1)), registration=hash.get('register');accessToken=hash.get('access_token')||'';if(registration){const response=await fetch('/api/dashboard-owner',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({registration})});if(!response.ok)throw new Error();const marker=await response.json();history.replaceState(null,'','/dashboard');await loadDashboard();$('owner-device').textContent=`✓ d6 ${marker.device}`;return;}if(accessToken){await beginMfa();history.replaceState(null,'','/dashboard');return;}try{await loadDashboard();}catch{}}catch{status('E0');}})();
   })();
   </script>
 </body>

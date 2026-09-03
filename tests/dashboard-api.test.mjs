@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import dashboardData from '../api/dashboard-data.js';
 import dashboardOwner from '../api/dashboard-owner.js';
 import dashboardConfig from '../api/dashboard-config.js';
+import { issueOwnerSession } from '../shared/owner-session.mjs';
 
 function responseRecorder() {
   return {
@@ -60,6 +61,33 @@ test('each owner device receives an independent anonymous marker', async () => {
     assert.match(res.headers['Set-Cookie'],/^pfg_owner=a{64};/);
     assert.doesNotMatch(res.headers['Set-Cookie'],/12abef/);
   } finally { globalThis.fetch = originalFetch; }
+});
+
+test('private registration creates a signed browser session without provider login', async () => {
+  Object.assign(process.env, { DASHBOARD_REGISTRATION_TOKEN:'registration-secret', DASHBOARD_OWNER_COOKIE_SECRET:'cookie-secret' });
+  const req = { method:'POST', headers:{ origin:'https://pressforgoblins.com' }, body:{ registration:'registration-secret' } };
+  const res = responseRecorder();
+  await dashboardOwner(req,res);
+  assert.equal(res.statusCode,200);
+  assert.match(res.body.device,/^[a-f0-9]{6}$/);
+  assert.match(res.headers['Set-Cookie'],/^pfg_owner_session=/);
+});
+
+test('signed owner browser can read dashboard data without an email session', async () => {
+  Object.assign(process.env, { SUPABASE_URL:'https://db.test', SUPABASE_ANON_KEY:'public-key', DASHBOARD_INGEST_CAPABILITY:'capability', DASHBOARD_OWNER_COOKIE_SECRET:'cookie-secret' });
+  const marker=issueOwnerSession('cookie-secret');
+  const originalFetch=globalThis.fetch;
+  globalThis.fetch=async (url,options) => {
+    assert.match(url,/goblin_stats_snapshot$/);
+    assert.match(options.body,/"p_capability":"capability"/);
+    return {ok:true,status:200,text:async()=>'{"counts":[]}'};
+  };
+  try {
+    const req={method:'GET',headers:{host:'pressforgoblins.com','sec-fetch-site':'same-origin',cookie:`pfg_owner_session=${marker.value}`}};
+    const res=responseRecorder();
+    await dashboardData(req,res);
+    assert.equal(res.statusCode,200);
+  } finally { globalThis.fetch=originalFetch; }
 });
 
 test('dashboard login is same-origin and sends only for the configured owner', async () => {

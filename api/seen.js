@@ -1,7 +1,8 @@
-import { normaliseMetric, parseCookies } from '../shared/analytics.mjs';
+import { normaliseMetric, parseCookies } from '../shared/dashboard.mjs';
+import { readOwnerSession } from '../shared/owner-session.mjs';
 import { createHmac } from 'node:crypto';
 
-export const COLLECTION_ENABLED = process.env.ANALYTICS_COLLECTION_ENABLED === 'true';
+export const COLLECTION_ENABLED = process.env.DASHBOARD_COLLECTION_ENABLED === 'true';
 const ALLOWED_ORIGINS = new Set([
   'https://pressforgoblins.com',
   'https://www.pressforgoblins.com',
@@ -10,14 +11,14 @@ const ALLOWED_ORIGINS = new Set([
 async function rateLimit(ip) {
   const url = process.env.UPSTASH_REDIS_REST_URL;
   const token = process.env.UPSTASH_REDIS_REST_TOKEN;
-  const capability = process.env.ANALYTICS_INGEST_CAPABILITY;
+  const capability = process.env.DASHBOARD_INGEST_CAPABILITY;
   if (!url || !token || !capability) return false;
   const ipKey = createHmac('sha256', capability).update(ip).digest('hex').slice(0, 32);
   try {
     const response = await fetch(`${url}/pipeline`, {
       method: 'POST',
       headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
-      body: JSON.stringify([['INCR', `analytics:rl:${ipKey}`], ['EXPIRE', `analytics:rl:${ipKey}`, 60, 'NX']]),
+      body: JSON.stringify([['INCR', `dashboard:rl:${ipKey}`], ['EXPIRE', `dashboard:rl:${ipKey}`, 60, 'NX']]),
     });
     if (!response.ok) return false;
     const data = await response.json();
@@ -54,18 +55,21 @@ export default async function handler(req, res) {
     : null;
   if (!session) return res.status(400).end();
 
+  const cookies = parseCookies(req.headers.cookie);
+  if (readOwnerSession(cookies.pfg_owner_session, process.env.DASHBOARD_OWNER_COOKIE_SECRET)) return res.status(204).end();
+
   const ip = String(req.headers['x-forwarded-for'] || req.headers['x-real-ip'] || 'unknown').split(',')[0].trim();
   if (!(await rateLimit(ip))) return res.status(503).json({ collection: 'temporarily unavailable' });
 
   const supabaseUrl = process.env.SUPABASE_URL;
   const publishableKey = process.env.SUPABASE_ANON_KEY || process.env.SUPABASE_PUBLISHABLE_KEY;
-  const capability = process.env.ANALYTICS_INGEST_CAPABILITY;
+  const capability = process.env.DASHBOARD_INGEST_CAPABILITY;
   if (!supabaseUrl || !publishableKey || !capability) return res.status(503).end();
 
-  const ownerToken = parseCookies(req.headers.cookie).pfg_owner || null;
+  const ownerToken = cookies.pfg_owner || null;
   const sessionHash = createHmac('sha256', capability).update(session).digest('hex');
   async function increment(metric, value) {
-    return fetch(`${supabaseUrl}/rest/v1/rpc/analytics_ingest`, {
+    return fetch(`${supabaseUrl}/rest/v1/rpc/dashboard_ingest`, {
       method: 'POST',
       headers: {
         apikey: publishableKey,
