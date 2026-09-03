@@ -1153,11 +1153,13 @@
          space is always reserved so surrounding text never reflows.
          line-height:0 prevents the SVG height from expanding the line box. */
       opacity: 0;
-      line-height: 0;
+      color: var(--green);
+      font-family: var(--font-display);
+      line-height: inherit;
       margin-left: 0.45em;
       /* *gap between struck "we" and new "i" */
-      margin-right: -0.3em;
-      vertical-align: -0.15em;
+      margin-right: 0;
+      vertical-align: baseline;
     }
 
     #new-subject .i-stalk {
@@ -3370,18 +3372,12 @@
         <div class="hero" id="hero">
           <div class="body" id="home-body">
             <!-- [we > i strikethrough]. this was the first bit of flair noah came up with during the earliest pfg build. it might be his favourite part of the code. -->
-            <p data-nosnippet>yes, hello. this is noah grey. please ignore the shifting height; nothing to see here. <span id="subject"
-                aria-hidden="true"><span class="we-text">we</span><svg id="strikethrough-svg" viewBox="0 0 30 8"
+            <p data-nosnippet>yes, hello. i'm noah grey, the human one. please ignore the shifting height; nothing to see here. <span id="subject"
+                aria-hidden="true"><span class="we-text">i</span><svg id="strikethrough-svg" viewBox="0 0 30 8"
                   preserveAspectRatio="none" aria-hidden="true" focusable="false">
                   <path d="M0 4 Q15 3.8,26 4 Q28 3,30 2.5" fill="none" stroke="#72d087" stroke-width="1.6"
                     stroke-linecap="round" />
-                </svg></span><span id="new-subject" aria-hidden="true"><svg viewBox="0 0 12 22" width="9" height="15"
-                  aria-hidden="true" focusable="false">
-                  <ellipse class="i-dot" cx="5.8" cy="3" rx="1.8" ry="2.2" fill="#72d087"
-                    transform="rotate(-6,5.8,3)" />
-                  <path class="i-stalk" d="M 6.3 9 C 6.0 12,6.4 16,6.1 20" stroke="#72d087" stroke-width="1.8"
-                    fill="none" stroke-linecap="round" />
-                </svg></span><span class="sr-only">i</span> run a narrative studio from a dimly lit room in london.
+                </svg></span><span id="new-subject" aria-hidden="true">we</span><span class="sr-only">we</span> run a narrative studio from a dimly lit room in london.
               with five years' experience at a big four publisher and counting, i work with <span
                 class="service-hl">writers</span>, <span class="service-hl">comic creators</span>, <span
                 class="service-hl">game developers</span> and <span class="service-hl">publishers</span> on <span
@@ -4725,14 +4721,10 @@
        ═══════════════════════════════════════════════════════ */
     function resetCorrection() {
       const strikePath = subjectEl.querySelector('#strikethrough-svg path');
-      const iStalk = newSubjectEl.querySelector('.i-stalk');
-      const iDot = newSubjectEl.querySelector('.i-dot');
       /* cancel any running animations */
-      [strikePath, iStalk, iDot].forEach(n => n && n.getAnimations().forEach(a => a.cancel()));
+      [strikePath, newSubjectEl].forEach(n => n && n.getAnimations().forEach(a => a.cancel()));
       /* reset to hidden states */
       if (strikePath) strikePath.style.strokeDashoffset = '31';
-      if (iStalk) iStalk.style.strokeDashoffset = '13';
-      if (iDot) { iDot.style.opacity = '0'; iDot.style.transform = 'scale(0)'; }
       /* snap back to hidden - instant, no transition */
       newSubjectEl.style.transition = 'none';
       newSubjectEl.style.opacity = '0';
@@ -4740,9 +4732,7 @@
 
     function runCorrection() {
       const strikePath = subjectEl.querySelector('#strikethrough-svg path');
-      const iStalk = newSubjectEl.querySelector('.i-stalk');
-      const iDot = newSubjectEl.querySelector('.i-dot');
-      if (!strikePath || !iStalk || !iDot) return;
+      if (!strikePath) return;
 
       /* step 1: draw the strikethrough across "we" */
       strikePath.animate(
@@ -4754,22 +4744,6 @@
       const t1 = setTimeout(() => {
         newSubjectEl.style.transition = 'opacity 200ms ease';
         newSubjectEl.style.opacity = '1';
-        iStalk.animate(
-          [{ strokeDashoffset: '13' }, { strokeDashoffset: '0' }],
-          { duration: 800, easing: 'cubic-bezier(0.4,0,0.2,1)', fill: 'forwards' }
-        );
-        /* step 3: after stalk is drawn, stamp the dot */
-        const t2 = setTimeout(() => {
-          iDot.animate(
-            [
-              { opacity: '0', transform: 'scale(0)', offset: 0 },
-              { opacity: '1', transform: 'scale(1.2)', offset: 0.7 }, /* slight overshoot */
-              { opacity: '1', transform: 'scale(1)', offset: 1 }
-            ],
-            { duration: 200, easing: 'ease-out', fill: 'forwards' }
-          );
-        }, 1100); /* *delay after stalk before dot */
-        heroTimers.push(t2);
       }, 1400); /* *delay after strikethrough before stalk */
       heroTimers.push(t1);
     }

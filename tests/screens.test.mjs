@@ -94,6 +94,12 @@ test('principal tab changes are atomic and use the settled opening cadence every
   assert.match(source, /setTimeout\(\(\) => eyes\[2\]\.classList\.add\('open'\), 440\)/);
 });
 
+test('homepage identifies Noah and corrects singular studio ownership to the collective', () => {
+  assert.match(source, /yes, hello\. i'm noah grey, the human one\./);
+  assert.match(source, /<span class="we-text">i<\/span>/);
+  assert.match(source, /<span id="new-subject" aria-hidden="true">we<\/span><span class="sr-only">we<\/span> run a narrative studio/);
+});
+
 test('principal headings begin below the fully opaque top mist at every viewport', () => {
   assert.match(source, /transparent 155px,[\s\S]{0,300}#000 200px/);
   assert.match(source, /padding:\s*210px/);
