@@ -207,19 +207,18 @@
 
 @media (max-width: 700px) {
   .worldglass {
-    font-size: clamp(.75rem, 4.65vw, 1.25rem);
+    font-size: 16px;
 
     --worldglass-mobile-glyph: 1;
   }
 
   .worldglass-glyph {
-    width: 1.08em;
-    flex-basis: 1.08em;
+    width: .62em;
+    flex-basis: .62em;
   }
 
   .worldglass-glyph path {
-    stroke-width: .78;
-    transform: translate(6px, 0) scale(.75, 1) translate(-6px, 0);
+    stroke-width: 1.05;
     vector-effect: non-scaling-stroke;
   }
 
@@ -231,6 +230,8 @@
   .worldglass-label {
     min-height: 44px;
     padding: 5px 8px 6px;
+    max-width: calc(100% - 32px);
+    background: rgba(0, 0, 0, .82);
   }
 }
 

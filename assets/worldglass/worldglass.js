@@ -446,6 +446,12 @@
   }
 
   function dockLayout() {
+    if (width < 700) {
+      var mobileYs = [.20, .275, .35, .425, .50, .575, .65, .725];
+      return mobileYs.map(function (y, index) {
+        return { y: y, side: index % 2 ? 'right' : 'left' };
+      });
+    }
     var narrow = width < 1100;
     var ys = narrow ? [.22, .36, .50, .64] : [.29, .43, .57, .71];
     return [
