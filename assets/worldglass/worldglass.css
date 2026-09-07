@@ -212,7 +212,7 @@
 @media (max-width: 700px) {
   .worldglass {
     font-size: 16px;
-    touch-action: pinch-zoom;
+    touch-action: none;
 
     --worldglass-mobile-glyph: 1;
   }

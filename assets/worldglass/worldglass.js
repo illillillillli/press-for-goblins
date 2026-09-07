@@ -54,6 +54,9 @@
   var moved = false;
   var pointerId = null;
   var touchPoints = new Map();
+  var pinching = false;
+  var pinchStartDistance = 0;
+  var pinchStartZoom = 1;
   var pointerStartX = 0;
   var pointerStartY = 0;
   var lastX = 0;
@@ -841,22 +844,45 @@
     }, 300));
   }
 
+  function touchDistance() {
+    var points = Array.from(touchPoints.values());
+    if (points.length < 2) return 0;
+    return Math.hypot(points[1].x - points[0].x, points[1].y - points[0].y);
+  }
+
+  function beginPinch() {
+    pinching = true;
+    pinchStartDistance = Math.max(1, touchDistance());
+    pinchStartZoom = targetZoom;
+    dragging = false;
+    pointerId = null;
+    moved = true;
+    velocityX = 0;
+    velocityY = 0;
+  }
+
+  function updatePinch() {
+    var scale = touchDistance() / pinchStartDistance;
+    var minimum = defaultZoom * .72;
+    var maximum = defaultZoom * 1.4;
+    targetZoom = Math.max(minimum, Math.min(maximum, pinchStartZoom * scale));
+  }
+
   function pointerDown(event) {
     if (event.target.closest('button') && width >= 700) return;
     lastInteractionAt = performance.now();
     clearMarkerHover();
-    if (event.pointerType === 'touch') {
+    if (event.pointerType === 'touch' && width < 700) {
+      if (!touchPoints.has(event.pointerId) && touchPoints.size >= 2) return;
       touchPoints.set(event.pointerId, { x: event.clientX, y: event.clientY });
+      root.setPointerCapture(event.pointerId);
       if (touchPoints.size === 2) {
-        moved = true;
-        dragging = false;
-        pointerId = null;
+        beginPinch();
         return;
       }
-      if (touchPoints.size > 1) return;
     }
     pointerId = event.pointerId;
-    root.setPointerCapture(pointerId);
+    if (event.pointerType !== 'touch' || width >= 700) root.setPointerCapture(pointerId);
     dragging = true;
     moved = false;
     lastX = event.clientX;
@@ -871,9 +897,14 @@
 
   function pointerMove(event) {
     lastInteractionAt = performance.now();
-    if (event.pointerType === 'touch' && touchPoints.has(event.pointerId)) {
+    if (event.pointerType === 'touch' && width < 700 && touchPoints.has(event.pointerId)) {
       touchPoints.set(event.pointerId, { x: event.clientX, y: event.clientY });
-      if (touchPoints.size >= 2) return;
+      if (pinching && touchPoints.size >= 2) {
+        event.preventDefault();
+        updatePinch();
+        return;
+      }
+      if (!dragging) return;
     }
     if (!dragging) {
       if (event.target.closest('button')) clearMarkerHover();
@@ -898,8 +929,16 @@
   }
 
   function pointerUp(event) {
-    if (event.pointerType === 'touch') {
+    if (event.pointerType === 'touch' && width < 700) {
       touchPoints.delete(event.pointerId);
+      if (pinching || pointerId === null) {
+        if (touchPoints.size < 2) pinching = false;
+        if (touchPoints.size === 0) {
+          pinchStartDistance = 0;
+          settleAt = performance.now() + 650;
+        }
+        return;
+      }
     }
     if (event.pointerId !== pointerId) return;
     dragging = false;
