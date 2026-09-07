@@ -179,6 +179,7 @@
     });
     button.addEventListener('click', function (event) {
       event.stopPropagation();
+      if (moved) return;
       activateLabel(button);
     });
     return button;
@@ -483,6 +484,24 @@
       button.dataset.side = slot.side;
       button.style.top = Math.round(slot.y * height) + 'px';
     });
+    if (width < 700) {
+      var stage = root.closest('.stage');
+      var stageStyle = stage ? getComputedStyle(stage) : null;
+      var topOpaque = stageStyle ? parseFloat(stageStyle.getPropertyValue('--mobile-mist-top-opaque')) || 0 : 0;
+      var bottomDepth = stageStyle ? parseFloat(stageStyle.getPropertyValue('--mobile-mist-bottom-depth')) || 0 : 0;
+      var firstTop = layout[0].y * height;
+      var lastButton = dockNodes[layout.length - 1];
+      var lastBottom = layout[layout.length - 1].y * height + lastButton.getBoundingClientRect().height;
+      var safeTop = topOpaque + 8;
+      var safeBottom = height - bottomDepth - 8;
+      var requestedShift = height * .035;
+      var requiredShift = Math.max(0, safeTop - firstTop);
+      var allowedShift = Math.max(0, safeBottom - lastBottom);
+      var mobileShift = Math.min(Math.max(requestedShift, requiredShift), allowedShift);
+      dockNodes.forEach(function (button, index) {
+        button.style.top = Math.round(layout[index].y * height + mobileShift) + 'px';
+      });
+    }
     var edgeInset = width < 1100
       ? Math.max(20, Math.min(56, width * .04))
       : Math.max(72, Math.min(128, width * .065));
@@ -699,7 +718,7 @@
   }
 
   function pointerDown(event) {
-    if (event.target.closest('button')) return;
+    if (event.target.closest('button') && width >= 700) return;
     lastInteractionAt = performance.now();
     clearMarkerHover();
     if (event.pointerType === 'touch') {
