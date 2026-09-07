@@ -208,6 +208,7 @@
 @media (max-width: 700px) {
   .worldglass {
     font-size: 16px;
+    touch-action: pinch-zoom;
 
     --worldglass-mobile-glyph: 1;
   }
@@ -229,9 +230,14 @@
 
   .worldglass-label {
     min-height: 44px;
-    padding: 5px 8px 6px;
+    padding: 2px 8px;
     max-width: calc(100% - 32px);
     background: rgba(0, 0, 0, .82);
+  }
+
+  .worldglass-line,
+  .worldglass-runes {
+    height: 1.25em;
   }
 }
 

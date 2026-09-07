@@ -42,11 +42,12 @@
   var moved = false;
   var pointerId = null;
   var touchPoints = new Map();
-  var pinchDistance = 0;
-  var pinchZoom = 1;
+  var pointerStartX = 0;
+  var pointerStartY = 0;
   var lastX = 0;
   var lastY = 0;
   var lastTime = 0;
+  var dragThreshold = 3;
   var selectedId = null;
   var markerHoverId = null;
   var markerHoverButton = null;
@@ -61,6 +62,9 @@
   var introTimers = [];
   var connectionsIntroducedAt = 0;
   var nextLabelShimmerAt = 0;
+  var layoutFrame = 0;
+  var layoutRevision = 0;
+  var lastMobileLayout = null;
 
   function sphere(lat, lon) {
     var a = lat * Math.PI / 180;
@@ -179,7 +183,7 @@
     });
     button.addEventListener('click', function (event) {
       event.stopPropagation();
-      if (moved) return;
+      if (moved && event.detail !== 0) return;
       activateLabel(button);
     });
     return button;
@@ -448,9 +452,8 @@
 
   function dockLayout() {
     if (width < 700) {
-      var mobileYs = [.20, .275, .35, .425, .50, .575, .65, .725];
-      return mobileYs.map(function (y, index) {
-        return { y: y, side: index % 2 ? 'right' : 'left' };
+      return events.map(function (_, index) {
+        return { y: 0, side: index % 2 ? 'right' : 'left' };
       });
     }
     var narrow = width < 1100;
@@ -484,24 +487,6 @@
       button.dataset.side = slot.side;
       button.style.top = Math.round(slot.y * height) + 'px';
     });
-    if (width < 700) {
-      var stage = root.closest('.stage');
-      var stageStyle = stage ? getComputedStyle(stage) : null;
-      var topOpaque = stageStyle ? parseFloat(stageStyle.getPropertyValue('--mobile-mist-top-opaque')) || 0 : 0;
-      var bottomDepth = stageStyle ? parseFloat(stageStyle.getPropertyValue('--mobile-mist-bottom-depth')) || 0 : 0;
-      var firstTop = layout[0].y * height;
-      var lastButton = dockNodes[layout.length - 1];
-      var lastBottom = layout[layout.length - 1].y * height + lastButton.getBoundingClientRect().height;
-      var safeTop = topOpaque + 8;
-      var safeBottom = height - bottomDepth - 8;
-      var requestedShift = height * .035;
-      var requiredShift = Math.max(0, safeTop - firstTop);
-      var allowedShift = Math.max(0, safeBottom - lastBottom);
-      var mobileShift = Math.min(Math.max(requestedShift, requiredShift), allowedShift);
-      dockNodes.forEach(function (button, index) {
-        button.style.top = Math.round(layout[index].y * height + mobileShift) + 'px';
-      });
-    }
     var edgeInset = width < 1100
       ? Math.max(20, Math.min(56, width * .04))
       : Math.max(72, Math.min(128, width * .065));
@@ -519,9 +504,53 @@
       if (button.dataset.side === 'left') button.style.left = Math.round(edgeInset + leftWidth - measured) + 'px';
       else button.style.right = Math.round(edgeInset + rightWidth - measured) + 'px';
     });
+    var mobileSafe = null;
+    if (width < 700) {
+      var rootRect = root.getBoundingClientRect();
+      var stage = root.closest('.stage');
+      var stageRect = stage ? stage.getBoundingClientRect() : rootRect;
+      var stageStyle = stage ? getComputedStyle(stage) : null;
+      var topOpaque = stageStyle ? parseFloat(stageStyle.getPropertyValue('--mobile-mist-top-opaque')) || 0 : 0;
+      var bottomDepth = stageStyle ? parseFloat(stageStyle.getPropertyValue('--mobile-mist-bottom-depth')) || 0 : 0;
+      var viewport = window.visualViewport;
+      var viewportTop = viewport ? viewport.offsetTop : 0;
+      var viewportBottom = viewportTop + (viewport ? viewport.height : innerHeight);
+      var eyes = document.getElementById('eyes');
+      var eyesRect = eyes && getComputedStyle(eyes).display !== 'none' ? eyes.getBoundingClientRect() : null;
+      var nav = document.querySelector('.footer-nav');
+      var navRect = nav ? nav.getBoundingClientRect() : null;
+      var safeTop = Math.max(
+        0,
+        viewportTop - rootRect.top,
+        stageRect.top + topOpaque - rootRect.top,
+        eyesRect ? eyesRect.bottom + 8 - rootRect.top : 0
+      );
+      var safeBottom = Math.min(
+        height,
+        viewportBottom - rootRect.top,
+        stageRect.bottom - bottomDepth - rootRect.top,
+        navRect ? navRect.top - 12 - rootRect.top : height
+      );
+      var labelHeights = dockNodes.map(function (button) { return button.getBoundingClientRect().height; });
+      var maxLabelHeight = Math.max.apply(Math, labelHeights);
+      var usableHeight = Math.max(maxLabelHeight * dockNodes.length, safeBottom - safeTop);
+      var labelStep = dockNodes.length > 1
+        ? Math.max(maxLabelHeight, (usableHeight - maxLabelHeight) / (dockNodes.length - 1))
+        : 0;
+      if (safeTop + labelStep * (dockNodes.length - 1) + maxLabelHeight > safeBottom) {
+        safeTop = Math.max(0, safeBottom - (labelStep * (dockNodes.length - 1) + maxLabelHeight));
+      }
+      dockNodes.forEach(function (button, index) {
+        button.style.top = Math.round(safeTop + index * labelStep) + 'px';
+      });
+      mobileSafe = { top: safeTop, bottom: safeBottom };
+      root.style.setProperty('--worldglass-safe-top', Math.round(safeTop) + 'px');
+      root.style.setProperty('--worldglass-safe-bottom', Math.round(safeBottom) + 'px');
+    }
     return {
       leftInner: edgeInset + leftWidth,
-      rightInner: width - edgeInset - rightWidth
+      rightInner: width - edgeInset - rightWidth,
+      mobileSafe: mobileSafe
     };
   }
 
@@ -662,8 +691,15 @@
     frameId = requestAnimationFrame(animate);
   }
 
-  function resize() {
+  function resize(revision) {
     var rect = root.getBoundingClientRect();
+    var viewport = window.visualViewport;
+    var mobile = rect.width < 700;
+    var transientViewport = mobile && (
+      (viewport && viewport.scale > 1.01) ||
+      document.body.classList.contains('mobile-keyboard-open')
+    );
+    if (transientViewport && lastMobileLayout) return;
     dpr = Math.min(devicePixelRatio || 1, 2);
     width = rect.width;
     height = rect.height;
@@ -676,19 +712,37 @@
     defaultZoom = nextDefaultZoom;
     canvas.width = Math.round(width * dpr);
     canvas.height = Math.round(height * dpr);
+    canvas.style.width = width + 'px';
+    canvas.style.height = height + 'px';
     context.setTransform(dpr, 0, 0, dpr, 0, 0);
     centreX = width * .5;
-    var safeTop = height * (width < 700 ? .32 : .22);
-    var safeBottom = height * (width < 700 ? .82 : .86);
-    centreY = (safeTop + safeBottom) * .5;
     var rails = positionDocks();
+    var safeTop = rails.mobileSafe ? rails.mobileSafe.top : height * .22;
+    var safeBottom = rails.mobileSafe ? rails.mobileSafe.bottom : height * .86;
+    centreY = (safeTop + safeBottom) * .5;
     var railClearance = width < 1100 ? -24 : 18;
     var horizontalRadius = Math.min(
       centreX - rails.leftInner - railClearance,
       rails.rightInner - centreX - railClearance
     );
-    baseRadius = Math.max(64, Math.min(width * .25, (safeBottom - safeTop) * .46, horizontalRadius));
+    var fittedRadius = Math.min((width - 32) * .5, (safeBottom - safeTop) * .5);
+    baseRadius = mobile
+      ? Math.max(64, fittedRadius / nextDefaultZoom)
+      : Math.max(64, Math.min(width * .25, (safeBottom - safeTop) * .46, horizontalRadius));
     radius = baseRadius * zoom;
+    if (mobile) lastMobileLayout = { width: width, height: height, top: safeTop, bottom: safeBottom, revision: revision || 0 };
+    draw(performance.now());
+  }
+
+  function scheduleResize() {
+    layoutRevision += 1;
+    if (layoutFrame) return;
+    layoutFrame = requestAnimationFrame(function () {
+      layoutFrame = 0;
+      var revision = layoutRevision;
+      resize(revision);
+      if (revision !== layoutRevision) scheduleResize();
+    });
   }
 
   function startIntroduction() {
@@ -724,9 +778,7 @@
     if (event.pointerType === 'touch') {
       touchPoints.set(event.pointerId, { x: event.clientX, y: event.clientY });
       if (touchPoints.size === 2) {
-        var points = Array.from(touchPoints.values());
-        pinchDistance = Math.hypot(points[1].x - points[0].x, points[1].y - points[0].y);
-        pinchZoom = targetZoom;
+        moved = true;
         dragging = false;
         pointerId = null;
         return;
@@ -739,7 +791,10 @@
     moved = false;
     lastX = event.clientX;
     lastY = event.clientY;
+    pointerStartX = event.clientX;
+    pointerStartY = event.clientY;
     lastTime = performance.now();
+    dragThreshold = event.pointerType === 'touch' ? 8 : 3;
     velocityX = 0;
     velocityY = 0;
   }
@@ -748,12 +803,7 @@
     lastInteractionAt = performance.now();
     if (event.pointerType === 'touch' && touchPoints.has(event.pointerId)) {
       touchPoints.set(event.pointerId, { x: event.clientX, y: event.clientY });
-      if (touchPoints.size >= 2) {
-        var points = Array.from(touchPoints.values());
-        var distance = Math.hypot(points[1].x - points[0].x, points[1].y - points[0].y);
-        if (pinchDistance > 0) targetZoom = Math.max(.65, Math.min(8, pinchZoom * distance / pinchDistance));
-        return;
-      }
+      if (touchPoints.size >= 2) return;
     }
     if (!dragging) {
       if (event.target.closest('button')) clearMarkerHover();
@@ -767,7 +817,7 @@
     var elapsed = Math.max(8, now - lastTime);
     var interactionZoom = Math.max(.65, zoom / defaultZoom);
     var sensitivity = .007 / Math.pow(interactionZoom, 1.45);
-    if (Math.abs(deltaX) + Math.abs(deltaY) > 3) moved = true;
+    if (Math.hypot(event.clientX - pointerStartX, event.clientY - pointerStartY) > dragThreshold || moved) moved = true;
     yaw += deltaX * sensitivity;
     pitch -= deltaY * sensitivity;
     velocityX = deltaX * sensitivity * 16 / elapsed;
@@ -780,12 +830,16 @@
   function pointerUp(event) {
     if (event.pointerType === 'touch') {
       touchPoints.delete(event.pointerId);
-      if (touchPoints.size < 2) pinchDistance = 0;
     }
     if (event.pointerId !== pointerId) return;
     dragging = false;
     pointerId = null;
     settleAt = performance.now() + 650;
+  }
+
+  function pointerCancel(event) {
+    moved = true;
+    pointerUp(event);
   }
 
   function wheel(event) {
@@ -845,7 +899,7 @@
     root.addEventListener('pointerdown', pointerDown);
     root.addEventListener('pointermove', pointerMove);
     root.addEventListener('pointerup', pointerUp);
-    root.addEventListener('pointercancel', pointerUp);
+    root.addEventListener('pointercancel', pointerCancel);
     root.addEventListener('pointerleave', clearMarkerHover);
     root.addEventListener('wheel', wheel, { passive: false });
     document.addEventListener('keydown', function (event) {
@@ -871,7 +925,13 @@
     });
     document.addEventListener('pointermove', function () { lastInteractionAt = performance.now(); }, { passive: true });
     document.addEventListener('touchstart', function () { lastInteractionAt = performance.now(); }, { passive: true });
-    addEventListener('resize', resize);
+    addEventListener('resize', scheduleResize);
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener('resize', scheduleResize);
+      window.visualViewport.addEventListener('scroll', scheduleResize);
+    }
+    addEventListener('pageshow', scheduleResize);
+    if (window.ResizeObserver) new ResizeObserver(scheduleResize).observe(root);
     document.addEventListener('visibilitychange', function () {
       visible = !document.hidden;
       if (visible && !frameId) { lastFrame = 0; frameId = requestAnimationFrame(animate); }
@@ -884,8 +944,8 @@
       }).observe(root);
     } else startIntroduction();
     reduced.addEventListener('change', function () { dockNodes.forEach(encodeLabel); });
-    resize();
-    if (document.fonts && document.fonts.ready) document.fonts.ready.then(resize);
+    resize(layoutRevision);
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(scheduleResize);
     scheduleLabelShimmer(2000 + Math.floor(Math.random() * 2000));
     frameId = requestAnimationFrame(animate);
   }
