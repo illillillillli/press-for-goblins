@@ -1,0 +1,14 @@
+{
+  "version": 1,
+  "mode": "fail_closed",
+  "rewrite": false,
+  "rule": "rendered pfg interface text is lowercase; all-caps treatment is forbidden across project artefacts",
+  "unicode_uppercase_pattern": "\\p{Lu}",
+  "raster_all_caps_pattern": "\\p{Lu}{2,}",
+  "forbidden_presentations": [
+    "text-transform: uppercase",
+    "font-variant: small-caps",
+    "font-variant-caps: small-caps",
+    "font-variant-caps: all-small-caps"
+  ]
+}

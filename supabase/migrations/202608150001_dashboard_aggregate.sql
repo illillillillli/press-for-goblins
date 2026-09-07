@@ -1,9 +1,9 @@
 -- aggregate-at-ingestion counting. no visitor or event rows are created.
 create extension if not exists pgcrypto with schema extensions;
-create schema if not exists analytics;
-revoke all on schema analytics from public, anon, authenticated;
+create schema if not exists dashboard;
+revoke all on schema dashboard from public, anon, authenticated;
 
-create table if not exists analytics.daily_count (
+create table if not exists dashboard.daily_count (
   day date not null default current_date,
   metric text not null,
   value text not null,
@@ -13,36 +13,38 @@ create table if not exists analytics.daily_count (
   primary key (day, metric, value, owner_class)
 );
 
-create table if not exists analytics.owner (
+create table if not exists dashboard.owner (
   user_id uuid primary key references auth.users(id) on delete cascade,
   created_at timestamptz not null default now()
 );
 
-create table if not exists analytics.owner_exclusion (
+create table if not exists dashboard.owner_exclusion (
   token_hash bytea primary key,
-  user_id uuid not null references analytics.owner(user_id) on delete cascade,
+  user_id uuid not null references dashboard.owner(user_id) on delete cascade,
+  device_label text not null check (device_label ~ '^[a-f0-9]{6}$'),
   expires_at timestamptz not null,
-  created_at timestamptz not null default now()
+  created_at timestamptz not null default now(),
+  unique (user_id, device_label)
 );
 
-create table if not exists analytics.private_config (
+create table if not exists dashboard.private_config (
   singleton boolean primary key default true check (singleton),
   ingest_hash bytea,
   last_accepted_at timestamptz
 );
-insert into analytics.private_config(singleton) values (true) on conflict do nothing;
+insert into dashboard.private_config(singleton) values (true) on conflict do nothing;
 
-alter table analytics.daily_count enable row level security;
-alter table analytics.daily_count force row level security;
-alter table analytics.owner enable row level security;
-alter table analytics.owner force row level security;
-alter table analytics.owner_exclusion enable row level security;
-alter table analytics.owner_exclusion force row level security;
-alter table analytics.private_config enable row level security;
-alter table analytics.private_config force row level security;
-revoke all on all tables in schema analytics from public, anon, authenticated;
+alter table dashboard.daily_count enable row level security;
+alter table dashboard.daily_count force row level security;
+alter table dashboard.owner enable row level security;
+alter table dashboard.owner force row level security;
+alter table dashboard.owner_exclusion enable row level security;
+alter table dashboard.owner_exclusion force row level security;
+alter table dashboard.private_config enable row level security;
+alter table dashboard.private_config force row level security;
+revoke all on all tables in schema dashboard from public, anon, authenticated;
 
-create or replace function analytics.metric_allowed(p_metric text, p_value text)
+create or replace function dashboard.metric_allowed(p_metric text, p_value text)
 returns boolean
 language sql immutable strict
 set search_path = ''
@@ -65,7 +67,7 @@ as $$
   end
 $$;
 
-create or replace function public.analytics_ingest(
+create or replace function public.dashboard_ingest(
   p_metric text,
   p_value text,
   p_capability text,
@@ -79,46 +81,49 @@ declare
   v_owner_class text := 'public';
 begin
   select ingest_hash into v_expected
-  from analytics.private_config where singleton = true;
+  from dashboard.private_config where singleton = true;
   if v_expected is null or p_capability is null
      or extensions.digest(p_capability, 'sha256') <> v_expected then
     raise exception 'forbidden' using errcode = '42501';
   end if;
-  if not analytics.metric_allowed(p_metric, p_value) then
+  if not dashboard.metric_allowed(p_metric, p_value) then
     raise exception 'invalid metric' using errcode = '22023';
   end if;
   if p_owner_token is not null and exists (
-    select 1 from analytics.owner_exclusion
+    select 1 from dashboard.owner_exclusion
     where token_hash = extensions.digest(p_owner_token, 'sha256')
       and expires_at > now()
   ) then
     v_owner_class := 'owner';
   end if;
-  insert into analytics.daily_count(day, metric, value, owner_class, count)
+  insert into dashboard.daily_count(day, metric, value, owner_class, count)
   values (current_date, p_metric, p_value, v_owner_class, 1)
   on conflict (day, metric, value, owner_class)
-  do update set count = analytics.daily_count.count + 1, updated_at = now();
-  update analytics.private_config set last_accepted_at = now() where singleton = true;
+  do update set count = dashboard.daily_count.count + 1, updated_at = now();
+  update dashboard.private_config set last_accepted_at = now() where singleton = true;
 end
 $$;
 
 create or replace function public.issue_owner_exclusion()
-returns text
+returns jsonb
 language plpgsql security definer
 set search_path = ''
 as $$
-declare v_token text;
+declare
+  v_token text;
+  v_device text;
 begin
   if auth.uid() is null
      or coalesce(auth.jwt()->>'aal', 'aal1') <> 'aal2'
-     or not exists (select 1 from analytics.owner where user_id = auth.uid()) then
+     or not exists (select 1 from dashboard.owner where user_id = auth.uid()) then
     raise exception 'forbidden' using errcode = '42501';
   end if;
   v_token := encode(extensions.gen_random_bytes(32), 'hex');
-  delete from analytics.owner_exclusion where user_id = auth.uid() or expires_at <= now();
-  insert into analytics.owner_exclusion(token_hash, user_id, expires_at)
-  values (extensions.digest(v_token, 'sha256'), auth.uid(), now() + interval '180 days');
-  return v_token;
+  v_device := substring(encode(extensions.digest(v_token, 'sha256'), 'hex') from 1 for 6);
+  delete from dashboard.owner_exclusion where expires_at <= now();
+  insert into dashboard.owner_exclusion(token_hash, user_id, device_label, expires_at)
+  values (extensions.digest(v_token, 'sha256'), auth.uid(), v_device, now() + interval '180 days');
+  return jsonb_build_object('token', v_token, 'device', v_device);
 end
 $$;
 
@@ -131,13 +136,13 @@ declare v_result jsonb;
 begin
   if auth.uid() is null
      or coalesce(auth.jwt()->>'aal', 'aal1') <> 'aal2'
-     or not exists (select 1 from analytics.owner where user_id = auth.uid()) then
+     or not exists (select 1 from dashboard.owner where user_id = auth.uid()) then
     raise exception 'forbidden' using errcode = '42501';
   end if;
   if p_days not between 1 and 90 then raise exception 'invalid range'; end if;
   select jsonb_build_object(
     'window_days', p_days,
-    'last_accepted_at', (select last_accepted_at from analytics.private_config where singleton),
+    'last_accepted_at', (select last_accepted_at from dashboard.private_config where singleton),
     'counts', coalesce(jsonb_agg(jsonb_build_object(
       'metric', metric,
       'value', value,
@@ -147,7 +152,7 @@ begin
   ) into v_result
   from (
     select metric, value, sum(count)::bigint as total
-    from analytics.daily_count
+    from dashboard.daily_count
     where owner_class = 'public' and day >= current_date - (p_days - 1)
     group by metric, value
   ) safe_counts;
@@ -155,18 +160,18 @@ begin
 end
 $$;
 
-create or replace function analytics.purge_expired()
+create or replace function dashboard.purge_expired()
 returns void language plpgsql security definer set search_path = '' as $$
 begin
-  delete from analytics.daily_count where day < current_date - 365;
-  delete from analytics.owner_exclusion where expires_at <= now();
+  delete from dashboard.daily_count where day < current_date - 365;
+  delete from dashboard.owner_exclusion where expires_at <= now();
 end
 $$;
 
-revoke all on function public.analytics_ingest(text,text,text,text) from public;
+revoke all on function public.dashboard_ingest(text,text,text,text) from public;
 revoke all on function public.issue_owner_exclusion() from public;
 revoke all on function public.dashboard_summary(integer) from public;
-grant execute on function public.analytics_ingest(text,text,text,text) to anon, authenticated;
+grant execute on function public.dashboard_ingest(text,text,text,text) to anon, authenticated;
 grant execute on function public.issue_owner_exclusion() to authenticated;
 grant execute on function public.dashboard_summary(integer) to authenticated;
 
@@ -182,5 +187,5 @@ end $$;
 
 -- run the following two statements once through the supabase SQL editor using
 -- freshly generated values. never commit those values:
--- update analytics.private_config set ingest_hash = extensions.digest('<capability>', 'sha256') where singleton;
--- insert into analytics.owner(user_id) select id from auth.users where email = '<owner email>' on conflict do nothing;
+-- update dashboard.private_config set ingest_hash = extensions.digest('<capability>', 'sha256') where singleton;
+-- insert into dashboard.owner(user_id) select id from auth.users where email = '<owner email>' on conflict do nothing;

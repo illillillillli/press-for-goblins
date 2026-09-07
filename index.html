@@ -32,7 +32,7 @@
        [config]        tweakable settings - droop, accent, crt, etc
        [screens]       screen switching (hero → terminal → receipt)
        [eye-anim]      eye open sequence + blink + droop personalities
-       [we-to-i]       the "we" → "i" strikethrough correction animation
+       [i-to-we]       the "i" → "we" strikethrough correction animation
        [cta-js]        what happens when you click "press for goblins"
        [reactions]     goblin reply text for each answer
        [timing]        typing speed, gaps between messages
@@ -46,7 +46,7 @@
        [receipt-js]    builds the receipt grid from answers
 
     fyi
-     * change the goblin green: search [colours] → change --green:#72d087
+     * change the goblin green: edit the accent in shared/insignia.mjs
      * change what the goblins say: search [reactions] → edit the text arrays
      * change the chat questions: search [steps] → each case is one step
      * change typing speed: search [timing] → MSG_GAP, STEP_GAP
@@ -62,21 +62,21 @@
 
   <!-- [metadata] what we tell the humans about us. just enough to be findable. -->
   <meta name="viewport"
-    content="width=device-width,initial-scale=1,interactive-widget=resizes-content,viewport-fit=cover">
+    content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,interactive-widget=resizes-content,viewport-fit=cover">
   <!-- *this makes pfg usable on the glowing rectangles humans are always staring at. it stops the typing apparatus from pushing everything upwards as well. -->
-  <title>Press for Goblins®</title>
+  <title>press for goblins</title>
   <meta name="description"
     content="A narrative studio for writers, comic creators, game developers, publishers and the occasional unknown entity.">
   <!-- og tags - what humans see when they paste the link into their group chats. we have opinions about this. -->
-  <meta property="og:title" content="Press for Goblins®">
+  <meta property="og:title" content="press for goblins®">
   <meta property="og:description"
     content="A narrative studio for writers, comic creators, game developers, publishers and the occasional unknown entity.">
-  <meta property="og:site_name" content="Press for Goblins®">
+  <meta property="og:site_name" content="press for goblins®">
   <meta property="og:url" content="https://pressforgoblins.com">
   <meta property="og:type" content="website">
   <meta property="og:image" content="https://pressforgoblins.com/assets/images/preview.png">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Press for Goblins®">
+  <meta name="twitter:title" content="press for goblins®">
   <meta name="twitter:description"
     content="A narrative studio for writers, comic creators, game developers, publishers and the occasional unknown entity.">
   <!-- robots - the goblins are ready to be found. -->
@@ -98,8 +98,8 @@
           "@type": "Organization",
           "@id": "https://pressforgoblins.com/#organization",
           "url": "https://pressforgoblins.com/",
-          "name": "Press for Goblins®",
-          "alternateName": "Press for Goblins",
+          "name": "press for goblins®",
+          "alternateName": "press for goblins",
           "description": "A narrative studio for writers, comic creators, game developers, publishers and the occasional unknown entity.",
           "logo": {
             "@type": "ImageObject",
@@ -112,8 +112,8 @@
           "@type": "WebSite",
           "@id": "https://pressforgoblins.com/#website",
           "url": "https://pressforgoblins.com/",
-          "name": "Press for Goblins®",
-          "alternateName": "Press for Goblins",
+          "name": "press for goblins®",
+          "alternateName": "press for goblins",
           "description": "A narrative studio for writers, comic creators, game developers, publishers and the occasional unknown entity.",
           "publisher": {
             "@id": "https://pressforgoblins.com/#organization"
@@ -126,7 +126,7 @@
        unsafe-inline is required because everything lives in one file.
        data: is needed for the eye SVGs. the goblins trust no external sources. -->
   <meta http-equiv="Content-Security-Policy"
-    content="default-src 'self'; style-src 'unsafe-inline'; font-src 'self'; connect-src 'self' https://submit.formspree.io; script-src 'unsafe-inline'; img-src 'self' data:; base-uri 'self'; form-action 'none';">
+    content="default-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self'; connect-src 'self' https://submit.formspree.io; script-src 'self' 'unsafe-inline'; img-src 'self' data:; base-uri 'self'; form-action 'none';">
   <!-- [fonts] we've made sure these are loaded before the page wakes up so the title isn't invisible while the font catches up. -->
   <link rel="preload" href="fonts/PressStart2P-Regular.woff2" as="font" type="font/woff2" crossorigin>
 <!-- [icons] the tiny goblin face that lives in your tab. it's the one that appears when humans save the site to their home screens as well. -->
@@ -137,11 +137,11 @@
 
   <!-- [fonts] pixel font loads via @font-face below -->
 
-  <!-- begin insignia - synced from insignia.js @ 3aaf35fe -->
+  <!-- begin insignia - synced from insignia.js @ 66fc3efe -->
 <style>
   /* [insignia] single source of truth - edit shared/insignia.mjs, not here */
   :root {
-    --green: #72d087;
+    --green: #74c58d;
     --site-url: "https://pressforgoblins.com";
     --font-body: 'Courier New', Courier, monospace;
     --font-display: 'Special Elite', 'Courier New', Courier, monospace;
@@ -171,7 +171,7 @@
 
     /* [colours] goblin green for ctas, interactive elements and annotations. the text variables are white - just at different opacities. */
     :root {
-      --green: #72d087;
+      --green: #74c58d;
       /* the one and only goblin green. change this and everything on pfg changes with it. */
       --text-primary: rgba(255, 255, 255, 0.88);
       /* main body text - almost white */
@@ -181,6 +181,10 @@
       /* barely there. for labels and things that should be subtle. */
       --text-ghost: rgba(255, 255, 255, 0.14);
       /* almost invisible. kept in reserve. */
+
+      /* [goblin pencil] one source of truth for every handwritten annotation. */
+      --goblin-pencil-green: var(--green);
+      --goblin-pencil-width: 1.25px;
 
       /* [design system] global sources of truth for structure, inputs and backgrounds */
       --bg-void: #000;
@@ -209,6 +213,7 @@
       --sp-32: 128px;
       --content-width: 820px;
       --reading-size: 20px;
+      --metadata-size: calc(var(--reading-size) - 2px);
       --reading-leading: 1.9;
       --principal-title-height: 112px;
       --principal-divider-gap: var(--sp-4);
@@ -216,6 +221,10 @@
       --mobile-space-group: var(--sp-4);
       --mobile-space-section: var(--sp-6);
       --mobile-page-gutter: var(--sp-5);
+    }
+
+    *, *::before, *::after {
+      cursor: default !important;
     }
 
     /* [reset] this stops your browser's opinions from messing with our lovingly crafted void aesthetic. */
@@ -256,6 +265,7 @@
       font-size: 20px;
     }
 
+    /* the mobile version is not the desktop version made smaller. it has standards. */
     @media (max-width: 600px) {
       :root {
         --principal-title-height: 124px;
@@ -903,7 +913,7 @@
     /* ipad mini (601-900px) - extra top clearance so title clears the eye shadow */
     @media (min-width: 601px) and (max-width: 900px) {
       .screen {
-        padding-top: 240px;
+        padding-top: 210px;
       }
     }
 
@@ -1111,9 +1121,8 @@
 
     /* the "please note" line is dimmer */
 
-    /* [we-to-i] the correction. a line draws across 'we'. then 'i' is marked up like an annotation: stalk first, dot second.
-   uses the web animations API, so no keyframes in css required.
-   the CSS here just sets up the initial hidden states. */
+    /* [i-to-we] this keeps the live site's proven inline correction structure:
+       the struck subject stays in flow and the handwritten replacement owns reserved space. */
     #subject {
       position: relative;
       display: inline-block;
@@ -1144,33 +1153,45 @@
       /* stroke-dasharray/offset: the line is "drawn" by animating the offset to 0 */
       stroke-dasharray: 31;
       stroke-dashoffset: 31;
-      /* fully hidden until animated */
+      /* fully hidden until animated. this path deliberately does not use
+         vector-effect: non-scaling-stroke: production's 31-unit dash must scale
+         with the path so no tail remains visible before the draw. */
+    }
+
+    .goblin-pencil-stroke {
+      fill: none;
+      stroke: var(--goblin-pencil-green, #74c58d);
+      stroke-width: var(--goblin-pencil-width, 1.25px);
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      vector-effect: non-scaling-stroke;
+      filter: url(#green-pencil-texture);
     }
 
     #new-subject {
       display: inline-block;
-      /* always in flow at natural width - opacity:0 hides it until animated.
-         space is always reserved so surrounding text never reflows.
-         line-height:0 prevents the SVG height from expanding the line box. */
-      opacity: 0;
+      width: 0;
+      opacity: 1;
+      overflow: hidden;
       line-height: 0;
-      margin-left: 0.45em;
-      /* *gap between struck "we" and new "i" */
-      margin-right: -0.3em;
-      vertical-align: -0.15em;
+      margin-left: 0;
+      margin-right: 0;
+      vertical-align: -.05em;
+      z-index: 7;
     }
 
-    #new-subject .i-stalk {
-      stroke-dasharray: 13;
-      stroke-dashoffset: 13;
+    #new-subject svg {
+      display: block;
+      width: 32px;
+      max-width: none;
+      height: 14px;
+      /* optical centre between the pencil's endpoint and the following "run". */
+      margin-left: 8px;
     }
 
-    /* hidden */
-    #new-subject .i-dot {
-      opacity: 0;
-      transform-box: fill-box;
-      transform-origin: center;
-      transform: scale(0);
+    #new-subject .we-hand-stroke {
+      stroke-dasharray: 1;
+      stroke-dashoffset: 1;
     }
 
     /* [cta] the press for goblins button functions as a late-stage title card, a cta and a pun. a true triple threat.
@@ -1211,6 +1232,31 @@
       position: relative;
     }
 
+    .cta-runes {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0;
+      font-family: "Courier New", Courier, monospace;
+      font-size: 1.25rem;
+      line-height: 1.5;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    @media (max-width: 600px) {
+      .cta-runes {
+        font-size: clamp(0.75rem, 4.65vw, 1.25rem);
+      }
+    }
+
+    .cta.is-rune-tutorial .cta-latin { opacity: 0; }
+    .cta.is-rune-tutorial .cta-runes { opacity: 1; }
+    .cta-latin,
+    .cta-runes { transition: opacity .12s ease-out; }
+
     .cta::after {
       content: none;
     }
@@ -1248,7 +1294,7 @@
     .cta.settled {
       animation: breathe 3.6s ease-in-out infinite;
       opacity: 1;
-      text-shadow: 0 0 1px var(--green), 0 0 3px rgba(123, 191, 123, 0.4);
+      text-shadow: 0 0 1px var(--green), 0 0 3px rgba(84, 202, 125, 0.4);
     }
 
     @keyframes breathe {
@@ -2408,6 +2454,12 @@
       /* inherits global .screen padding for perfect title alignment */
     }
 
+    #screen-portfolio {
+      overflow-x: hidden;
+      overflow-y: hidden;
+      overscroll-behavior: none;
+    }
+
     .tab-hero {
       max-width: 90vw;
       width: 100%;
@@ -2555,7 +2607,6 @@
       width: 100%;
     }
 
-    #port-signup-row,
     #about-rune-row {
       margin-top: 14px;
       /* breathing above - matches .cta padding-top */
@@ -2677,7 +2728,7 @@
 
       100% {
         opacity: 1;
-        text-shadow: 0 0 1px var(--green), 0 0 3px rgba(123, 191, 123, 0.4);
+        text-shadow: 0 0 1px var(--green), 0 0 3px rgba(84, 202, 125, 0.4);
       }
     }
 
@@ -2700,7 +2751,7 @@
       border-top: 1.5px dashed rgba(255, 255, 255, 0.225);
     }
 
-    /* [portfolio-signup-css] newsletter body + email input + admit one button */
+    /* [portfolio-copy] supporting copy retained for the reversible archive cards. */
     .port-body-p {
       font-family: "Courier New", monospace;
       font-size: clamp(0.95rem, 1.6svh, 1.1rem);
@@ -2716,100 +2767,323 @@
       animation: rewindIn 0.55s steps(5, end) forwards;
     }
 
-    .port-signup-row.ready {
-      animation: rewindIn 0.55s steps(5, end) forwards;
-    }
-
-    .port-signup-row {
-      opacity: 0;
-      display: flex;
-      flex-direction: row;
-      align-items: center;
-      gap: 1.25rem;
-      justify-content: center;
-      align-self: center;
+    .field-report-stack {
+      position: relative;
       width: 100%;
-      font-size: clamp(0.95rem, 4.5vw, 1.4rem);
-      max-width: 22.6em;
-    }
-
-    @media (min-width: 601px) {
-      .port-signup-row {
-        font-size: 1.25rem;
-        max-width: 23.1em;
-      }
-    }
-
-    #port-email-input {
-      font-family: "Courier New", monospace;
-      font-size: clamp(0.95rem, 1.6svh, 1.1rem);
-      background: var(--input-bg);
-      border-radius: var(--input-radius);
-      border: none;
-      color: var(--input-color);
-      caret-color: var(--text-selection);
-      text-align: left;
-      width: 100%;
-      flex-grow: 1;
-      min-width: 0;
-      max-width: 100%;
-      height: 38px;
-      box-sizing: border-box;
-      padding: 0 12px;
-      line-height: 1;
-      outline: none;
+      height: min(610px, calc(100svh - 500px));
+      min-height: 480px;
+      margin: 8px auto 12px;
+      isolation: isolate;
       overflow: hidden;
-      transition: background 0.3s ease;
+      touch-action: none;
+      -webkit-user-select: none;
+      user-select: none;
     }
 
-    #port-email-input:focus {
-      background: var(--input-bg-focus);
+    .field-report-card {
+      --card-x: 0px;
+      --card-y: 0px;
+      --card-rotation: 0deg;
+      --card-z: 1;
+      position: absolute;
+      top: 0;
+      left: 50%;
+      z-index: var(--card-z);
+      width: min(409px, calc(72.9svh - 386px), calc(72.9vw - 47px));
+      height: min(409px, calc(72.9svh - 386px), calc(72.9vw - 47px));
+      color: var(--text-primary);
+      background: #000;
+      transform: translate3d(calc(-50% + var(--card-x)), var(--card-y), 0) rotate(var(--card-rotation));
+      transform-origin: 50% 50%;
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+      perspective: 1000px;
+      container-type: inline-size;
     }
 
-    #port-admit-btn {
-      font-family: "Press Start 2P", monospace;
-      font-size: 1.05rem;
+    .field-report-card.is-moving {
+      transition: transform 320ms cubic-bezier(.23, 1, .32, 1), opacity 160ms ease-out;
+      will-change: transform, opacity;
+    }
+
+    .field-report-card[data-aside="left"] {
+      opacity: 0;
+      pointer-events: none;
+      transform: translate3d(calc(-50% - 115vw), var(--card-y), 0) rotate(-8deg);
+    }
+
+    .field-report-card[data-aside="right"] {
+      opacity: 0;
+      pointer-events: none;
+      transform: translate3d(calc(-50% + 115vw), var(--card-y), 0) rotate(8deg);
+    }
+
+    .field-report-card:not(.is-active) { pointer-events: none; }
+
+    .field-report-card-inner {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      transform: rotateY(0deg);
+      transform-style: preserve-3d;
+      -webkit-transform-style: preserve-3d;
+      transition: none;
+    }
+
+    .field-report-card-face {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      grid-template-rows: minmax(0, 1fr) auto auto;
+      gap: 10px;
+      padding: 12px 12px 16px;
+      overflow: hidden;
+      border: 2px solid #292929;
+      background: #000;
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+      transform: translateZ(0);
+    }
+
+    .field-report-card-back {
+      place-items: center;
+      grid-template-rows: 1fr;
+      transform: rotateY(180deg) translateZ(1px);
+      cursor: pointer;
+    }
+
+    .field-report-card-copy {
+      align-self: center;
+      width: min(100%, 43ch);
+      margin: 0 auto;
+      color: var(--text-primary);
+      font: var(--reading-size)/1.65 "Courier New", monospace;
+      text-align: left;
+    }
+
+    .field-report-card-copy p { margin: 0 0 1.25em; }
+    .field-report-card-copy p:last-child { margin-bottom: 0; }
+
+    .field-report-card-front > .field-report-card-copy {
+      grid-row: 1 / 3;
+      align-self: center;
+      padding: clamp(4px, 1.5vw, 18px);
+    }
+
+    .field-report-art,
+    .field-report-holding {
+      display: block;
+      width: 100%;
+      height: 100%;
+      min-height: 0;
+      object-fit: contain;
+      pointer-events: none;
+    }
+
+    .field-report-holding {
+      background:
+        repeating-linear-gradient(32deg, transparent 0 47px, rgba(255,255,255,.07) 48px 49px, transparent 50px 95px),
+        repeating-linear-gradient(-32deg, transparent 0 47px, rgba(255,255,255,.07) 48px 49px, transparent 50px 95px),
+        repeating-linear-gradient(90deg, transparent 0 94px, rgba(255,255,255,.07) 95px 96px);
+    }
+
+    .field-report-card-title {
+      margin: 0;
+      color: var(--text-primary);
+      font: 400 var(--reading-size)/1.35 var(--font-display);
+      text-align: center;
+    }
+
+    .field-report-card-back .field-report-card-title { align-self: center; }
+
+    .field-report-reading[hidden] { display: none; }
+
+    .field-report-reading {
+      position: fixed;
+      inset: 0;
+      z-index: 1000;
+      display: grid;
+      place-items: center;
+      padding: clamp(12px, 4vw, 48px);
+      background: rgba(0, 0, 0, var(--reading-dim, 0));
+    }
+
+    .field-report-reading-sheet {
+      --source-width: 300px;
+      --source-height: 300px;
+      position: relative;
+      width: min(720px, calc(100vw - 32px), calc(100svh - 32px));
+      aspect-ratio: 1;
+      transform-style: preserve-3d;
+      -webkit-transform-style: preserve-3d;
+      transform-origin: 50% 50%;
+      outline: 0;
+    }
+
+    .field-report-reading-face { position: absolute; inset: 0; background: #000; }
+    .field-report-reading-face[hidden] { display: none !important; }
+    .field-report-reading-front {
+      z-index: 2;
+      background: transparent;
+      opacity: var(--reading-front-opacity, 1);
+    }
+
+    .field-report-reading-front .field-report-card {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: var(--source-width);
+      height: var(--source-height);
+      transform: scale(var(--front-scale, 1));
+      translate: -50% -50%;
+      pointer-events: none;
+    }
+
+    .field-report-reading-back {
+      z-index: 1;
+      display: grid;
+      place-items: center;
+      overflow: auto;
+      overscroll-behavior: contain;
+      padding: clamp(28px, 6vw, 72px) clamp(24px, 6vw, 72px) max(112px, 14%);
+      border: 2px solid #292929;
+      cursor: pointer;
+      opacity: var(--reading-back-opacity, 0);
+    }
+
+    .field-report-reading-back > * { opacity: var(--reading-content-opacity, 0); }
+    .field-report-reading-back .field-report-card-copy { width: min(100%, 48ch); }
+    .field-report-reading-put-down {
+      position: absolute;
+      left: 50%;
+      bottom: clamp(22px, 5vw, 48px);
+      z-index: 2;
+      display: grid;
+      place-items: center;
+      width: 52px;
+      height: 42px;
+      padding: 0;
+      border: 0;
       color: var(--green);
       background: transparent;
-      border: none;
-      cursor: pointer;
-      padding: 0;
-      height: 38px;
-      box-sizing: border-box;
-      line-height: 38px;
-      white-space: nowrap;
-      transition: opacity 0.2s ease;
-      flex-shrink: 0;
+      transform: translateX(-50%);
     }
 
-    #port-admit-btn:hover {
-      opacity: 0.6;
+    .field-report-reading-put-down svg {
+      width: 24px;
+      height: 24px;
+      overflow: visible;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 2;
+      stroke-linecap: butt;
+      stroke-linejoin: miter;
+    }
+
+    .field-report-card.is-report-source { visibility: hidden; }
+
+    .field-report-card-controls {
+      grid-row: 3;
+      position: relative;
+      z-index: 3;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      min-height: 42px;
+      padding: 8px 10px 0;
+      border-top: 1px solid rgba(255,255,255,.08);
+      background: #000;
+    }
+
+    .field-report-card-control {
+      display: grid;
+      place-items: center;
+      width: 48px;
+      height: 30px;
+      padding: 0;
+      border: 0;
+      color: var(--green);
+      background: transparent;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .field-report-card-control:disabled { opacity: .22; }
+
+    .field-report-card-control svg {
+      width: 21px;
+      height: 21px;
+      overflow: visible;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 2;
+      stroke-linecap: butt;
+      stroke-linejoin: miter;
+    }
+
+    .field-report-card-control[data-report-action="undo"] svg {
+      transform: scale(-1, -1);
+      transform-origin: center;
+    }
+
+    @media (min-width: 901px) {
+      .field-report-stack { overflow: visible; }
+      .field-report-card:not([data-aside]) { pointer-events: auto; }
+    }
+
+    @media (max-width: 900px) {
+      .field-report-stack {
+        height: min(520px, calc(100svh - 320px));
+        min-height: 400px;
+        margin: 12px auto 16px;
+      }
+
+      .field-report-card {
+        top: 50%;
+        width: min(67.1vw, 379px, calc(72.9svh - 240px));
+        height: min(67.1vw, 379px, calc(72.9svh - 240px));
+        min-height: 0;
+        transform: translate3d(calc(-50% + var(--card-x)), calc(-50% + var(--card-y)), 0) rotate(var(--card-rotation));
+      }
+
+      .field-report-card[data-aside="left"] {
+        transform: translate3d(calc(-50% - 115vw), -50%, 0) rotate(-8deg);
+      }
+
+      .field-report-card[data-aside="right"] {
+        transform: translate3d(calc(-50% + 115vw), -50%, 0) rotate(8deg);
+      }
+
     }
 
     @media (max-width: 600px) {
-      .port-signup-row {
-        flex-direction: row;
-        /* keep input + button on one line at all narrow widths */
-        gap: 0.6rem;
-        max-width: 100%;
-        width: 100%;
-        margin-left: 0;
-        margin-right: 0;
+      .field-report-reading {
+        padding: 12px;
       }
 
-      #port-email-input {
-        width: 14ch;
-        min-width: 10ch;
-        text-align: left;
-        font-size: 16px;
-        /* matches body text size - prevents iOS zoom */
+      .field-report-reading-sheet {
+        width: min(calc(100vw - 24px), calc(100svh - 24px));
       }
 
-      #port-admit-btn {
-        font-size: clamp(0.7rem, 3.2vw, 0.96rem);
-        flex-shrink: 0;
+      .field-report-reading-back {
+        padding: 22px 20px 66px;
       }
 
+      .field-report-reading-back .field-report-card-copy {
+        font-size: clamp(13px, 3.7vw, 15px);
+        line-height: 1.45;
+      }
+
+      .field-report-reading-back .field-report-card-copy p {
+        margin-bottom: .85em;
+      }
+
+      .field-report-reading-put-down {
+        bottom: 14px;
+      }
+    }
+
+    @media (max-width: 600px) {
       .port-body-p,
       #port-hero .port-body-p {
         font-size: 16px;
@@ -2852,7 +3126,7 @@
         font-size: 1.25rem;
         /* ~20px desktop - runes only, mobile untouched */
         height: 38px;
-        /* match port-signup-row height exactly - keeps bottom dividers aligned */
+        /* keeps the rune row aligned with the surrounding rhythm */
         align-items: center;
         box-sizing: border-box;
         overflow: visible;
@@ -2996,7 +3270,7 @@
     }
 
     #pfg-email-link:hover {
-      opacity: 0.6;
+      opacity: 1;
       animation: none;
     }
 
@@ -3006,7 +3280,7 @@
       font-family: "Courier New", Courier, monospace;
       font-size: clamp(0.95rem, 1.6svh, 1.1rem);
       /* matches .about-contact-line desktop */
-      color: #fff;
+      color: var(--text-secondary);
       line-height: 1.5;
       white-space: nowrap;
       align-self: center;
@@ -3044,25 +3318,9 @@
         overflow-wrap: anywhere;
       }
 
-      .term-input-field,
-      #port-email-input {
+      .term-input-field {
         font-size: 20px;
         min-height: 48px;
-      }
-
-      /* the ticket field is a single compact email control, not a terminal
-         answer box. keep its type iOS-safe at 16px while giving the row a
-         quieter 40px profile; the adjacent +1 remains an equally tall target. */
-      #port-email-input {
-        height: 40px;
-        min-height: 40px;
-        padding: 0 10px;
-        font-size: 16px;
-      }
-
-      #port-admit-btn {
-        height: 40px;
-        line-height: 40px;
       }
 
       .term-input-hint {
@@ -3168,8 +3426,7 @@
       }
 
       .term-line,
-      .term-input-field,
-      #port-email-input {
+      .term-input-field {
         font-size: var(--reading-size);
       }
     }
@@ -3214,8 +3471,7 @@
         margin-bottom: 0;
       }
 
-      #about-rune-row,
-      #port-signup-row {
+      #about-rune-row {
         margin: var(--mobile-space-group) 0 0;
       }
 
@@ -3243,6 +3499,7 @@
 
     }
   </style>
+  <link rel="stylesheet" href="assets/worldglass/worldglass.css?v=20260906-8">
 </head>
 
 <body>
@@ -3257,29 +3514,29 @@
       <g id="_p1-paths">
         <path
           d="M3 0h1v1h-1z M18 0h1v1h-1z M3 1h1v1h-1z M18 1h1v1h-1z M0 3h1v1h-1z M22 3h2v1h-2z M16 4h1v1h-1z M16 5h1v1h-1z M24 5h2v1h-2z M16 6h1v1h-1z M16 7h1v1h-1z M26 7h2v1h-2z M16 8h1v1h-1z M27 8h1v1h-1z M0 9h1v1h-1z M16 9h1v1h-1z M16 10h1v1h-1z M3 11h1v1h-1z M16 11h1v1h-1z M27 11h1v1h-1z M3 12h1v1h-1z M16 12h1v1h-1z M27 12h1v1h-1z M5 13h1v1h-1z M5 14h1v1h-1z M20 15h1v1h-1z"
-          fill="#2d4a2e" />
+          fill="#2b5137" />
         <path
           d="M4 0h14v1h-14z M4 1h14v1h-14z M2 2h3v1h-3z M19 2h3v1h-3z M2 3h3v1h-3z M19 3h3v1h-3z M0 4h4v1h-4z M22 4h2v1h-2z M0 5h2v1h-2z M0 6h2v1h-2z M24 6h2v1h-2z M0 7h2v1h-2z M0 8h2v1h-2z M26 8h1v1h-1z M2 9h2v1h-2z M26 9h2v1h-2z M2 10h2v1h-2z M26 10h2v1h-2z M4 11h1v1h-1z M24 11h3v1h-3z M4 12h1v1h-1z M24 12h3v1h-3z M6 13h3v1h-3z M20 13h4v1h-4z M6 14h3v1h-3z M21 14h3v1h-3z M9 15h11v1h-11z"
-          fill="#4d784e" />
+          fill="#447a55" />
         <path
           d="M5 2h14v1h-14z M5 3h3v1h-3z M14 3h5v1h-5z M4 4h3v1h-3z M19 4h3v1h-3z M2 5h4v1h-4z M13 5h2v1h-2z M20 5h4v1h-4z M2 6h3v1h-3z M21 6h3v1h-3z M2 7h3v1h-3z M24 7h2v1h-2z M2 8h3v1h-3z M24 8h2v1h-2z M4 9h3v1h-3z M23 9h3v1h-3z M4 10h3v1h-3z M22 10h4v1h-4z M5 11h4v1h-4z M21 11h3v1h-3z M5 12h4v1h-4z M20 12h4v1h-4z M9 13h11v1h-11z M9 14h12v1h-12z"
-          fill="#6ba36d" />
+          fill="#5aa36f" />
         <path
           d="M8 3h6v1h-6z M7 4h8v1h-8z M17 4h2v1h-2z M6 5h7v1h-7z M17 5h3v1h-3z M5 6h8v1h-8z M17 6h4v1h-4z M5 7h8v1h-8z M17 7h7v1h-7z M5 8h8v1h-8z M17 8h7v1h-7z M7 9h6v1h-6z M17 9h6v1h-6z M7 10h6v1h-6z M17 10h5v1h-5z M9 11h6v1h-6z M17 11h4v1h-4z M9 12h6v1h-6z M17 12h3v1h-3z"
-          fill="#89ce8d" />
+          fill="#74c58d" />
         <g transform="translate(37,0)">
           <path
             d="M10 0h1v1h-1z M10 1h1v1h-1z M6 2h1v1h-1z M5 3h2v1h-2z M3 5h2v1h-2z M1 7h2v1h-2z M1 8h1v1h-1z M27 9h1v1h-1z M1 11h1v1h-1z M1 12h1v1h-1z M23 13h1v1h-1z M23 14h1v1h-1z M8 15h1v1h-1z"
-            fill="#2d4a2e" />
+            fill="#2b5137" />
           <path
             d="M11 0h14v1h-14z M11 1h14v1h-14z M7 2h3v1h-3z M23 2h4v1h-4z M7 3h3v1h-3z M23 3h4v1h-4z M5 4h2v1h-2z M25 4h3v1h-3z M27 5h1v1h-1z M3 6h2v1h-2z M27 6h1v1h-1z M27 7h1v1h-1z M2 8h1v1h-1z M27 8h1v1h-1z M0 9h3v1h-3z M25 9h2v1h-2z M0 10h3v1h-3z M25 10h2v1h-2z M2 11h3v1h-3z M23 11h2v1h-2z M2 12h3v1h-3z M23 12h2v1h-2z M5 13h3v1h-3z M20 13h3v1h-3z M5 14h4v1h-4z M20 14h3v1h-3z M9 15h11v1h-11z"
-            fill="#4d784e" />
+            fill="#447a55" />
           <path
             d="M10 2h13v1h-13z M10 3h5v1h-5z M16 3h3v1h-3z M20 3h3v1h-3z M7 4h3v1h-3z M22 4h3v1h-3z M5 5h4v1h-4z M14 5h2v1h-2z M23 5h4v1h-4z M5 6h3v1h-3z M24 6h3v1h-3z M3 7h2v1h-2z M24 7h3v1h-3z M3 8h2v1h-2z M24 8h3v1h-3z M3 9h2v1h-2z M22 9h3v1h-3z M3 10h4v1h-4z M22 10h3v1h-3z M5 11h3v1h-3z M20 11h3v1h-3z M5 12h4v1h-4z M20 12h3v1h-3z M8 13h12v1h-12z M9 14h11v1h-11z"
-            fill="#6ba36d" />
+            fill="#5aa36f" />
           <path
             d="M15 3h1v1h-1z M19 3h1v1h-1z M10 4h2v1h-2z M14 4h8v1h-8z M9 5h3v1h-3z M16 5h7v1h-7z M8 6h4v1h-4z M16 6h8v1h-8z M5 7h7v1h-7z M16 7h8v1h-8z M5 8h7v1h-7z M16 8h8v1h-8z M5 9h7v1h-7z M16 9h6v1h-6z M7 10h5v1h-5z M16 10h6v1h-6z M8 11h4v1h-4z M14 11h6v1h-6z M9 12h3v1h-3z M14 12h6v1h-6z"
-            fill="#89ce8d" />
+            fill="#74c58d" />
         </g>
       </g>
     </defs>
@@ -3290,10 +3547,10 @@
      p1 has the full pixel data. p2 and p3 borrow it via <use href="#_p1-paths">.
      do not edit the path data unless you're redrawing the eyes.
      the four fill colours are:
-       #2d4a2e = darkest green (shadows/edges)
-       #4d784e = medium-dark green
-       #6ba36d = medium-light green
-       #89ce8d = lightest green (highlights/pupils)
+       #2b5137 = darkest green (shadows/edges)
+       #447a55 = medium-dark green
+       #5aa36f = medium-light green
+       #74c58d = eye highlight green
      ═══════════════════════════════════════════════════════ -->
   <div class="eyes" id="eyes" aria-hidden="true">
     <!-- [p1] aka the top row of goblin eyes. contains the actual path data. p2 and p3 borrow from this. -->
@@ -3301,30 +3558,30 @@
       <g>
         <path
           d="M3 0h1v1h-1z M18 0h1v1h-1z M3 1h1v1h-1z M18 1h1v1h-1z M0 3h1v1h-1z M22 3h2v1h-2z M16 4h1v1h-1z M16 5h1v1h-1z M24 5h2v1h-2z M16 6h1v1h-1z M16 7h1v1h-1z M26 7h2v1h-2z M16 8h1v1h-1z M27 8h1v1h-1z M0 9h1v1h-1z M16 9h1v1h-1z M16 10h1v1h-1z M3 11h1v1h-1z M16 11h1v1h-1z M27 11h1v1h-1z M3 12h1v1h-1z M16 12h1v1h-1z M27 12h1v1h-1z M5 13h1v1h-1z M5 14h1v1h-1z M20 15h1v1h-1z"
-          fill="#2d4a2e" />
+          fill="#2b5137" />
         <path
           d="M4 0h14v1h-14z M4 1h14v1h-14z M2 2h3v1h-3z M19 2h3v1h-3z M2 3h3v1h-3z M19 3h3v1h-3z M0 4h4v1h-4z M22 4h2v1h-2z M0 5h2v1h-2z M0 6h2v1h-2z M24 6h2v1h-2z M0 7h2v1h-2z M0 8h2v1h-2z M26 8h1v1h-1z M2 9h2v1h-2z M26 9h2v1h-2z M2 10h2v1h-2z M26 10h2v1h-2z M4 11h1v1h-1z M24 11h3v1h-3z M4 12h1v1h-1z M24 12h3v1h-3z M6 13h3v1h-3z M20 13h4v1h-4z M6 14h3v1h-3z M21 14h3v1h-3z M9 15h11v1h-11z"
-          fill="#4d784e" />
+          fill="#447a55" />
         <path
           d="M5 2h14v1h-14z M5 3h3v1h-3z M14 3h5v1h-5z M4 4h3v1h-3z M19 4h3v1h-3z M2 5h4v1h-4z M13 5h2v1h-2z M20 5h4v1h-4z M2 6h3v1h-3z M21 6h3v1h-3z M2 7h3v1h-3z M24 7h2v1h-2z M2 8h3v1h-3z M24 8h2v1h-2z M4 9h3v1h-3z M23 9h3v1h-3z M4 10h3v1h-3z M22 10h4v1h-4z M5 11h4v1h-4z M21 11h3v1h-3z M5 12h4v1h-4z M20 12h4v1h-4z M9 13h11v1h-11z M9 14h12v1h-12z"
-          fill="#6ba36d" />
+          fill="#5aa36f" />
         <path
           d="M8 3h6v1h-6z M7 4h8v1h-8z M17 4h2v1h-2z M6 5h7v1h-7z M17 5h3v1h-3z M5 6h8v1h-8z M17 6h4v1h-4z M5 7h8v1h-8z M17 7h7v1h-7z M5 8h8v1h-8z M17 8h7v1h-7z M7 9h6v1h-6z M17 9h6v1h-6z M7 10h6v1h-6z M17 10h5v1h-5z M9 11h6v1h-6z M17 11h4v1h-4z M9 12h6v1h-6z M17 12h3v1h-3z"
-          fill="#89ce8d" />
+          fill="#74c58d" />
         <!-- right eye of this pair - shifted 37px right -->
         <g transform="translate(37,0)">
           <path
             d="M10 0h1v1h-1z M10 1h1v1h-1z M6 2h1v1h-1z M5 3h2v1h-2z M3 5h2v1h-2z M1 7h2v1h-2z M1 8h1v1h-1z M27 9h1v1h-1z M1 11h1v1h-1z M1 12h1v1h-1z M23 13h1v1h-1z M23 14h1v1h-1z M8 15h1v1h-1z"
-            fill="#2d4a2e" />
+            fill="#2b5137" />
           <path
             d="M11 0h14v1h-14z M11 1h14v1h-14z M7 2h3v1h-3z M23 2h4v1h-4z M7 3h3v1h-3z M23 3h4v1h-4z M5 4h2v1h-2z M25 4h3v1h-3z M27 5h1v1h-1z M3 6h2v1h-2z M27 6h1v1h-1z M27 7h1v1h-1z M2 8h1v1h-1z M27 8h1v1h-1z M0 9h3v1h-3z M25 9h2v1h-2z M0 10h3v1h-3z M25 10h2v1h-2z M2 11h3v1h-3z M23 11h2v1h-2z M2 12h3v1h-3z M23 12h2v1h-2z M5 13h3v1h-3z M20 13h3v1h-3z M5 14h4v1h-4z M20 14h3v1h-3z M9 15h11v1h-11z"
-            fill="#4d784e" />
+            fill="#447a55" />
           <path
             d="M10 2h13v1h-13z M10 3h5v1h-5z M16 3h3v1h-3z M20 3h3v1h-3z M7 4h3v1h-3z M22 4h3v1h-3z M5 5h4v1h-4z M14 5h2v1h-2z M23 5h4v1h-4z M5 6h3v1h-3z M24 6h3v1h-3z M3 7h2v1h-2z M24 7h3v1h-3z M3 8h2v1h-2z M24 8h3v1h-3z M3 9h2v1h-2z M22 9h3v1h-3z M3 10h4v1h-4z M22 10h3v1h-3z M5 11h3v1h-3z M20 11h3v1h-3z M5 12h4v1h-4z M20 12h3v1h-3z M8 13h12v1h-12z M9 14h11v1h-11z"
-            fill="#6ba36d" />
+            fill="#5aa36f" />
           <path
             d="M15 3h1v1h-1z M19 3h1v1h-1z M10 4h2v1h-2z M14 4h8v1h-8z M9 5h3v1h-3z M16 5h7v1h-7z M8 6h4v1h-4z M16 6h8v1h-8z M5 7h7v1h-7z M16 7h8v1h-8z M5 8h7v1h-7z M16 8h8v1h-8z M5 9h7v1h-7z M16 9h6v1h-6z M7 10h5v1h-5z M16 10h6v1h-6z M8 11h4v1h-4z M14 11h6v1h-6z M9 12h3v1h-3z M14 12h6v1h-6z"
-            fill="#89ce8d" />
+            fill="#74c58d" />
         </g>
       </g>
     </svg>
@@ -3369,19 +3626,41 @@
         <div class="principal-header-slot" data-principal-view="home"></div>
         <div class="hero" id="hero">
           <div class="body" id="home-body">
-            <!-- [we > i strikethrough]. this was the first bit of flair noah came up with during the earliest pfg build. it might be his favourite part of the code. -->
-            <p data-nosnippet>yes, hello. this is noah grey. please ignore the shifting height; nothing to see here. <span id="subject"
-                aria-hidden="true"><span class="we-text">we</span><svg id="strikethrough-svg" viewBox="0 0 30 8"
-                  preserveAspectRatio="none" aria-hidden="true" focusable="false">
-                  <path d="M0 4 Q15 3.8,26 4 Q28 3,30 2.5" fill="none" stroke="#72d087" stroke-width="1.6"
-                    stroke-linecap="round" />
-                </svg></span><span id="new-subject" aria-hidden="true"><svg viewBox="0 0 12 22" width="9" height="15"
-                  aria-hidden="true" focusable="false">
-                  <ellipse class="i-dot" cx="5.8" cy="3" rx="1.8" ry="2.2" fill="#72d087"
-                    transform="rotate(-6,5.8,3)" />
-                  <path class="i-stalk" d="M 6.3 9 C 6.0 12,6.4 16,6.1 20" stroke="#72d087" stroke-width="1.8"
-                    fill="none" stroke-linecap="round" />
-                </svg></span><span class="sr-only">i</span> run a narrative studio from a dimly lit room in london.
+            <!-- [i > we strikethrough]. noah introduces himself; the goblins assert their shared authorship. -->
+            <p data-nosnippet>yes, hello. this is noah grey. <span id="subject" aria-hidden="true"><span
+                  class="we-text">i</span><svg id="strikethrough-svg" viewBox="0 0 30 8"
+                    preserveAspectRatio="none" aria-hidden="true" focusable="false">
+                    <defs>
+                      <filter id="green-pencil-texture" x="-12%" y="-20%" width="124%" height="140%"
+                        color-interpolation-filters="sRGB">
+                        <feTurbulence type="fractalNoise" baseFrequency="0.42 0.9" numOctaves="3" seed="17"
+                          result="pencil-grain" />
+                        <feDisplacementMap in="SourceGraphic" in2="pencil-grain" scale="0.55"
+                          xChannelSelector="R" yChannelSelector="G" result="rough-pencil" />
+                        <feComposite in="pencil-grain" in2="rough-pencil" operator="in" result="grain-in-stroke" />
+                        <feBlend in="rough-pencil" in2="grain-in-stroke" mode="screen" />
+                      </filter>
+                    </defs>
+                    <path d="M0 4 Q15 3.8,26 4 Q28 3,30 2.5" fill="none" stroke="var(--green)"
+                      stroke-width="1.6" stroke-linecap="round" />
+                  </svg></span><span id="new-subject" aria-hidden="true"><svg viewBox="0 0 165 72" width="32" height="14"
+                    aria-hidden="true" focusable="false">
+                    <g class="we-hand-letter we-hand-w">
+                      <path pathLength="1" class="we-hand-stroke goblin-pencil-stroke" data-ink-opacity="0.92"
+                        d="M5 30 C8 38 11 59 11 68" />
+                      <path pathLength="1" class="we-hand-stroke goblin-pencil-stroke" data-ink-opacity="0.92"
+                        d="M11 68 C14 65 16 61 19 58 C25 51 31 46 38 46 C47 48 51 58 62 63 C75 69 86 62 91 45 C96 29 91 20 80 18 C74 17 69 17 65 18" />
+                    </g>
+                    <g class="we-hand-letter we-hand-e">
+                      <path pathLength="1" class="we-hand-stroke goblin-pencil-stroke" data-ink-opacity="0.95"
+                        d="M126 22 C127 33 128 49 131 59" />
+                      <path pathLength="1" class="we-hand-stroke goblin-pencil-stroke" data-ink-opacity="0.95"
+                        d="M131 59 C130 49 129 39 130 31 C139 30 149 29 156 29" />
+                      <path pathLength="1" class="we-hand-stroke goblin-pencil-stroke" data-ink-opacity="0.95"
+                        d="M156 29 C153 22 144 15 136 12 C125 8 114 12 108 21 C101 32 105 47 116 55 C127 61 143 57 156 51" />
+                    </g>
+                  </svg></span><span class="sr-only">we</span> run a narrative studio from a dimly lit room in london.
+              <span class="sr-only">the word “we” is a handwritten correction to “i”.</span>
               with five years' experience at a big four publisher and counting, i work with <span
                 class="service-hl">writers</span>, <span class="service-hl">comic creators</span>, <span
                 class="service-hl">game developers</span> and <span class="service-hl">publishers</span> on <span
@@ -3396,7 +3675,8 @@
           <!-- the press for goblins button functions as a late-stage title card, a cta and a pun. a true triple threat. -->
           <div class="cta-wrap">
             <button class="cta" id="cta" aria-label="press for goblins">
-              press for goblins
+              <span class="cta-latin">press for goblins</span>
+              <span class="cta-runes" aria-hidden="true"></span>
             </button>
           </div>
           <!-- appears after the user submits a query. -->
@@ -3432,7 +3712,7 @@
         <div class="tab-hero" id="about-hero">
           <div class="tab-body-col">
             <p class="about-contact-line" id="about-contact-line">want to speak to the goblins?</p>
-            <p class="about-contact-line" id="about-contact-line-2">they like big questions, Oscar Wilde and npcs with
+            <p class="about-contact-line" id="about-contact-line-2">they like big questions, oscar wilde and npcs with
               memorable dialogue (that's you).</p>
             <div class="about-rune-row" id="about-rune-row" style="position:relative;">
               <span style="display:inline-block;white-space:nowrap;">
@@ -3448,14 +3728,14 @@
           <span class="contact-rule bottom-rule"></span>
           <div id="about-social">
             <a href="https://www.linkedin.com/in/noahgrey/" id="linkedin-ascii-link" rel="noopener noreferrer"
-              aria-label="LinkedIn" draggable="false">
+              aria-label="linkedin" draggable="false">
               <pre id="ascii-output"></pre>
             </a>
           </div>
           <p class="about-address" id="about-address" data-nosnippet>
-            <span>Press for Goblins<sup class="pfg-tm">®</sup></span>
-            <span>167-169 Great Portland St</span>
-            <span>London W1W 5PF</span>
+            <span>press for goblins<sup class="pfg-tm">®</sup></span>
+            <span>167-169 great portland st</span>
+            <span>london w1w 5pf</span>
           </p>
         </div>
       </section>
@@ -3463,21 +3743,48 @@
       <!-- -
          [portfolio-html] portfolio screen: title + body fade-in + contact line.
          - -->
-      <section class="screen" id="screen-portfolio" data-screen-label="06 Portfolio" aria-label="field reports"
+      <section class="screen" id="screen-portfolio" data-screen-label="06 Portfolio" aria-label="worldglass"
         aria-hidden="true" tabindex="-1" inert>
         <div class="principal-header-slot" data-principal-view="portfolio"></div>
         <div class="tab-hero" id="port-hero">
           <div class="tab-body-col">
-            <p id="port-body-1" class="about-contact-line">want to hear from the goblins?</p>
-            <p id="port-body-2" class="about-contact-line">they are working on things. irl events. notes on the industry. talks
-              with authors, artists, game developers and other interesting humans.</p>
-            <div class="port-signup-row" id="port-signup-row">
-              <input type="email" id="port-email-input" placeholder="" autocomplete="email" aria-label="email address">
-              <button type="button" id="port-admit-btn">+1</button>
+            <div class="field-report-stack" id="field-report-stack" aria-label="field reports">
+              <article class="field-report-card is-active" data-report-id="2026" tabindex="0">
+                <div class="field-report-card-inner">
+                  <div class="field-report-card-face field-report-card-front">
+                    <img class="field-report-art" src="assets/images/2026-no-eyes.png" alt="">
+                    <nav class="field-report-card-controls" aria-label="card controls">
+                      <button class="field-report-card-control" data-report-action="left" type="button" aria-label="left"></button>
+                      <button class="field-report-card-control" data-report-action="undo" type="button" aria-label="undo" disabled></button>
+                      <button class="field-report-card-control" data-report-action="pickup" type="button" aria-label="pick up"></button>
+                      <button class="field-report-card-control" data-report-action="right" type="button" aria-label="right"></button>
+                    </nav>
+                  </div>
+                  <div class="field-report-card-face field-report-card-back">
+                    <div class="field-report-card-copy">
+                      <p>despite centuries of bad press, we goblins can be fairly sociable (depending on our hunger levels and the time of day ofc)</p>
+                      <p>whether or not you need an editor, writer or narrative designer right now, if you’re making a book, comic or game and see us at an event, come and say hello</p>
+                      <p>here’s where we’ve been and where you can bump into us next</p>
+                    </div>
+                  </div>
+                </div>
+              </article>
+              <article class="field-report-card" data-report-id="goblins-x-author" tabindex="-1">
+                <div class="field-report-card-inner">
+                  <div class="field-report-card-face field-report-card-front">
+                    <div class="field-report-holding" aria-hidden="true"></div>
+                    <h2 class="field-report-card-title">author in conversation: [redacted]</h2>
+                    <nav class="field-report-card-controls" aria-label="card controls">
+                      <button class="field-report-card-control" data-report-action="left" type="button" aria-label="left"></button>
+                      <button class="field-report-card-control" data-report-action="undo" type="button" aria-label="undo"></button>
+                      <button class="field-report-card-control" data-report-action="pickup" type="button" aria-label="pick up"></button>
+                      <button class="field-report-card-control" data-report-action="right" type="button" aria-label="right"></button>
+                    </nav>
+                  </div>
+                  <div class="field-report-card-face field-report-card-back"></div>
+                </div>
+              </article>
             </div>
-          </div>
-          <div id="port-confirm"
-            style="display:none;text-align:left;font-family:'Courier New',monospace;font-size:clamp(0.85rem,1.4svh,0.95rem);color:#fff;width:100%;max-width:72ch;margin:0 auto;align-self:center;min-height:5.5em;">
           </div>
           <span class="contact-rule bottom-rule"></span>
         </div>
@@ -3487,23 +3794,33 @@
     </div>
   </div>
 
+  <section class="field-report-reading" id="field-report-reading" aria-label="field report" hidden>
+    <article class="field-report-reading-sheet" id="field-report-reading-sheet" tabindex="-1">
+      <div class="field-report-reading-face field-report-reading-front" id="field-report-reading-front" aria-hidden="true"></div>
+      <div class="field-report-reading-face field-report-reading-back" id="field-report-reading-back">
+        <div id="field-report-reading-body"></div>
+        <button class="field-report-reading-put-down" id="field-report-reading-put-down" type="button" aria-label="put down"></button>
+      </div>
+    </article>
+  </section>
+
   <!-- [footer-nav] field reports left, home centre, meet the goblins right. JS sets aria-current + active-dot. -->
-  <nav class="footer-nav" aria-label="Main navigation">
+  <nav class="footer-nav" aria-label="main navigation">
     <div class="nav-item" id="nav-portfolio">
-      <button class="nav-btn" data-tab="portfolio" aria-label="Field Reports">
-        <img src="assets/images/portfolio.png" alt="Field Reports">
+      <button class="nav-btn" data-tab="portfolio" aria-label="worldglass">
+        <img src="assets/images/portfolio.png" alt="worldglass">
       </button>
       <div class="active-dot" id="nav-dot-portfolio" style="display:none"></div>
     </div>
     <div class="nav-item" id="nav-home">
-      <button class="nav-btn" data-tab="home" aria-label="Home">
-        <img src="assets/images/home.png" alt="Home">
+      <button class="nav-btn" data-tab="home" aria-label="home">
+        <img src="assets/images/home.png" alt="home">
       </button>
       <div class="active-dot" id="nav-dot-home"></div>
     </div>
     <div class="nav-item" id="nav-about">
-      <button class="nav-btn" data-tab="about" aria-label="Meet the Goblins">
-        <img src="assets/images/about.png" alt="Meet the Goblins">
+      <button class="nav-btn" data-tab="about" aria-label="meet the goblins">
+        <img src="assets/images/about.png" alt="meet the goblins">
       </button>
       <div class="active-dot" id="nav-dot-about" style="display:none"></div>
     </div>
@@ -3671,7 +3988,7 @@
         },
         portfolio: {
           screen: 'screen-portfolio', hash: '#portfolio', nav: 'portfolio', variant: 'single',
-          titleLines: ['field reports', '']
+          titleLines: ['worldglass', '']
         }
       };
 
@@ -3864,111 +4181,394 @@
         setTimeout(function () {
           requestAnimationFrame(function () {
             requestAnimationFrame(function () {
-              ['port-body-1', 'port-body-2', 'port-signup-row'].forEach(function (id) {
+              ['port-body-1', 'port-body-2', 'field-report-stack'].forEach(function (id) {
                 var el = document.getElementById(id);
                 if (el) el.classList.add('ready');
               });
             });
           });
         }, 350);
-
-        /* +1 button glitch - starts after signup row has faded in */
-        setTimeout(function () {
-          var admitBtn = document.getElementById('port-admit-btn');
-          if (admitBtn && !admitBtn._glitchTimeout) scheduleGlitch(admitBtn);
-        }, 1000);
       }
 
-      /* - portfolio newsletter signup - */
       (function () {
-        var btn = document.getElementById('port-admit-btn');
-        var input = document.getElementById('port-email-input');
-        var row = document.getElementById('port-signup-row');
-        var confirm = document.getElementById('port-confirm');
-        if (!btn || !input || !row || !confirm) return;
+        var stack = document.getElementById('field-report-stack');
+        if (!stack) return;
 
+        var cards = Array.from(stack.querySelectorAll('.field-report-card'));
+        var state = {
+          cards: cards.map(function (_, index) {
+            return { x: [-8, 4, 10][index], y: index * 3, rotation: [-2.1, 1.4, -.8][index], z: cards.length - index, aside: null };
+          }),
+          active: 0,
+          history: [],
+          nextZ: cards.length + 1
+        };
 
-
-        function shakeInput() {
-          input.classList.add('field-shake');
-          input.addEventListener('animationend', function h() {
-            input.classList.remove('field-shake');
-            input.removeEventListener('animationend', h);
+        function compact() { return matchMedia('(max-width: 900px)').matches; }
+        function cloneArrangement() {
+          return { cards: structuredClone(state.cards), active: state.active, nextZ: state.nextZ };
+        }
+        function restoreArrangement(snapshot) {
+          state.cards = structuredClone(snapshot.cards);
+          state.active = snapshot.active;
+          state.nextZ = snapshot.nextZ;
+        }
+        function recordMovement(index, mutate) {
+          var before = cloneArrangement();
+          mutate();
+          state.history.push({ before: before, after: cloneArrangement(), index: index });
+        }
+        function nextVisible(except) {
+          var candidates = state.cards.map(function (item, index) { return { item: item, index: index }; })
+            .filter(function (entry) { return entry.index !== except && !entry.item.aside; })
+            .sort(function (a, b) { return b.item.z - a.item.z; });
+          return candidates.length ? candidates[0].index : null;
+        }
+        function wideBase(index) {
+          var spread = Math.min(150, Math.max(58, stack.clientWidth * .13));
+          return { x: [-spread, 0, spread][index], y: [18, 32, 22][index] };
+        }
+        function render() {
+          cards.forEach(function (card, index) {
+            var item = state.cards[index];
+            var base = compact() ? { x: 0, y: 0 } : wideBase(index);
+            var x = item.aside === 'free' ? item.x : base.x;
+            var y = item.aside === 'free' ? item.y : base.y;
+            card.style.setProperty('--card-x', x + 'px');
+            card.style.setProperty('--card-y', y + 'px');
+            card.style.setProperty('--card-rotation', item.rotation + 'deg');
+            card.style.setProperty('--card-z', item.z);
+            if (item.aside === 'left' || item.aside === 'right') card.dataset.aside = item.aside;
+            else card.removeAttribute('data-aside');
+            var active = index === state.active;
+            card.classList.toggle('is-active', active);
+            card.tabIndex = active || !compact() ? 0 : -1;
+            card.setAttribute('aria-hidden', compact() && (!active || item.aside) ? 'true' : 'false');
+            card.querySelectorAll('[data-report-action="left"], [data-report-action="right"]')
+              .forEach(function (button) { button.disabled = !active; });
+            card.querySelectorAll('[data-report-action="undo"]')
+              .forEach(function (button) { button.disabled = !active || state.history.length === 0; });
           });
         }
-
-        var ticketSubmissionId = null;
-
-        async function doSubmit() {
-          var val = input.value.trim();
-          if (!val || !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(val)) {
-            shakeInput();
-            return;
-          }
-
-          btn.disabled = true;
-          input.disabled = true;
-
-          if (!ticketSubmissionId) ticketSubmissionId = crypto.randomUUID();
-          try {
-            var ticketResponse = await fetch('/api/ticket', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ email: val, '_gotcha': '', _submissionId: ticketSubmissionId }),
-            });
-            if (!ticketResponse.ok) throw new Error('ticket request failed');
-          } catch {
-            btn.disabled = false;
-            input.disabled = false;
-            shakeInput();
-            return;
-          }
-
-          /* glitch the row away, then glitch confirm in */
-          row.classList.add('rewind-out');
-          var _rowDone = false;
-          function _onRowGone() {
-            if (_rowDone) return;
-            _rowDone = true;
-            row.removeEventListener('animationend', _onRowGone);
-            row.style.display = 'none';
-            confirm.style.display = 'block';
-
-            /* idle cursor - same pattern as contact form step 1:
-               a proper term-line with > prefix that blinks for 1400ms,
-               then is removed and replaced by chained typeMessage calls */
-            var idle = document.createElement('div');
-            idle.className = 'term-line visible';
-            var idlePre = document.createElement('span');
-            idlePre.className = 'term-prefix'; idlePre.innerHTML = PREFIX_SVG;
-            var idleCur = makeCursor();
-            idleCur.blink();
-            idle.append(idlePre, idleCur);
-            confirm.appendChild(idle);
+        function animate(card) {
+          card.classList.add('is-moving');
+          setTimeout(function () { card.classList.remove('is-moving'); }, 340);
+        }
+        function moveAside(direction) {
+          var index = state.active;
+          if (index == null) return;
+          var card = cards[index];
+          recordMovement(index, function () {
+            state.cards[index].aside = direction;
+            state.cards[index].z = state.nextZ++;
+            state.active = nextVisible(index);
+          });
+          animate(card);
+          render();
+          if (state.active != null) cards[state.active].focus({ preventScroll: true });
+        }
+        function undo() {
+          var movement = state.history.pop();
+          if (!movement) return;
+          var card = cards[movement.index];
+          var startTransform = getComputedStyle(card).transform;
+          var startOpacity = getComputedStyle(card).opacity;
+          restoreArrangement(movement.before);
+          render();
+          var targetTransform = getComputedStyle(card).transform;
+          var targetOpacity = getComputedStyle(card).opacity;
+          card.style.transition = 'none';
+          card.style.transform = startTransform;
+          card.style.opacity = startOpacity;
+          void card.offsetWidth;
+          requestAnimationFrame(function () {
+            card.style.transition = 'transform 320ms cubic-bezier(.23, 1, .32, 1), opacity 160ms ease-out';
+            card.style.transform = targetTransform;
+            card.style.opacity = targetOpacity;
             setTimeout(function () {
-              idle.remove();
-              skipping = false; /* reset - spacebar skip must not bleed into confirmation lines */
-              typeMessage('we have noted your interest', function () {
-                setTimeout(function () {
-                  typeMessage('you will receive a field report ticket in due course', function () {
-                    setTimeout(function () {
-                      typeMessage('that will be all, human', undefined, undefined, confirm);
-                    }, 1500);
-                  }, undefined, confirm);
-                }, 1100);
-              }, undefined, confirm);
-            }, 1400);
-          }
-          row.addEventListener('animationend', _onRowGone, { once: true });
-          /* iOS safari fallback - animationend sometimes doesn't fire for short animations */
-          setTimeout(_onRowGone, 400);
-
+              card.style.removeProperty('transition');
+              card.style.removeProperty('transform');
+              card.style.removeProperty('opacity');
+            }, 340);
+          });
+          if (state.active != null) cards[state.active].focus({ preventScroll: true });
+        }
+        function createHandlingSvg(kind) {
+          var ns = 'http://www.w3.org/2000/svg';
+          var svg = document.createElementNS(ns, 'svg');
+          svg.setAttribute('viewBox', kind === 'undo' ? '0 0 24 24' : '0 0 28 28');
+          var geometry = {
+            left: ['M26.6 14 H1.4', 'M7.905 7.495 L1.4 14 L7.905 20.505'],
+            right: ['M1.4 14 H26.6', 'M20.095 7.495 L26.6 14 L20.095 20.505'],
+            undo: ['M20 12 C20 7.2 16.5 3.2 11.5 3 C6.5 2.8 2.5 7.5 2.2 12.5 C2 17.5 6.2 21.5 11.2 21.2', 'M6.6 16.6 L11.2 21.2 L6.6 25.8'],
+            pickup: ['M5.09 20.91 L14 12 L22.91 20.91', 'M6 6 H22']
+          }[kind];
+          geometry.forEach(function (pathData) {
+            var path = document.createElementNS(ns, 'path');
+            path.setAttribute('d', pathData);
+            path.setAttribute('pathLength', '1');
+            svg.append(path);
+          });
+          return svg;
         }
 
-        btn.addEventListener('click', doSubmit);
-        input.addEventListener('keydown', function (e) {
-          if (e.key === 'Enter') doSubmit();
+        var reading = document.getElementById('field-report-reading');
+        var readingSheet = document.getElementById('field-report-reading-sheet');
+        var readingFront = document.getElementById('field-report-reading-front');
+        var readingBack = document.getElementById('field-report-reading-back');
+        var readingBody = document.getElementById('field-report-reading-body');
+        var readingPutDown = document.getElementById('field-report-reading-put-down');
+        readingPutDown.append(createHandlingSvg('pickup'));
+        readingPutDown.querySelector('svg').style.transform = 'rotate(180deg)';
+
+        var reportController = {
+          duration: 520,
+          session: null,
+          frame: 0,
+
+          ease: function (value) {
+            var t = Math.max(0, Math.min(1, value));
+            return t * t * (3 - 2 * t);
+          },
+
+          open: function (card) {
+            if (!card || this.session) return;
+            var rect = card.getBoundingClientRect();
+            var sourceWidth = card.offsetWidth;
+            var sourceHeight = card.offsetHeight;
+            var ariaHidden = card.hasAttribute('aria-hidden') ? card.getAttribute('aria-hidden') : null;
+            var copy = card.querySelector('.field-report-card-back > *');
+            var copyParent = copy && copy.parentNode;
+            var copyNext = copy && copy.nextSibling;
+
+            readingFront.replaceChildren();
+            var clone = card.cloneNode(true);
+            clone.removeAttribute('id');
+            clone.removeAttribute('style');
+            clone.removeAttribute('data-aside');
+            clone.classList.remove('is-moving', 'is-introducing', 'is-report-source');
+            clone.classList.toggle('is-active', true);
+            clone.setAttribute('aria-hidden', 'true');
+            clone.querySelectorAll('[id]').forEach(function (node) { node.removeAttribute('id'); });
+            clone.querySelectorAll('button, input, a, textarea, select, [tabindex]').forEach(function (control) { control.tabIndex = -1; });
+            readingFront.append(clone);
+            readingBody.replaceChildren();
+            if (copy) readingBody.append(copy);
+            readingBack.scrollTop = 0;
+
+            reading.hidden = false;
+            reading.style.setProperty('--reading-dim', '0');
+            readingSheet.style.setProperty('--source-width', sourceWidth + 'px');
+            readingSheet.style.setProperty('--source-height', sourceHeight + 'px');
+            readingSheet.focus({ preventScroll: true });
+            document.querySelector('.page').setAttribute('inert', '');
+            document.querySelector('.footer-nav').setAttribute('inert', '');
+            card.classList.add('is-report-source');
+            card.setAttribute('aria-hidden', 'true');
+
+            var finalWidth = readingSheet.offsetWidth;
+            var finalHeight = readingSheet.offsetHeight;
+            this.session = {
+              source: card,
+              snapshot: { ariaHidden: ariaHidden, copy: copy, copyParent: copyParent, copyNext: copyNext },
+              sourceCenterX: rect.left + rect.width / 2,
+              sourceCenterY: rect.top + rect.height / 2,
+              angle: Number.parseFloat(getComputedStyle(card).getPropertyValue('--card-rotation')) || 0,
+              frontScale: Math.min(finalWidth / sourceWidth, finalHeight / sourceHeight),
+              progress: 0,
+              target: 1,
+              lastTime: null
+            };
+            this.render(0);
+            if (matchMedia('(prefers-reduced-motion: reduce)').matches) {
+              this.session.progress = 1;
+              this.render(1);
+              readingPutDown.focus({ preventScroll: true });
+            } else this.start();
+          },
+
+          setTarget: function (target) {
+            if (!this.session) return;
+            this.session.target = target;
+            if (matchMedia('(prefers-reduced-motion: reduce)').matches) {
+              this.session.progress = target;
+              this.render(target);
+              if (target === 0) this.finishClose();
+            } else this.start();
+          },
+
+          start: function () {
+            if (!this.session || this.frame) return;
+            this.session.lastTime = null;
+            readingSheet.style.willChange = 'transform';
+            this.frame = requestAnimationFrame(this.tick.bind(this));
+          },
+
+          tick: function (time) {
+            this.frame = 0;
+            var session = this.session;
+            if (!session) return;
+            if (session.lastTime == null) session.lastTime = time;
+            var elapsed = Math.min(34, time - session.lastTime);
+            session.lastTime = time;
+            var direction = session.target > session.progress ? 1 : -1;
+            session.progress = Math.max(0, Math.min(1, session.progress + direction * elapsed / this.duration));
+            this.render(session.progress);
+            if (session.progress === session.target) {
+              if (session.target === 0) this.finishClose();
+              else {
+                readingSheet.style.removeProperty('will-change');
+                readingPutDown.focus({ preventScroll: true });
+              }
+              return;
+            }
+            this.frame = requestAnimationFrame(this.tick.bind(this));
+          },
+
+          render: function (progress) {
+            var session = this.session;
+            if (!session) return;
+            var dx = session.sourceCenterX - innerWidth / 2;
+            var dy = session.sourceCenterY - innerHeight / 2;
+            var motion = this.ease(Math.min(1, progress / .86));
+            var turn = Math.min(1, progress / .86);
+            var x = dx * (1 - motion);
+            var restingY = Math.min(48, innerHeight * .045);
+            var y = dy * (1 - motion) + restingY * motion;
+            var frontGrowth = 1 + (session.frontScale - 1) * this.ease(Math.min(1, progress / .86));
+            var rotateZ = session.angle * (1 - motion);
+            var faceChange = this.ease(Math.max(0, Math.min(1, (progress - .78) / .18)));
+            readingFront.hidden = false;
+            readingBack.hidden = false;
+            readingFront.style.setProperty('--front-scale', frontGrowth.toFixed(5));
+            readingFront.style.setProperty('--reading-front-opacity', (1 - faceChange).toFixed(3));
+            readingBack.style.setProperty('--reading-back-opacity', faceChange.toFixed(3));
+            readingSheet.style.transform = 'translate3d(' + x + 'px,' + y + 'px,0) rotateZ(' + rotateZ + 'deg)';
+            readingBack.style.setProperty('--reading-content-opacity', '1');
+            reading.style.setProperty('--reading-dim', (this.ease(Math.min(1, progress / .93)) * .94).toFixed(3));
+          },
+
+          finishClose: function () {
+            var session = this.session;
+            if (!session) return;
+            if (this.frame) cancelAnimationFrame(this.frame);
+            this.frame = 0;
+            var source = session.source;
+            var snapshot = session.snapshot;
+            if (snapshot.copy) snapshot.copyParent.insertBefore(snapshot.copy, snapshot.copyNext);
+            document.querySelector('.page').removeAttribute('inert');
+            document.querySelector('.footer-nav').removeAttribute('inert');
+            reading.hidden = true;
+            reading.style.removeProperty('--reading-dim');
+            readingSheet.style.removeProperty('transform');
+            readingSheet.style.removeProperty('will-change');
+            readingFront.replaceChildren();
+            this.session = null;
+            render();
+            source.classList.remove('is-report-source');
+            if (snapshot.ariaHidden == null) source.removeAttribute('aria-hidden');
+            else source.setAttribute('aria-hidden', snapshot.ariaHidden);
+            source.focus({ preventScroll: true });
+          }
+        };
+
+        function openReport(card) { reportController.open(card); }
+        function closeReport() { reportController.setTarget(0); }
+        readingPutDown.addEventListener('click', function (event) { event.stopPropagation(); closeReport(); });
+        readingBack.addEventListener('click', function (event) {
+          if (event.target.closest('button, input, a, textarea, select, label')) return;
+          closeReport();
         });
+        reading.addEventListener('click', function (event) { if (event.target === reading) closeReport(); });
+        window.addEventListener('keydown', function (event) {
+          if ((event.key !== 'Escape' && event.key !== 'Esc') || !reportController.session) return;
+          event.preventDefault();
+          event.stopImmediatePropagation();
+          closeReport();
+        }, true);
+
+        cards.forEach(function (card, index) {
+          card.querySelectorAll('[data-report-action]').forEach(function (button) {
+            button.append(createHandlingSvg(button.dataset.reportAction));
+          });
+          card.querySelector('.field-report-card-controls').addEventListener('pointerdown', function (event) { event.stopPropagation(); });
+          card.querySelector('[data-report-action="left"]').addEventListener('click', function (event) { event.stopPropagation(); moveAside('left'); });
+          card.querySelector('[data-report-action="right"]').addEventListener('click', function (event) { event.stopPropagation(); moveAside('right'); });
+          card.querySelector('[data-report-action="undo"]').addEventListener('click', function (event) { event.stopPropagation(); undo(); });
+          card.querySelector('[data-report-action="pickup"]').addEventListener('click', function (event) {
+            event.stopPropagation();
+            openReport(card);
+          });
+          card.addEventListener('focus', function () {
+            if (compact() || state.active === index) return;
+            state.cards[index].z = state.nextZ++;
+            state.active = index;
+            render();
+          });
+          card.addEventListener('pointerdown', function (event) {
+            if (event.button !== 0 || event.target.closest('button, input, a, textarea, select, label') || reportController.session) return;
+            var startX = event.clientX;
+            var startY = event.clientY;
+            var startTransform = getComputedStyle(card).transform;
+            var startBase = wideBase(index);
+            var startCardX = state.cards[index].aside === 'free' ? state.cards[index].x : startBase.x;
+            var startCardY = state.cards[index].aside === 'free' ? state.cards[index].y : startBase.y;
+            var moved = false;
+            card.setPointerCapture(event.pointerId);
+            function move(moveEvent) {
+              var dx = moveEvent.clientX - startX;
+              var dy = moveEvent.clientY - startY;
+              if (!moved && Math.hypot(dx, dy) < 6) return;
+              moved = true;
+              card.style.willChange = 'transform';
+              card.style.transition = 'none';
+              if (compact()) {
+                card.style.transform = 'translate3d(calc(-50% + ' + dx + 'px), calc(-50% + ' + dy + 'px), 0) rotate(' + Math.max(-7, Math.min(7, dx / 22)) + 'deg)';
+              } else {
+                card.style.transform = 'translate3d(calc(-50% + ' + (startCardX + dx) + 'px), ' + (startCardY + dy) + 'px, 0) rotate(' + state.cards[index].rotation + 'deg)';
+              }
+            }
+            function stop(stopEvent) {
+              card.removeEventListener('pointermove', move);
+              card.removeEventListener('pointerup', stop);
+              card.removeEventListener('pointercancel', stop);
+              if (card.hasPointerCapture(stopEvent.pointerId)) card.releasePointerCapture(stopEvent.pointerId);
+              var dx = stopEvent.clientX - startX;
+              var dy = stopEvent.clientY - startY;
+              card.style.removeProperty('transition');
+              card.style.removeProperty('will-change');
+              card.style.transform = startTransform;
+              void card.offsetWidth;
+              card.style.removeProperty('transform');
+              if (!moved) {
+                state.cards[index].z = state.nextZ++;
+                state.active = index;
+                render();
+                openReport(card);
+                return;
+              }
+              if (compact()) {
+                if (Math.abs(dx) >= 54 && Math.abs(dx) > Math.abs(dy) * 1.2) moveAside(dx < 0 ? 'left' : 'right');
+                else { animate(card); render(); }
+                return;
+              }
+              recordMovement(index, function () {
+                state.cards[index].x = startCardX + dx;
+                state.cards[index].y = startCardY + dy;
+                state.cards[index].aside = 'free';
+                state.cards[index].z = state.nextZ++;
+                state.active = index;
+              });
+              render();
+            }
+            card.addEventListener('pointermove', move);
+            card.addEventListener('pointerup', stop);
+            card.addEventListener('pointercancel', stop);
+          });
+        });
+
+        window.addEventListener('resize', render);
+        render();
       }());
 
       /* - switch to a tab - */
@@ -4200,7 +4800,7 @@
        ═══════════════════════════════════════════════════════ */
     const CONFIG = {
       droop: 'awakened',      /* *p3's mood. awakened, lazy, or alert. */
-      accent: '#72d087',      /* *the green. this is the one value that colours everything. */
+      accent: '#74c58d',      /* *the green. this is the one value that colours everything. */
       crt: true,              /* *crt sweep on/off */
       rewind: 'vcr',          /* *rewind animation style */
       submitMode: 'live',     /* *mock pretends; live actually sends. */
@@ -4270,7 +4870,7 @@
       if (!_mobileKeyboardSessionActive()) return;
 
       var field = document.activeElement;
-      var row = field.closest('.term-input-line, .port-signup-row') || field;
+      var row = field.closest('.term-input-line') || field;
       var vv = window.visualViewport;
       var visibleTop = Math.round(vv ? vv.offsetTop : 0);
       var visibleHeight = Math.round(vv ? vv.height : window.innerHeight);
@@ -4710,68 +5310,87 @@
 
 
     /* ═══════════════════════════════════════════════════════
-       [we-to-i] the correction. a line draws across 'we'. then 'i' is marked up like an annotation: stalk first, dot second.
-       uses the web animations API, so no keyframes in css required.
-
-       resetCorrection() - hides everything, cancels running animations.
-       runCorrection()  - plays the full sequence.
-
-       timing (all in ms, tweak these):
-         1200 = duration of the strikethrough line drawing
-         1400 = delay before the "i" stalk starts drawing
-         800  = duration of the stalk drawing
-         1100 = delay after stalk before the dot appears
-         200  = duration of the dot stamp
+       [i-to-we] production's reset/run lifecycle, with the approved handwriting trace unchanged.
+       one strike owner, one clipped gap reveal and one fixed handwriting timeline.
        ═══════════════════════════════════════════════════════ */
+    const correctionLetters = Array.from(newSubjectEl.querySelectorAll('.we-hand-letter'));
+    const correctionPaths = Array.from(newSubjectEl.querySelectorAll('.we-hand-stroke'));
+    const correctionMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+    function settleCorrection() {
+      const strikePath = subjectEl.querySelector('#strikethrough-svg path');
+      [strikePath, newSubjectEl, ...correctionPaths].forEach(node => {
+        if (node) node.getAnimations().forEach(animation => animation.cancel());
+      });
+      subjectEl.style.opacity = '1';
+      newSubjectEl.style.opacity = '1';
+      newSubjectEl.style.width = '38px';
+      newSubjectEl.style.marginRight = '-4px';
+      if (strikePath) strikePath.style.strokeDashoffset = '0';
+      correctionPaths.forEach(path => {
+        path.style.strokeDashoffset = '0';
+        path.style.opacity = path.dataset.inkOpacity || '1';
+      });
+    }
+
     function resetCorrection() {
       const strikePath = subjectEl.querySelector('#strikethrough-svg path');
-      const iStalk = newSubjectEl.querySelector('.i-stalk');
-      const iDot = newSubjectEl.querySelector('.i-dot');
-      /* cancel any running animations */
-      [strikePath, iStalk, iDot].forEach(n => n && n.getAnimations().forEach(a => a.cancel()));
-      /* reset to hidden states */
+      [strikePath, newSubjectEl, ...correctionPaths].forEach(node => {
+        if (node) node.getAnimations().forEach(animation => animation.cancel());
+      });
+      subjectEl.style.opacity = '1';
+      newSubjectEl.style.opacity = '1';
+      newSubjectEl.style.width = '0px';
+      newSubjectEl.style.marginRight = '0px';
       if (strikePath) strikePath.style.strokeDashoffset = '31';
-      if (iStalk) iStalk.style.strokeDashoffset = '13';
-      if (iDot) { iDot.style.opacity = '0'; iDot.style.transform = 'scale(0)'; }
-      /* snap back to hidden - instant, no transition */
-      newSubjectEl.style.transition = 'none';
-      newSubjectEl.style.opacity = '0';
+      correctionPaths.forEach(path => {
+        path.style.strokeDashoffset = '1';
+        path.style.opacity = '0';
+      });
     }
 
     function runCorrection() {
       const strikePath = subjectEl.querySelector('#strikethrough-svg path');
-      const iStalk = newSubjectEl.querySelector('.i-stalk');
-      const iDot = newSubjectEl.querySelector('.i-dot');
-      if (!strikePath || !iStalk || !iDot) return;
+      if (!strikePath || correctionLetters.length !== 2 || correctionMotion.matches) {
+        settleCorrection();
+        document.dispatchEvent(new Event('pfgCorrectionSettled'));
+        return;
+      }
+      resetCorrection();
 
-      /* step 1: draw the strikethrough across "we" */
+      /* production strike: the same single path, duration and easing */
       strikePath.animate(
         [{ strokeDashoffset: '31' }, { strokeDashoffset: '0' }],
         { duration: 1200, easing: 'cubic-bezier(0.4,0,0.2,1)', fill: 'forwards' }
       );
-      /* step 2: after 1400ms, fade the "i" in and start drawing the stalk.
-         no display toggle or width change - text never reflows. */
-      const t1 = setTimeout(() => {
-        newSubjectEl.style.transition = 'opacity 200ms ease';
-        newSubjectEl.style.opacity = '1';
-        iStalk.animate(
-          [{ strokeDashoffset: '13' }, { strokeDashoffset: '0' }],
-          { duration: 800, easing: 'cubic-bezier(0.4,0,0.2,1)', fill: 'forwards' }
-        );
-        /* step 3: after stalk is drawn, stamp the dot */
-        const t2 = setTimeout(() => {
-          iDot.animate(
-            [
-              { opacity: '0', transform: 'scale(0)', offset: 0 },
-              { opacity: '1', transform: 'scale(1.2)', offset: 0.7 }, /* slight overshoot */
-              { opacity: '1', transform: 'scale(1)', offset: 1 }
-            ],
-            { duration: 200, easing: 'ease-out', fill: 'forwards' }
+
+      /* reveal the fixed-size approved trace after the strike */
+      newSubjectEl.animate(
+        [{ width: '0px', marginRight: '0px' }, { width: '38px', marginRight: '-4px' }],
+        { duration: 950, delay: 1400, easing: 'cubic-bezier(0.22,0.55,0.35,1)', fill: 'forwards' }
+      );
+
+      let penAt = 2350;
+      correctionLetters.forEach((letter, letterIndex) => {
+        const strokes = Array.from(letter.querySelectorAll('.we-hand-stroke'));
+        const lengths = strokes.map(path => path.getTotalLength());
+        const letterLength = lengths.reduce((sum, length) => sum + length, 0);
+        strokes.forEach((path, strokeIndex) => {
+          const duration = Math.max(120, Math.round(620 * (lengths[strokeIndex] / letterLength)));
+          path.style.opacity = path.dataset.inkOpacity || '1';
+          path.animate(
+            [{ strokeDashoffset: '1' }, { strokeDashoffset: '0' }],
+            { duration, delay: penAt, easing: 'cubic-bezier(0.4,0,0.2,1)', fill: 'forwards' }
           );
-        }, 1100); /* *delay after stalk before dot */
-        heroTimers.push(t2);
-      }, 1400); /* *delay after strikethrough before stalk */
-      heroTimers.push(t1);
+          penAt += duration;
+          if (strokeIndex < strokes.length - 1) penAt += 45;
+        });
+        if (letterIndex < correctionLetters.length - 1) penAt += letterIndex === 1 ? 130 : 70;
+      });
+      heroTimers.push(setTimeout(() => {
+        settleCorrection();
+        document.dispatchEvent(new Event('pfgCorrectionSettled'));
+      }, penAt + 40));
     }
 
     /* replayHero - resets and replays the entire hero sequence.
@@ -4781,12 +5400,12 @@
       clearHeroTimers();
       heroSpacePresses = 0;
       hero.classList.remove('ready');
-      resetCorrection();
 
       const submittedLine = document.getElementById('submittedLine');
       const bodyEl = document.getElementById('hero').querySelector('.body');
 
       if (hasSubmitted && bodyEl && submittedLine) {
+        settleCorrection();
         /* post-submit path: glitch body paragraphs in, show submitted line */
         const paras = Array.from(bodyEl.querySelectorAll('p'));
         /* reset paragraph styles so animation can re-fire */
@@ -4816,13 +5435,15 @@
       } else {
         /* normal path - hero runs immediately, cookie panel is a pure overlay */
         if (submittedLine) { submittedLine.style.display = 'none'; submittedLine.classList.remove('in'); }
+        if (!correctionMotion.matches) resetCorrection();
+        else settleCorrection();
         void hero.offsetWidth;
         replayEyes();
         heroTimers.push(setTimeout(() => {
           hero.classList.add('ready');
           document.dispatchEvent(new Event('heroReady'));
         }, HERO_READY_MS));
-        heroTimers.push(setTimeout(() => runCorrection(), HERO_CORRECTION_MS));
+        if (!correctionMotion.matches) heroTimers.push(setTimeout(() => runCorrection(), HERO_CORRECTION_MS));
       }
     }
 
@@ -4949,7 +5570,7 @@
 
     /* start the hero sequence - skip animation on return visits (single site-wide key) */
     (function () {
-      if (pfgAnalyticsEnabled() && sessionStorage.getItem('pfg-loaded')) {
+      if (pfgDashboardEnabled() && sessionStorage.getItem('pfg-loaded')) {
         /* return visit with consent - immediately open all eyes and show hero content */
         eyes.forEach(function (e) { e.classList.add('open-locked'); });
         hero.classList.add('ready');
@@ -4959,7 +5580,7 @@
       } else {
         replayHero();
         heroTimers.push(setTimeout(function () {
-          if (pfgAnalyticsEnabled()) sessionStorage.setItem('pfg-loaded', '1');
+          if (pfgDashboardEnabled()) sessionStorage.setItem('pfg-loaded', '1');
         }, HERO_READY_MS));
       }
     }());
@@ -5812,7 +6433,7 @@
        step 12: submit      - "feed the goblins" button
        ═══════════════════════════════════════════════════════ */
     /* session-deduplicated aggregate counting. no visitor or journey identifier leaves the browser. */
-    const PFG_ANALYTICS_CHOICES = {
+    const PFG_DASHBOARD_CHOICES = {
       gate: ['gate', new Set(['yes', 'obviously', 'you have no idea', 'are you really goblins?'])],
       'writer-type': ['writer_type', new Set(['novel', 'comic or graphic novel', 'video game', 'tabletop game', 'something else'])],
       service: ['service', new Set(['creative development', 'narrative direction', 'editorial assessment', 'query/pitch feedback', 'writing', 'something else'])],
@@ -5836,9 +6457,9 @@
         return value;
       } catch { return crypto.randomUUID(); }
     }
-    function pfgAnalyticsEnabled() { return !document.cookie.split(';').some(part => part.trim() === 'pfg_analytics=off'); }
+    function pfgDashboardEnabled() { return !document.cookie.split(';').some(part => part.trim() === 'pfg_dashboard=off'); }
     function pfgCount(metric, value) {
-      if (!pfgAnalyticsEnabled()) return;
+      if (!pfgDashboardEnabled()) return;
       const key = `${metric}:${value}`;
       if (pfgCounted.has(key)) return;
       pfgCounted.add(key);
@@ -5846,7 +6467,7 @@
       fetch('/api/seen', { method:'POST', headers:{'Content-Type':'application/json'}, keepalive:true, body:JSON.stringify({ metric, value, session:pfgSessionId() }) }).catch(() => {});
     }
     function pfgSelection(key, value) {
-      const allowed = PFG_ANALYTICS_CHOICES[key];
+      const allowed = PFG_DASHBOARD_CHOICES[key];
       if (allowed && allowed[1].has(value)) pfgCount(allowed[0], value);
     }
     (function () {
@@ -5855,8 +6476,7 @@
       pfgCount('page', start);
       const opportunities = [
         ['#about-rune-row', 'email_rune'],
-        ['#about-social', 'linkedin'],
-        ['#port-signup-row', 'field_reports_signup']
+        ['#about-social', 'linkedin']
       ];
       const opportunityElements = opportunities.map(([selector, value]) => [document.querySelector(selector), value])
         .filter(([element]) => element);
@@ -5889,7 +6509,6 @@
         if (nav) pfgCount('page', nav.dataset.tab);
         if (event.target.closest('#pfg-email-link')) pfgCount('interaction', 'email_rune');
         if (event.target.closest('#linkedin-ascii-link')) pfgCount('interaction', 'linkedin');
-        if (event.target.closest('#port-admit-btn')) pfgCount('interaction', 'field_reports_signup');
       }, { passive:true });
     })();
 
@@ -6504,6 +7123,10 @@
       } else if (tab === 'portfolio') {
         var cs = document.getElementById('port-cs');
         if (cs) { cs.classList.remove('flicker'); cs.classList.add('settled'); }
+        ['port-body-1', 'port-body-2', 'field-report-stack'].forEach(function (id) {
+          var el = document.getElementById(id);
+          if (el) el.classList.add('ready');
+        });
       }
     }
 
@@ -6938,7 +7561,7 @@
       // [rot13] the plaintext address is not in the DOM at load. bots that scrape emails get nothing. humans who click get everything.
       function rot13(s) { return s.replace(/[a-zA-Z]/g, function (c) { return String.fromCharCode((c <= 'Z' ? 90 : 122) >= (c = c.charCodeAt(0) + 13) ? c : c - 26); }); }
       var _ER = 'uryyb@cerffsbetboyvaf.pbz'; // ROT13 - plaintext never in DOM until click
-      var GREEN = '#72d087', WHITE = '#e8ffe8', GRAY = '#fff';
+      var GREEN = '#74c58d', WHITE = '#e8ffe8', GRAY = 'rgba(255,255,255,0.55)';
       // sized in em so glyphs scale with .about-contact-line font-size
       // viewBox is 12×16; a courier new char is ~0.6em wide × 1em tall
       var _isMobileGlyph = window.innerWidth <= 600;
@@ -7035,6 +7658,28 @@
         return glyphs;
       }
 
+      function buildPhrase(container, phrase, settings) {
+        settings = settings || {};
+        var glyphs = [];
+        Array.from(phrase).forEach(function (ch) {
+          if (ch === ' ') {
+            container.appendChild(spacer('.75em'));
+            return;
+          }
+          var g = makeGlyph(rot13(ch), false);
+          g._correct = ch.toLowerCase();
+          g._orig = RUNES[ch.toUpperCase()] || g._orig;
+          g._rune.setAttribute('d', g._orig);
+          if (g._latinEl) g._latinEl.textContent = ch.toLowerCase();
+          if (g._latinEl && settings.latinFontFamily) g._latinEl.setAttribute('font-family', settings.latinFontFamily);
+          if (g._latinEl && settings.latinFontSize) g._latinEl.setAttribute('font-size', settings.latinFontSize);
+          if (g._latinEl && settings.latinFill) g._latinEl.setAttribute('fill', settings.latinFill);
+          container.appendChild(g);
+          glyphs.push(g);
+        });
+        return glyphs;
+      }
+
       // inject real characters into glyphs - called only on click, never at init
       function revealGlyphs(glyphs) {
         var real = rot13(_ER);
@@ -7069,14 +7714,15 @@
       var OCEAN_COLS = [GREEN, '#fffccc', '#fdfd96', '#fffccc', GREEN, '#fdfd96', GREEN];
 
       // decode: cipher variant
-      function decode(glyphs, onAllDone) {
+      function decode(glyphs, onAllDone, settings) {
+        settings = settings || {};
+        var showLatin = settings.showLatin !== false;
         var P = { stagger:64, rounds:5, scrambleMs:102, fadeMs:30, jitter:0 };
         var tids = [], done = 0, total = glyphs.length;
         glyphs.forEach(function (g, i) {
           var jit = (Math.random()*2-1)*P.jitter;
           var t = setTimeout(function () {
             if (g._isAt || g._isDot) {
-              // dim @ and . to gray
               g._rune.setAttribute('fill', GRAY);
               if (++done === total) _afterDecode(glyphs, onAllDone);
               return;
@@ -7092,8 +7738,8 @@
                 g.style.transform='';
                 g._rune.setAttribute('stroke', GREEN);
                 fadeTo(g._rune, 1, 0, P.fadeMs);
-                if (g._latinEl) fadeTo(g._latinEl, 0, 1, P.fadeMs);
-                if (++done === total) _afterDecode(glyphs, onAllDone);
+                if (showLatin && g._latinEl) fadeTo(g._latinEl, 0, 1, P.fadeMs);
+                if (++done === total) _afterDecode(glyphs, onAllDone, settings);
               }
             }, P.scrambleMs);
           }, Math.max(0, i * P.stagger + jit));
@@ -7102,10 +7748,11 @@
         return tids;
       }
 
-      function _afterDecode(glyphs, onAllDone) {
+      function _afterDecode(glyphs, onAllDone, settings) {
+        settings = settings || {};
         // apply layout class now - after all glyphs have settled into latin text,
         // so the mobile spacing change (spacers/margins) fires after animation, not during
-        if (link) link.classList.add('pfg-layout-decoded');
+        if (link && settings.applyLayout !== false) link.classList.add('pfg-layout-decoded');
         if (onAllDone) onAllDone();
       }
 
@@ -7150,6 +7797,51 @@
         return tids;
       }
 
+      function startIdleShimmer(glyphs, inactive) {
+        var stopped = false;
+        var timer = 0;
+        function cycle() {
+          if (stopped || inactive()) return;
+          var pool = glyphs.filter(function (g) { return !g._isAt && !g._isDot; }).slice();
+          var count = 1 + Math.floor(Math.random() * 3);
+          var picked = [];
+          for (var i = 0; i < count && pool.length; i++) {
+            picked.push(pool.splice(Math.floor(Math.random() * pool.length), 1)[0]);
+          }
+          picked.forEach(function (g, index) {
+            setTimeout(function () {
+              if (stopped || inactive()) return;
+              var round = 0;
+              var interval = setInterval(function () {
+                if (stopped || inactive()) {
+                  clearInterval(interval);
+                  g._rune.setAttribute('d', g._orig);
+                  return;
+                }
+                g._rune.setAttribute('d', RUNES[KEYS[Math.floor(Math.random() * KEYS.length)]]);
+                if (++round >= 3) {
+                  clearInterval(interval);
+                  g._rune.setAttribute('d', g._orig);
+                }
+              }, 50);
+            }, index * 60);
+          });
+          timer = setTimeout(cycle, 3000 + Math.floor(Math.random() * 4000));
+        }
+        timer = setTimeout(cycle, 2000 + Math.floor(Math.random() * 2000));
+        return function () {
+          stopped = true;
+          clearTimeout(timer);
+          glyphs.forEach(function (g) { g._rune.setAttribute('d', g._orig); });
+        };
+      }
+
+      window._pfgRuneDecoder = {
+        buildPhrase: buildPhrase,
+        decode: decode,
+        startIdleShimmer: startIdleShimmer
+      };
+
       var container = document.getElementById('pfg-email-rune');
       if (!container) return;
       var glyphs = buildRow(container);
@@ -7161,40 +7853,7 @@
 
       // idle shimmer: while encoded, randomly cycle 1-3 glyphs through a few rune shapes
       // every 3-7s - visual hint that the runes are interactive / pressable
-      var _idleShimmerTid = null;
-      function _idleShimmerCycle() {
-        if (decoding) return; // stop if decoded
-        // pick 1-3 random letter glyphs (not @ or .)
-        var letterGlyphs = glyphs.filter(function (g) { return !g._isAt && !g._isDot; });
-        var count = 1 + Math.floor(Math.random() * 3); // 1, 2, or 3
-        var picked = [];
-        var pool = letterGlyphs.slice();
-        for (var i = 0; i < count && pool.length; i++) {
-          var idx = Math.floor(Math.random() * pool.length);
-          picked.push(pool.splice(idx, 1)[0]);
-        }
-        var ROUNDS = 3, ROUND_MS = 50, STAGGER_MS = 60;
-        picked.forEach(function (g, gi) {
-          var delay = gi * STAGGER_MS;
-          setTimeout(function () {
-            if (decoding) return;
-            var n = 0;
-            var iv = setInterval(function () {
-              if (decoding) { clearInterval(iv); g._rune.setAttribute('d', g._orig); return; }
-              g._rune.setAttribute('d', RUNES[KEYS[Math.floor(Math.random() * KEYS.length)]]);
-              if (++n >= ROUNDS) {
-                clearInterval(iv);
-                g._rune.setAttribute('d', g._orig); // snap back to original rune
-              }
-            }, ROUND_MS);
-          }, delay);
-        });
-        // schedule next shimmer in 3-7s
-        var next = 3000 + Math.floor(Math.random() * 4000);
-        _idleShimmerTid = setTimeout(_idleShimmerCycle, next);
-      }
-      // start shimmer after a short initial delay so it doesn't fire immediately on load
-      _idleShimmerTid = setTimeout(_idleShimmerCycle, 2000 + Math.floor(Math.random() * 2000));
+      var stopIdleShimmer = startIdleShimmer(glyphs, function () { return decoding; });
 
       function wipeAnnotation(annSvg, onDone) {
         // three-pass dry-erase scrub: eraser sweeps R→L, L→R, R→L across the annotation
@@ -7276,7 +7935,55 @@
       }
 
       var _pageLoadTime = Date.now();
+      var emailHoverDecoded = false;
+      var emailHoverReturnRequested = false;
+      var emailHoverReturnTimer = null;
+
+      function scheduleEmailHoverReturn() {
+        if (!emailHoverDecoded || !emailHoverReturnRequested || timerId) return;
+        clearTimeout(emailHoverReturnTimer);
+        emailHoverReturnTimer = setTimeout(function () {
+          link.classList.remove('pfg-decoded');
+          currentTids = encode(glyphs, function () {
+            decoding = false;
+            emailHoverDecoded = false;
+            link._decoded = false;
+            if (_idleShimmerTid) clearTimeout(_idleShimmerTid);
+            _idleShimmerTid = setTimeout(_idleShimmerCycle, 3000 + Math.floor(Math.random() * 2000));
+          });
+        }, 7000);
+      }
+
+      function beginEmailHoverDecode() {
+        emailHoverReturnRequested = false;
+        clearTimeout(emailHoverReturnTimer);
+        if (decoding) return;
+        decoding = true;
+        link._decoded = true;
+        link.classList.add('pfg-decoded');
+        if (_idleShimmerTid) { clearTimeout(_idleShimmerTid); _idleShimmerTid = null; }
+        revealGlyphs(glyphs);
+        currentTids.forEach(clearTimeout);
+        if (timerId) { clearTimeout(timerId); timerId = null; }
+        currentTids = decode(glyphs, function () {
+          emailHoverDecoded = true;
+          if (emailHoverReturnRequested) scheduleEmailHoverReturn();
+        });
+      }
+
+      function endEmailHoverDecode() {
+        if (!decoding || timerId) return;
+        emailHoverReturnRequested = true;
+        scheduleEmailHoverReturn();
+      }
+
       link.addEventListener('click', function (e) {
+        if (emailHoverDecoded) {
+          emailHoverReturnRequested = false;
+          clearTimeout(emailHoverReturnTimer);
+          link.href = 'mailto:' + rot13(_ER);
+          return;
+        }
         e.preventDefault();
         // block programmatic clicks: real users have a pointer type; synthetic clicks do not
         if (e.pointerType === '' && Date.now() - _pageLoadTime < 2000) return;
@@ -7304,6 +8011,7 @@
         if (timerId) { clearTimeout(timerId); timerId = null; }
 
         currentTids = decode(glyphs, function () {
+          emailHoverDecoded = true;
           // draw "copied" annotation - fires only after decode completes
           var copiedSlot = document.getElementById('pfg-copied-ann-slot');
           if (!copiedSlot) return;
@@ -7395,6 +8103,8 @@
                 var copiedAnn = copiedSlot.querySelector('.pfg-copied-ann');
                 currentTids = encode(glyphs, function () {
                   decoding = false;
+                  emailHoverDecoded = false;
+                  link._decoded = false;
                   timerId = null;
                   if (_idleShimmerTid) clearTimeout(_idleShimmerTid);
                   _idleShimmerTid = setTimeout(_idleShimmerCycle, 3000 + Math.floor(Math.random() * 2000));
@@ -7545,7 +8255,7 @@
         link.style.cursor = 'pointer';
         link.classList.remove('touch-art-mode');
         link.classList.add('is-unlocked');
-        try { if (pfgAnalyticsEnabled()) window.sessionStorage.setItem(REVEALED_KEY, '1'); } catch (storageError) { /* storage is optional */ }
+        try { if (pfgDashboardEnabled()) window.sessionStorage.setItem(REVEALED_KEY, '1'); } catch (storageError) { /* storage is optional */ }
         if (shouldNavigate) window.location.href = LINKEDIN_URL;
       }
 
@@ -7591,7 +8301,7 @@
          visitor has found LinkedIn, this artwork is a normal reusable link. */
       function restoreUnlockedState() {
         var wasRevealed = false;
-        try { wasRevealed = pfgAnalyticsEnabled() && window.sessionStorage.getItem(REVEALED_KEY) === '1'; } catch (storageError) { /* storage is optional */ }
+        try { wasRevealed = pfgDashboardEnabled() && window.sessionStorage.getItem(REVEALED_KEY) === '1'; } catch (storageError) { /* storage is optional */ }
         if (!wasRevealed) return;
         buildSpans();
         for (var v = 0; v < logoVoids.length; v++) {
@@ -7794,6 +8504,42 @@
 
     })();
   </script>
+  <script>
+    /* [rune-tutorial] the front door briefly speaks goblin before translating itself. */
+    (function () {
+      var button = document.getElementById('cta');
+      var row = button && button.querySelector('.cta-runes');
+      var decoder = window._pfgRuneDecoder;
+      if (!button || !row || !decoder) return;
+      var glyphs = decoder.buildPhrase(row, 'press for goblins', {
+        latinFontFamily: "'Press Start 2P', monospace",
+        /* 10.667 / 16 across a 1.5em cell resolves to exactly 1em: no final resize. */
+        latinFontSize: '10.667',
+        latinFill: 'var(--green)'
+      });
+      var decodeTimer = 0;
+      var finished = false;
+      button.classList.add('is-rune-tutorial');
+      var stopShimmer = decoder.startIdleShimmer(glyphs, function () { return finished; });
+
+      function decode() {
+        if (finished) return;
+        finished = true;
+        stopShimmer();
+        decoder.decode(glyphs, function () {
+          button.classList.remove('is-rune-tutorial');
+          setTimeout(function () { row.replaceChildren(); }, 140);
+        }, { applyLayout: false });
+      }
+
+      document.addEventListener('pfgCorrectionSettled', function () {
+        clearTimeout(decodeTimer);
+        decodeTimer = setTimeout(decode, 3000);
+      }, { once: true });
+    }());
+  </script>
+  <script src="assets/worldglass/natural-earth-110m-land.js?v=20260906-4"></script>
+  <script src="assets/worldglass/worldglass.js?v=20260907-1"></script>
 </body>
 
 </html>

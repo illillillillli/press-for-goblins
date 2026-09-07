@@ -36,7 +36,7 @@ test('machine stats rejects missing and incorrect credentials before provider ac
 test('machine stats returns the bounded private snapshot', async () => {
   Object.assign(process.env,{
     GOBLIN_STATS_READ_TOKEN:correctToken,
-    SUPABASE_URL:'https://db.test',SUPABASE_ANON_KEY:'public-key',ANALYTICS_INGEST_CAPABILITY:'capability',
+    SUPABASE_URL:'https://db.test',SUPABASE_ANON_KEY:'public-key',DASHBOARD_INGEST_CAPABILITY:'capability',
   });
   const originalFetch=globalThis.fetch; let forwarded;
   globalThis.fetch=async(_url,options)=>{forwarded=JSON.parse(options.body);return{ok:true,text:async()=>'{"sessions":[],"counts":[]}'};};

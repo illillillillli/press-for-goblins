@@ -14,7 +14,7 @@ function responseRecorder() {
 }
 
 async function loadSeen(enabled) {
-  process.env.ANALYTICS_COLLECTION_ENABLED = enabled ? 'true' : 'false';
+  process.env.DASHBOARD_COLLECTION_ENABLED = enabled ? 'true' : 'false';
   return import(`../api/seen.js?enabled=${enabled}&at=${Date.now()}-${Math.random()}`);
 }
 
@@ -23,7 +23,7 @@ const request = (body = { metric:'page', value:'home', session }) => ({
   method:'POST', body, headers:{ origin:'https://pressforgoblins.com', 'sec-fetch-site':'same-origin', 'x-forwarded-for':'203.0.113.9' }
 });
 
-test('paused analytics rejects before any provider call', async () => {
+test('paused dashboard rejects before any provider call', async () => {
   const { default: seen, COLLECTION_ENABLED } = await loadSeen(false);
   assert.equal(COLLECTION_ENABLED, false);
   const originalFetch = globalThis.fetch;
@@ -43,7 +43,7 @@ test('rejects unknown fields, free text and foreign origins', async () => {
 });
 
 test('accepts only the fixed session and opportunity vocabulary', () => {
-  return import('../shared/analytics.mjs').then(({ normaliseMetric }) => {
+  return import('../shared/dashboard.mjs').then(({ normaliseMetric }) => {
     assert.deepEqual(normaliseMetric('session', 'start'), { metric:'session', value:'start' });
     assert.deepEqual(normaliseMetric('opportunity', 'email_rune'), { metric:'opportunity', value:'email_rune' });
     assert.equal(normaliseMetric('session', 'person-123'), null);
@@ -58,7 +58,7 @@ test('fails closed when rate-limit storage is unavailable', async () => {
 
 test('only forwards allowlisted aggregates and an optional owner token', async () => {
   const { default: seen } = await loadSeen(true);
-  Object.assign(process.env, { UPSTASH_REDIS_REST_URL:'https://redis.test', UPSTASH_REDIS_REST_TOKEN:'redis', SUPABASE_URL:'https://db.test', SUPABASE_ANON_KEY:'public-key', ANALYTICS_INGEST_CAPABILITY:'capability' });
+  Object.assign(process.env, { UPSTASH_REDIS_REST_URL:'https://redis.test', UPSTASH_REDIS_REST_TOKEN:'redis', SUPABASE_URL:'https://db.test', SUPABASE_ANON_KEY:'public-key', DASHBOARD_INGEST_CAPABILITY:'capability' });
   const originalFetch=globalThis.fetch; const calls=[];
   globalThis.fetch=async (url,options) => { calls.push({url:String(url),options}); return String(url).includes('redis') ? {ok:true,json:async()=>[{result:1}]} : {ok:true}; };
   try {

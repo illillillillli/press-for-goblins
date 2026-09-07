@@ -24,7 +24,7 @@ for (const line of envLines) {
   }
   process.env[key] = val;
 }
-console.log('env loaded:', ['SUPABASE_URL', 'SUPABASE_ANON_KEY', 'ANALYTICS_INGEST_CAPABILITY'].map(k => `${k}=${process.env[k] ? '✓' : '✗'}`).join(' '));
+console.log('env loaded:', ['SUPABASE_URL', 'SUPABASE_ANON_KEY', 'DASHBOARD_INGEST_CAPABILITY'].map(k => `${k}=${process.env[k] ? '✓' : '✗'}`).join(' '));
 
 /* import handlers */
 const { default: seen }     = await import('./api/seen.js');
@@ -55,10 +55,39 @@ function mockRes(nodeRes) {
   return res;
 }
 
+const devPort = Number(process.env.PFG_DEV_PORT || 3000);
+
 createServer(async (req, nodeRes) => {
   /* serve static files from the project root */
   if (req.method === 'GET') {
     const url = new URL(req.url, 'http://localhost');
+    if (url.pathname === '/worldglass-beta') {
+      try {
+        let content = readFileSync(resolve(__dir, 'index.html'), 'utf8');
+        const betaCss = readFileSync(resolve(__dir, '_private/worldglass-beta/worldglass.css'), 'utf8');
+        const betaEarth = readFileSync(resolve(__dir, '_previews/data/natural-earth-110m-land.js'), 'utf8');
+        const betaScript = readFileSync(resolve(__dir, '_private/worldglass-beta/worldglass.js'), 'utf8');
+        content = content.replace("titleLines: ['field reports', '']", "titleLines: ['worldglass', '']");
+        [
+          ['Press for Goblins', 'press for goblins'],
+          ['The words', 'the words'],
+          ['Oscar Wilde', 'oscar wilde'],
+          ['Great Portland St', 'great portland st'],
+          ['London W1W 5PF', 'london w1w 5pf'],
+          ['[REDACTED]', '[redacted]'],
+          ['LinkedIn', 'linkedin'],
+          ['Main navigation', 'main navigation'],
+          ['Field Reports', 'worldglass'],
+          ['Home', 'home'],
+          ['Meet the Goblins', 'meet the goblins']
+        ].forEach(([from, to]) => { content = content.replaceAll(from, to); });
+        content = content.replace('</head>', `<style>${betaCss}</style></head>`);
+        content = content.replace('</body>', `<script>${betaEarth}</script><script>${betaScript}</script></body>`);
+        nodeRes.writeHead(200, { 'Content-Type': 'text/html', 'Cache-Control': 'no-store' });
+        nodeRes.end(content);
+        return;
+      } catch { nodeRes.writeHead(500); nodeRes.end('beta unavailable'); return; }
+    }
     const safePath = url.pathname === '/dashboard' ? 'dashboard.html' : (url.pathname.replace(/^\//, '') || 'index.html');
     if (url.pathname === '/api/dashboard-config') return dashboardConfig(req, mockRes(nodeRes));
     if (url.pathname === '/api/dashboard-data') return dashboardData(req, mockRes(nodeRes));
@@ -101,4 +130,4 @@ createServer(async (req, nodeRes) => {
   }
 
   nodeRes.writeHead(405); nodeRes.end();
-}).listen(3000, () => console.log('press for goblins: http://localhost:3000 · dashboard: http://localhost:3000/dashboard'));
+}).listen(devPort, () => console.log(`press for goblins: http://localhost:${devPort} · dashboard: http://localhost:${devPort}/dashboard`));

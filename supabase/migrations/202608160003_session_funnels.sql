@@ -1,6 +1,6 @@
 -- session-deduplicated funnel inputs. the browser deduplicates each event within
 -- its tab session; only aggregate counters reach the database.
-create or replace function analytics.metric_allowed(p_metric text, p_value text)
+create or replace function dashboard.metric_allowed(p_metric text, p_value text)
 returns boolean
 language sql immutable strict
 set search_path = ''

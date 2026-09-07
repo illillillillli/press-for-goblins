@@ -68,7 +68,7 @@ const REACTIONS = {
 };
 
 function goblinRow(text) {
-  return `<tr><td style="background:#010101;padding:0 0 10px 0;" bgcolor="#000000"><span style="color:#89ce8d;font-family:'Courier New',Courier,monospace;font-size:15px;">&gt;</span><span style="color:rgba(255,255,255,0.88);font-family:'Courier New',Courier,monospace;font-size:15px;line-height:1.6;"> ${escapeHtml(text)}</span></td></tr>`;
+  return `<tr><td style="background:#010101;padding:0 0 10px 0;" bgcolor="#000000"><span style="color:#54ca7d;font-family:'Courier New',Courier,monospace;font-size:15px;">&gt;</span><span style="color:rgba(255,255,255,0.88);font-family:'Courier New',Courier,monospace;font-size:15px;line-height:1.6;"> ${escapeHtml(text)}</span></td></tr>`;
 }
 function userRow(text) {
   return `<tr><td align="right" style="background:#010101;padding:0 0 18px 0;" bgcolor="#000000"><span style="color:#ffffff;font-family:'Courier New',Courier,monospace;font-size:15px;line-height:1.6;word-break:break-word;">${escapeHtml(text)}</span></td></tr>`;
@@ -77,7 +77,7 @@ function userRowHtml(html) {
   return `<tr><td align="right" style="background:#010101;padding:0 0 18px 0;" bgcolor="#000000"><span style="color:#ffffff;font-family:'Courier New',Courier,monospace;font-size:15px;line-height:1.6;word-break:break-word;">${html}</span></td></tr>`;
 }
 function reactRow(text) {
-  return `<tr><td style="background:#010101;padding:0 0 18px 0;" bgcolor="#000000"><span style="color:#89ce8d;font-family:'Courier New',Courier,monospace;font-size:15px;">&gt;</span><span style="color:rgba(255,255,255,0.88);font-family:'Courier New',Courier,monospace;font-size:15px;line-height:1.6;"> ${escapeHtml(text)}</span></td></tr>`;
+  return `<tr><td style="background:#010101;padding:0 0 18px 0;" bgcolor="#000000"><span style="color:#54ca7d;font-family:'Courier New',Courier,monospace;font-size:15px;">&gt;</span><span style="color:rgba(255,255,255,0.88);font-family:'Courier New',Courier,monospace;font-size:15px;line-height:1.6;"> ${escapeHtml(text)}</span></td></tr>`;
 }
 
 function buildChatRows(answers) {

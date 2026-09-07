@@ -79,13 +79,13 @@ const REACTIONS = {
 };
 
 function goblinRow(text) {
-  return `<tr><td class="anim-goblin-row" style="background:#010101;padding:0 0 10px 0;" bgcolor="#000000"><span style="color:#89ce8d;font-family:'Courier New',Courier,monospace;font-size:15px;">&gt;</span><span class="anim-goblin-text" style="color:rgba(255,255,255,0.88);font-family:'Courier New',Courier,monospace;font-size:15px;line-height:1.6;"> ${escapeHtml(text)}</span></td></tr>`;
+  return `<tr><td class="anim-goblin-row" style="background:#010101;padding:0 0 10px 0;" bgcolor="#000000"><span style="color:#54ca7d;font-family:'Courier New',Courier,monospace;font-size:15px;">&gt;</span><span class="anim-goblin-text" style="color:rgba(255,255,255,0.88);font-family:'Courier New',Courier,monospace;font-size:15px;line-height:1.6;"> ${escapeHtml(text)}</span></td></tr>`;
 }
 function userRow(text) {
   return `<tr><td class="anim-user-row" align="right" style="background:#010101;padding:0 0 18px 0;" bgcolor="#000000"><span style="color:#ffffff;font-family:'Courier New',Courier,monospace;font-size:15px;line-height:1.6;word-break:break-word;">${escapeHtml(text)}</span></td></tr>`;
 }
 function reactRow(text) {
-  return `<tr><td class="anim-goblin-row" style="background:#010101;padding:0 0 18px 0;" bgcolor="#000000"><span style="color:#89ce8d;font-family:'Courier New',Courier,monospace;font-size:15px;">&gt;</span><span class="anim-goblin-text" style="color:rgba(255,255,255,0.88);font-family:'Courier New',Courier,monospace;font-size:15px;line-height:1.6;"> ${escapeHtml(text)}</span></td></tr>`;
+  return `<tr><td class="anim-goblin-row" style="background:#010101;padding:0 0 18px 0;" bgcolor="#000000"><span style="color:#54ca7d;font-family:'Courier New',Courier,monospace;font-size:15px;">&gt;</span><span class="anim-goblin-text" style="color:rgba(255,255,255,0.88);font-family:'Courier New',Courier,monospace;font-size:15px;line-height:1.6;"> ${escapeHtml(text)}</span></td></tr>`;
 }
 
 function buildChatRows(answers) {
@@ -137,10 +137,10 @@ export function buildHtml(answers, refNum) {
   /* handwriting block: "we have received your query / expect our verdict within two weeks / you may reply to this receipt*" */
   const hwRows = `<tr>
     <td style="padding:0 0 32px 4px;text-align:left;background:#010101;" bgcolor="#000000">
-      <p class="anim-hw" style="margin:0 0 5px 0;font-family:'Courier New',Courier,monospace;font-size:15px;line-height:1.6;letter-spacing:0.03em;color:rgba(255,255,255,0.88);text-align:left;"><span style="display:inline;font-family:'Courier New',Courier,monospace;font-size:15px;color:#89ce8d;">&gt; </span>we have received your query</p>
-      <p class="anim-hw" style="margin:0 0 5px 0;font-family:'Courier New',Courier,monospace;font-size:15px;line-height:1.6;letter-spacing:0.03em;color:rgba(255,255,255,0.88);text-align:left;"><span style="display:inline;font-family:'Courier New',Courier,monospace;font-size:15px;color:#89ce8d;">&gt; </span>expect our verdict within two weeks</p>
-      <p class="anim-hw" style="margin:0 0 5px 0;font-family:'Courier New',Courier,monospace;font-size:15px;line-height:1.6;letter-spacing:0.03em;color:rgba(255,255,255,0.88);text-align:left;"><span style="display:inline;font-family:'Courier New',Courier,monospace;font-size:15px;color:#89ce8d;">&gt; </span>that will be all, human</p>
-      <p class="anim-hw anim-reply-line" style="margin:0;font-family:'Courier New',Courier,monospace;font-size:15px;line-height:1.6;letter-spacing:0.03em;color:rgba(255,255,255,0.88);text-align:left;"><span style="display:inline;font-family:'Courier New',Courier,monospace;font-size:15px;color:#89ce8d;">&gt; </span>you may reply to this receipt<sup style="font-size:12px;vertical-align:top;line-height:1;color:rgba(255,255,255,0.88);">*</sup></p>
+      <p class="anim-hw" style="margin:0 0 5px 0;font-family:'Courier New',Courier,monospace;font-size:15px;line-height:1.6;letter-spacing:0.03em;color:rgba(255,255,255,0.88);text-align:left;"><span style="display:inline;font-family:'Courier New',Courier,monospace;font-size:15px;color:#54ca7d;">&gt; </span>we have received your query</p>
+      <p class="anim-hw" style="margin:0 0 5px 0;font-family:'Courier New',Courier,monospace;font-size:15px;line-height:1.6;letter-spacing:0.03em;color:rgba(255,255,255,0.88);text-align:left;"><span style="display:inline;font-family:'Courier New',Courier,monospace;font-size:15px;color:#54ca7d;">&gt; </span>expect our verdict within two weeks</p>
+      <p class="anim-hw" style="margin:0 0 5px 0;font-family:'Courier New',Courier,monospace;font-size:15px;line-height:1.6;letter-spacing:0.03em;color:rgba(255,255,255,0.88);text-align:left;"><span style="display:inline;font-family:'Courier New',Courier,monospace;font-size:15px;color:#54ca7d;">&gt; </span>that will be all, human</p>
+      <p class="anim-hw anim-reply-line" style="margin:0;font-family:'Courier New',Courier,monospace;font-size:15px;line-height:1.6;letter-spacing:0.03em;color:rgba(255,255,255,0.88);text-align:left;"><span style="display:inline;font-family:'Courier New',Courier,monospace;font-size:15px;color:#54ca7d;">&gt; </span>you may reply to this receipt<sup style="font-size:12px;vertical-align:top;line-height:1;color:rgba(255,255,255,0.88);">*</sup></p>
     </td>
   </tr>`;
 

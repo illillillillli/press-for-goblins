@@ -1,4 +1,4 @@
-export const ANALYTICS_METRICS = Object.freeze({
+export const DASHBOARD_METRICS = Object.freeze({
   page: new Set(['home', 'about', 'portfolio']),
   query_step: new Set(Array.from({ length: 12 }, (_, index) => String(index + 1))),
   query_complete: new Set(['yes']),
@@ -17,7 +17,7 @@ export const ANALYTICS_METRICS = Object.freeze({
 export function normaliseMetric(metric, value) {
   const safeMetric = typeof metric === 'string' ? metric : '';
   const safeValue = typeof value === 'string' ? value : '';
-  return ANALYTICS_METRICS[safeMetric]?.has(safeValue)
+  return DASHBOARD_METRICS[safeMetric]?.has(safeValue)
     ? { metric: safeMetric, value: safeValue }
     : null;
 }

@@ -1,0 +1,241 @@
+#screen-portfolio.worldglass-screen .tab-hero {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  padding: 0;
+}
+
+#screen-portfolio.worldglass-screen .tab-body-col {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+}
+
+#screen-portfolio.worldglass-screen .contact-rule,
+#screen-portfolio.worldglass-screen + #port-confirm {
+  display: none;
+}
+
+#screen-portfolio.worldglass-screen .principal-header {
+  display: none;
+}
+
+.worldglass {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  background: #000;
+  color: var(--green, #74c58d);
+  /* exact desktop source size used by the meet-the-goblins rune row */
+  font: 25px/1.18 "Courier New", monospace;
+  touch-action: none;
+  user-select: none;
+}
+
+.worldglass canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+}
+
+.worldglass.is-introduced canvas {
+  animation: rewindIn 260ms steps(5, end) forwards;
+}
+
+.worldglass button {
+  cursor: default;
+}
+
+.worldglass-docks {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.worldglass-label {
+  position: absolute;
+  z-index: 2;
+  display: grid;
+  width: max-content;
+  min-width: 0;
+  min-height: 48px;
+  margin: 0;
+  padding: 7px 10px 8px;
+  border: 0;
+  color: inherit;
+  background: rgba(0, 0, 0, .66);
+  font: inherit;
+  text-align: left;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 520ms ease;
+  will-change: opacity;
+}
+
+.worldglass-label.is-visible.is-introduced {
+  opacity: var(--depth-opacity, 1);
+}
+
+.worldglass-label.is-visible.is-introduced.is-interactive {
+  pointer-events: auto;
+}
+
+.worldglass-label:focus-visible {
+  outline: 1px solid var(--green, #74c58d);
+  outline-offset: 4px;
+}
+
+.worldglass-label.is-acknowledged .worldglass-line {
+  animation: worldglassAcknowledged 180ms steps(3, end);
+}
+
+@keyframes worldglassAcknowledged {
+  0% { transform: translateX(0); filter: none; }
+  32% { transform: translateX(-2px); filter: brightness(1.65); }
+  66% { transform: translateX(1px); filter: hue-rotate(28deg) brightness(1.25); }
+  100% { transform: translateX(0); filter: none; }
+}
+
+.worldglass-line {
+  position: relative;
+  display: block;
+  width: max-content;
+  height: 1.5em;
+}
+
+.worldglass-line + .worldglass-line {
+  color: var(--text-secondary, rgba(255, 255, 255, .55));
+  font-weight: 400;
+}
+
+.worldglass-line.is-settled {
+  display: block;
+}
+
+.worldglass-runes {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: max-content;
+  height: 1.5em;
+}
+
+.worldglass-runes {
+  z-index: 1;
+}
+
+.worldglass-glyph {
+  position: relative;
+  display: inline-block;
+  width: .6em;
+  height: 1.5em;
+  flex: 0 0 .6em;
+}
+
+.worldglass-glyph-latin {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  color: currentColor;
+  font: 400 .84375em/1 "Courier New", monospace;
+  opacity: 0;
+}
+
+.worldglass-glyph svg {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: .78em;
+  height: 100%;
+  overflow: visible;
+  transform: translateX(-50%);
+}
+
+.worldglass-glyph path {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.05;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.worldglass-glyph.is-space {
+  width: .3em;
+  flex-basis: .3em;
+}
+
+.worldglass-glyph-literal {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  font: 400 .84375em/1 "Courier New", monospace;
+}
+
+.worldglass.is-mobile-proof {
+  right: auto;
+  left: 50%;
+  width: 390px;
+  max-width: 100%;
+  height: min(844px, 100%);
+  transform: translateX(-50%);
+  font-size: 18px;
+}
+
+.worldglass.is-mobile-proof .worldglass-label {
+  min-height: 44px;
+  padding: 5px 8px 6px;
+}
+
+.worldglass-records {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+@media (max-width: 700px) {
+  .worldglass {
+    font-size: clamp(.75rem, 4.65vw, 1.25rem);
+
+    --worldglass-mobile-glyph: 1;
+  }
+
+  .worldglass-glyph {
+    width: 1.08em;
+    flex-basis: 1.08em;
+  }
+
+  .worldglass-glyph path {
+    stroke-width: .78;
+    transform: translate(6px, 0) scale(.75, 1) translate(-6px, 0);
+    vector-effect: non-scaling-stroke;
+  }
+
+  .worldglass-glyph-latin,
+  .worldglass-glyph-literal {
+    font-size: .9375em;
+  }
+
+  .worldglass-label {
+    min-height: 44px;
+    padding: 5px 8px 6px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .worldglass-label {
+    transition: none;
+  }
+}

@@ -4,13 +4,13 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="robots" content="noindex,nofollow,noarchive">
-  <title>Dashboard · Press for Goblins</title>
+  <title>dashboard · press for goblins</title>
   <style>
     @font-face{font-family:"Press Start 2P";src:url("fonts/PressStart2P-Regular.woff2") format("woff2"),url("fonts/PressStart2P-Regular.woff") format("woff");font-display:swap}
-    :root{color-scheme:dark;--green:#89ce8d;--bright:#c5fac8;--text:rgba(255,255,255,.9);--quiet:rgba(255,255,255,.52);--faint:rgba(255,255,255,.13);--black:#000}
+    :root{color-scheme:dark;--green:#74c58d;--bright:#74c58d;--text:rgba(255,255,255,.9);--quiet:rgba(255,255,255,.52);--faint:rgba(255,255,255,.13);--black:#000}
     *{box-sizing:border-box}html,body{min-height:100%;background:#000}body{margin:0;color:var(--text);font:16px/1.55 "Courier New",monospace}
     button,input{border:0;border-radius:0;font:inherit}.hidden{display:none!important}
-    .access{min-height:100vh;display:grid;place-content:center;padding:24px;background:radial-gradient(circle at 50% 42%,rgba(137,206,141,.045),transparent 28%)}
+    .access{min-height:100vh;display:grid;place-content:center;padding:24px;background:radial-gradient(circle at 50% 42%,rgba(84,202,125,.045),transparent 28%)}
     .access-mark{width:42px;margin:0 auto 72px;color:var(--green)}
     .access-title{margin:0 0 54px;color:var(--green);font:400 11px/1.8 "Press Start 2P",monospace;letter-spacing:.16em;text-align:center}
     .access-form{display:grid;grid-template-columns:minmax(190px,280px) 44px;gap:18px;align-items:end}
@@ -19,22 +19,22 @@
     .access-form input:focus{border-color:var(--green)}.access-form button{height:46px;background:transparent;color:var(--green);cursor:pointer;font-size:24px}.access-form button:disabled{opacity:.3}
     .status{min-height:24px;margin:34px 0 0;color:var(--green);font-size:12px;text-align:center}
 
-    .shell{min-height:100vh;background:radial-gradient(circle at 50% -8%,rgba(137,206,141,.055),transparent 32%),#000}
+    .shell{min-height:100vh;background:radial-gradient(circle at 50% -8%,rgba(84,202,125,.055),transparent 32%),#000}
     .chrome{display:flex;align-items:center;justify-content:space-between;gap:20px;padding:22px 28px;border-bottom:1px solid rgba(255,255,255,.08)}
     .brand{display:flex;align-items:center;gap:14px;color:var(--green);font:400 10px/1.8 "Press Start 2P",monospace;letter-spacing:.12em}.eyes{width:38px;height:15px;display:block}
     .meta,.note{color:var(--quiet);font-size:11px}.content{width:min(100%,1120px);margin:auto;padding:32px 30px 44px}
     .section{margin-top:42px;padding-top:28px;border-top:1px dashed var(--faint)}
     .heading{display:flex;justify-content:space-between;align-items:end;gap:18px;margin-bottom:18px}.heading h2{margin:0;color:var(--green);font-size:13px;font-weight:400;letter-spacing:.08em}.total{color:var(--quiet);font-size:11px;white-space:nowrap}
 
-    .rune{display:grid;grid-template-columns:1.05fr .95fr;gap:46px;align-items:center}.orbits{display:flex;align-items:end;justify-content:center;gap:26px;min-height:320px}.orbit{display:grid;place-content:center;border-radius:50%;text-align:center}.orbit.large{width:270px;height:270px;border:1px solid rgba(255,255,255,.22);background:radial-gradient(circle,rgba(255,255,255,.035),transparent 70%)}.orbit.small{width:134px;height:134px;border:1px solid var(--green);background:rgba(137,206,141,.16);box-shadow:0 0 32px rgba(137,206,141,.1)}
+    .rune{display:grid;grid-template-columns:1.05fr .95fr;gap:46px;align-items:center}.orbits{display:flex;align-items:end;justify-content:center;gap:26px;min-height:320px}.orbit{display:grid;place-content:center;border-radius:50%;text-align:center}.orbit.large{width:270px;height:270px;border:1px solid rgba(255,255,255,.22);background:radial-gradient(circle,rgba(255,255,255,.035),transparent 70%)}.orbit.small{width:134px;height:134px;border:1px solid var(--green);background:rgba(84,202,125,.16);box-shadow:0 0 32px rgba(84,202,125,.1)}
     .number{color:var(--bright);font-size:32px;line-height:1}.label{margin-top:7px;color:var(--quiet);font-size:11px}.reading{display:flex;justify-content:space-between;gap:14px;align-items:baseline}.reading strong{color:var(--green);font-size:20px;font-weight:400}
     .field{display:grid;grid-template-columns:repeat(10,1fr);gap:5px;margin-top:15px}.field span{aspect-ratio:1;border:1px solid rgba(255,255,255,.18)}.field span.active{border-color:var(--green);background:var(--green);box-shadow:inset 0 0 0 2px rgba(0,0,0,.28)}
 
-    .stack-group{display:grid;gap:42px}.chart{min-width:0}.stack{display:grid;width:100%;height:34px;overflow:hidden;background:rgba(255,255,255,.05)}.segment{border-right:2px solid #000}.segment:last-child{border-right:0}.segment:nth-child(1){background:rgba(137,206,141,1)}.segment:nth-child(2){background:rgba(137,206,141,.78)}.segment:nth-child(3){background:rgba(137,206,141,.58)}.segment:nth-child(4){background:rgba(137,206,141,.38)}.segment:nth-child(5){background:rgba(137,206,141,.2)}
-    .direct{display:grid;width:100%}.key{min-width:0;padding:11px 8px 0;border-left:1px solid rgba(137,206,141,.35)}.key:first-child{padding-left:0;border-left:0}.key-name{min-height:29px;color:var(--text);font-size:10px;line-height:1.35;overflow-wrap:anywhere}.key-percent{margin-top:5px;color:var(--green);font-size:14px}.key-count{margin-top:2px;color:var(--quiet);font-size:9px}
+    .stack-group{display:grid;gap:42px}.chart{min-width:0}.stack{display:grid;width:100%;height:34px;overflow:hidden;background:rgba(255,255,255,.05)}.segment{border-right:2px solid #000}.segment:last-child{border-right:0}.segment:nth-child(1){background:rgba(84,202,125,1)}.segment:nth-child(2){background:rgba(84,202,125,.78)}.segment:nth-child(3){background:rgba(84,202,125,.58)}.segment:nth-child(4){background:rgba(84,202,125,.38)}.segment:nth-child(5){background:rgba(84,202,125,.2)}
+    .direct{display:grid;width:100%}.key{min-width:0;padding:11px 8px 0;border-left:1px solid rgba(84,202,125,.35)}.key:first-child{padding-left:0;border-left:0}.key-name{min-height:29px;color:var(--text);font-size:10px;line-height:1.35;overflow-wrap:anywhere}.key-percent{margin-top:5px;color:var(--green);font-size:14px}.key-count{margin-top:2px;color:var(--quiet);font-size:9px}
     .empty{padding:24px 0;color:var(--quiet);font-size:11px}
 
-    .actions{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:34px}.action{display:grid;justify-items:center;gap:12px;text-align:center}.donut{--value:0;position:relative;width:clamp(142px,17vw,196px);aspect-ratio:1;display:grid;place-content:center;border-radius:50%;background:conic-gradient(var(--green) calc(var(--value) * 1%),rgba(255,255,255,.09) 0)}.donut:after{content:"";position:absolute;inset:13%;border-radius:50%;background:#000;border:1px solid rgba(255,255,255,.08)}.donut-value{position:relative;z-index:1;color:var(--bright);font-size:26px}.action-name{color:var(--text);font-size:11px}.action-base{color:var(--quiet);font-size:10px;line-height:1.5}.action-base strong{color:var(--green);font-weight:400}.denominator{max-width:760px;margin:24px auto 0;padding:12px 14px;border:1px solid rgba(137,206,141,.2);color:var(--quiet);font-size:10px;line-height:1.55;text-align:center}
+    .actions{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:34px}.action{display:grid;justify-items:center;gap:12px;text-align:center}.donut{--value:0;position:relative;width:clamp(142px,17vw,196px);aspect-ratio:1;display:grid;place-content:center;border-radius:50%;background:conic-gradient(var(--green) calc(var(--value) * 1%),rgba(255,255,255,.09) 0)}.donut:after{content:"";position:absolute;inset:13%;border-radius:50%;background:#000;border:1px solid rgba(255,255,255,.08)}.donut-value{position:relative;z-index:1;color:var(--bright);font-size:26px}.action-name{color:var(--text);font-size:11px}.action-base{color:var(--quiet);font-size:10px;line-height:1.5}.action-base strong{color:var(--green);font-weight:400}.denominator{max-width:760px;margin:24px auto 0;padding:12px 14px;border:1px solid rgba(84,202,125,.2);color:var(--quiet);font-size:10px;line-height:1.55;text-align:center}
     .footer{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:14px 24px;margin-top:36px;color:var(--quiet);font-size:10px}.footer button{padding:8px 0;background:transparent;color:var(--quiet);cursor:pointer}.footer button:hover,.footer button:focus-visible{color:var(--green);outline:0}
 
     @media(max-width:760px){.chrome{padding:18px}.brand span{display:none}.content{padding:26px 18px 34px}.rune{grid-template-columns:1fr}.orbits{min-height:255px;gap:15px}.orbit.large{width:210px;height:210px}.orbit.small{width:104px;height:104px}.actions{grid-template-columns:1fr;gap:32px}.donut{width:176px}.heading{align-items:flex-start}.stack-scroll{overflow-x:auto;padding-bottom:8px}.stack-group{min-width:660px}}
@@ -52,7 +52,7 @@
     <header class="chrome"><div class="brand"><svg class="eyes" viewBox="0 0 74 26" aria-hidden="true"><path fill="currentColor" d="M5 6l6-4h25l-4 12-8 7-14-4z"/><path fill="#000" d="M20 5h5v12h-5z"/><path fill="currentColor" d="M69 6l-6-4H38l4 12 8 7 14-4z"/><path fill="#000" d="M49 5h5v12h-5z"/></svg><span>dashboard</span></div><div id="freshness" class="meta">30-day window</div></header>
     <div class="content">
       <section class="rune">
-        <div class="orbits" role="img" aria-label="Rune views and solves"><div class="orbit large"><span id="rune-views" class="number">—</span><span class="label">saw the rune</span></div><div class="orbit small"><span id="rune-solves" class="number">—</span><span class="label">decoded it</span></div></div>
+        <div class="orbits" role="img" aria-label="rune views and solves"><div class="orbit large"><span id="rune-views" class="number">—</span><span class="label">saw the rune</span></div><div class="orbit small"><span id="rune-solves" class="number">—</span><span class="label">decoded it</span></div></div>
         <div><div class="reading"><span class="note">solves / views</span><strong id="rune-rate">—</strong></div><div id="rune-field" class="field" role="img"></div><p class="note">whole field = rune-view events in this period</p></div>
       </section>
 
@@ -61,7 +61,7 @@
       <section class="section">
         <div class="heading"><h2>counted actions</h2><span class="total">action / recorded opportunity</span></div>
         <div id="actions" class="actions"></div>
-        <div class="denominator">Each circle is one action out of the visits where it was visible. Each is counted once per tab session.</div>
+        <div class="denominator">each circle is one action out of the visits where it was visible. each is counted once per tab session.</div>
       </section>
 
       <footer class="footer"><span>whole bar = every recorded answer to that question in this period</span><span><button id="owner-device">exclude this device</button> · <button id="signout">sign out</button></span></footer>

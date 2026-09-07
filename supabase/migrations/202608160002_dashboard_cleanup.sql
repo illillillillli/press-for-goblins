@@ -7,7 +7,7 @@ begin
     perform cron.unschedule(legacy_job);
   end if;
   if not exists (select 1 from cron.job where jobname = 'dashboard-retention') then
-    perform cron.schedule('dashboard-retention', '17 3 * * *', 'select analytics.purge_expired()');
+    perform cron.schedule('dashboard-retention', '17 3 * * *', 'select dashboard.purge_expired()');
   end if;
 end
 $$;

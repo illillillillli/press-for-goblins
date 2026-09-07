@@ -7,13 +7,13 @@ declare v_result jsonb;
 begin
   if auth.uid() is null
      or coalesce(auth.jwt()->>'aal', 'aal1') <> 'aal2'
-     or not exists (select 1 from analytics.owner where user_id = auth.uid()) then
+     or not exists (select 1 from dashboard.owner where user_id = auth.uid()) then
     raise exception 'forbidden' using errcode = '42501';
   end if;
   if p_days not between 1 and 90 then raise exception 'invalid range'; end if;
   select jsonb_build_object(
     'window_days', p_days,
-    'last_accepted_at', (select last_accepted_at from analytics.private_config where singleton),
+    'last_accepted_at', (select last_accepted_at from dashboard.private_config where singleton),
     'counts', coalesce(jsonb_agg(jsonb_build_object(
       'metric', metric,
       'value', value,
@@ -23,7 +23,7 @@ begin
   ) into v_result
   from (
     select metric, value, sum(count)::bigint as total
-    from analytics.daily_count
+    from dashboard.daily_count
     where owner_class = 'public' and day >= current_date - (p_days - 1)
     group by metric, value
   ) safe_counts;
