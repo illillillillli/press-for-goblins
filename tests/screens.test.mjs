@@ -171,6 +171,13 @@ test('worldglass keeps every event stable, reactive and on the shared colour tok
   assert.match(worldglassSource, /dragThreshold = event\.pointerType === 'touch' \? 8 : 3/);
   assert.match(worldglassSource, /if \(moved && event\.detail !== 0\) return;[\s\S]{0,80}?activateLabel\(button\)/);
   assert.match(worldglassSource, /function pointerDown\(event\) \{\s*if \(event\.target\.closest\('button'\) && width >= 700\) return;/);
+  assert.match(worldglassSource, /var mobileRecordBelt = \[/);
+  assert.match(worldglassSource, /coordinate = width < 700 && mobileRecordBelt\[index\] \? mobileRecordBelt\[index\] : event/);
+  assert.match(worldglassSource, /function positionMobileRecords\(states\) \{\s*if \(width >= 700 \|\| !lastMobileLayout\) return;/);
+  assert.match(worldglassSource, /if \(state\.opacity <= \.01\)/);
+  assert.match(worldglassSource, /positionMobileRecords\(states\)/);
+  assert.match(worldglassSource, /var labelOpacity = width < 700 \? state\.opacity : \(state\.event\.id === selectedId \? 1 : state\.opacity\)/);
+  assert.match(worldglassSource, /if \(moved && width < 700 && document\.activeElement && document\.activeElement\.closest\('\.worldglass-label'\)\)/);
   assert.match(worldglassSource, /button\.matches\(':hover, :focus'\)/);
   assert.match(worldglassStyles, /color: var\(--green, #74c58d\)/);
   assert.doesNotMatch(worldglassSource, /button\.style\.width = 'calc\('/);
@@ -186,6 +193,7 @@ test('worldglass keeps every event stable, reactive and on the shared colour tok
   assert.match(worldglassStyles, /@media \(max-width: 700px\)[\s\S]*?font-size: 16px/);
   assert.match(worldglassStyles, /@media \(max-width: 700px\)[\s\S]*?touch-action: pinch-zoom/);
   assert.match(worldglassStyles, /@media \(max-width: 700px\)[\s\S]*?width: \.62em;[\s\S]*?flex-basis: \.62em;/);
+  assert.match(worldglassStyles, /@media \(max-width: 700px\)[\s\S]*?\.worldglass-label\.rewind-in \{\s*animation-fill-mode: none;/);
   assert.match(worldglassSource, /worldglass-glyph-literal/);
   assert.match(worldglassSource, /\['#8c8c8c', '#fffccc', '#fdfd96'/);
   assert.match(worldglassSource, /button\._motionToken = \(button\._motionToken \|\| 0\) \+ 1/);
@@ -211,7 +219,7 @@ test('principal headings begin below the fully opaque top mist at every viewport
 test('the official portfolio surface loads worldglass', () => {
   assert.match(source, /href="assets\/worldglass\/worldglass\.css\?v=20260907-2"/);
   assert.match(source, /src="assets\/worldglass\/natural-earth-110m-land\.js\?v=20260906-4"/);
-  assert.match(source, /src="assets\/worldglass\/worldglass\.js\?v=20260907-4"/);
+  assert.match(source, /src="assets\/worldglass\/worldglass\.js\?v=20260907-5"/);
   assert.match(source, /titleLines: \['worldglass', ''\]/);
   assert.match(source, /id="screen-portfolio"[^>]+aria-label="worldglass"/);
   assert.match(worldglassSource, /stack\.replaceWith\(root\)/);

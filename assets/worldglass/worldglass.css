@@ -195,6 +195,10 @@
   padding: 5px 8px 6px;
 }
 
+.worldglass.is-mobile-proof .worldglass-label.rewind-in {
+  animation-fill-mode: none;
+}
+
 .worldglass-records {
   position: absolute;
   width: 1px;
@@ -233,6 +237,11 @@
     padding: 2px 8px;
     max-width: calc(100% - 32px);
     background: rgba(0, 0, 0, .82);
+    will-change: opacity, transform;
+  }
+
+  .worldglass-label.rewind-in {
+    animation-fill-mode: none;
   }
 
   .worldglass-line,
