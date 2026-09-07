@@ -12,18 +12,6 @@
     { id: 'thought-bubble', name: 'thought bubble', city: 'harrogate', date: '15 nov', lat: 53.9921, lon: -1.5418 }
   ];
 
-  /* mobile records travel on a world-space belt. the desktop map keeps exact city points. */
-  var mobileRecordBelt = [
-    { lat: -42, lon: -157.5 },
-    { lat: -18, lon: -112.5 },
-    { lat: 18, lon: -67.5 },
-    { lat: 42, lon: -22.5 },
-    { lat: 42, lon: 22.5 },
-    { lat: 18, lon: 67.5 },
-    { lat: -18, lon: 112.5 },
-    { lat: -42, lon: 157.5 }
-  ];
-
   var runes = {
     A:'M9.2 9.6 L6.4 11.9 L1.4 10 L5.3 5.1 L9.2 9.6',B:'M3.8 6.3 L4.6 5.6 L5.5 5.2 L6.6 5.3 L7.6 5.7 L8.3 6.4 L8.7 7.4 L8.8 8.4 L8.4 9.4',C:'M5.1 5.3 Q7.4 3 9.7 5.3 Q7.4 7.6 5.1 5.3 M5 11 Q7.4 8.6 9.8 11 Q7.4 13.4 5 11',D:'M3.2 4 C8.4 7.3 2.6 10.5 7.6 13 M2 4 L4.4 4 M6.4 13 L8.8 13',E:'M3.5 9 Q7.5 6.2 11.5 9 Q7.5 11.8 3.5 9 M7 9 L8 9',F:'M4.3 4.5 L4.3 12.5 M4.3 6.6 L8.7 6.6 M4.3 10.4 L8.7 10.4',G:'M1.6 9.5 Q5.9 1.8 10.2 9.5 M3.5 9.5 Q5.9 5.2 8.3 9.5',H:'M5.3 4.3 L5.3 12.2 M9.9 7 Q8.8 9.5 9.9 12.2',I:'M6.2 5.9 L8.7 8.4 L6.2 10.9 L3.7 8.4 Z',J:'M6.6 1.8 L6.6 11.3 M1 5.8 L9.2 6.3',K:'M3.7 9.3 L10.5 9.3 M3.7 9.3 L3.7 5.6 L4.9 6.3 M7.1 9.3 L7.1 5 L8 5.5 M10.5 9.3 L10.5 5.4 L9.2 6',L:'M5.3 3.5 L5.3 13.5 M7 7.6 Q9 8.8 7 10',M:'M2.8 5.7 L9.9 5.7 M2.8 5.7 L2.7 11.1 M5.3 5.7 L5.3 14.8 M7.4 5.7 L7.4 12.1',N:'M2 5.1 L5 11.9 L8 7.5 L11 10.7',O:'M4.3 4.7 Q2.5 7.95 4.3 11.2 M9.3 4.7 Q11.1 7.95 9.3 11.2',P:'M3.5 5.8 Q9.6 6.7 9.9 11.4 M8.9 7.7 Q3.7 11.1 4.3 10.7',Q:'M2.9 3.5 L4 3 L5.4 3 L6.4 3.6 L6.7 4.9 L6.1 6.2 L4.9 6.8 L3.6 6.5 L2.7 5.5 M2.7 5.5 Q3.4 7.1 1.5 7.5',R:'M6.9 5.6 L8.6 8.4 L6.9 11.2 L5.2 8.4 Z',S:'M5.5 7 L4 10.5 M8 5.5 L6.5 10.5 M10.5 5.5 L9 10.5',T:'M6.3 4.5 L9.9 11.1 L5.1 10.5 L7.6 8.9 L3.8 10.4 L9.3 6 L6.3 4.5',U:'M1 7.1 Q3 3.3 5 7.1 Q7 10.9 9 7.1 Q10 3.3 11 7.1',V:'M5 5.7 Q8.1 8.3 8.5 12.1 Q7.4 12.6 6.8 12.1',W:'M5.3 3 L6.6 3.1 L7.2 4.3 L6.9 5.6 L5.7 6.3 L4.4 6.2 L3.5 5.2 L3.5 3.8 L4.4 3 M5.3 6.4 Q5.4 10.2 6.1 14',X:'M7.8 6.2 L10.5 6.2 M9.5 4.5 L9.5 7.9',Y:'M2.8 7.6 L3.8 7.6 M4.2 10.2 L5.2 10.2',Z:'M9.2 7.4 L6.4 5.1 L1.4 7 L5.3 11.9 L9.2 7.4'
   };
@@ -444,9 +432,8 @@
     }, secondDone);
   }
 
-  function eventState(event, index) {
-    var coordinate = width < 700 && mobileRecordBelt[index] ? mobileRecordBelt[index] : event;
-    var point = rotate(sphere(coordinate.lat, coordinate.lon));
+  function eventState(event) {
+    var point = rotate(sphere(event.lat, event.lon));
     var screen = project(point);
     var opacity = width < 700
       ? Math.max(0, Math.min(1, (point.z + .12) / .42))
@@ -463,10 +450,10 @@
       var button = dockNodes[index];
       if (!button) return;
       var rect = button.getBoundingClientRect();
-      var side = state.screen.x < centreX ? 'left' : 'right';
+      var side = index % 2 ? 'right' : 'left';
       var x = side === 'left'
-        ? state.screen.x - rect.width - 12
-        : state.screen.x + 12;
+        ? state.screen.x - rect.width - 24
+        : state.screen.x + 24;
       x = Math.max(inset, Math.min(width - inset - rect.width, x));
       if (state.opacity <= .01) {
         button.dataset.side = side;
@@ -476,10 +463,11 @@
         button.style.transform = 'translate3d(' + Math.round(x) + 'px,' + Math.round(state.screen.y - rect.height * .5) + 'px,0)';
         return;
       }
+      var slot = [-2, -1, 1, 2][Math.floor(index / 2)];
       groups[side].push({
         button: button,
         x: x,
-        y: state.screen.y - rect.height * .5,
+        y: state.screen.y + slot * (rect.height + gap) - rect.height * .5,
         height: rect.height
       });
     });
@@ -667,24 +655,10 @@
   function leaderGeometry(state, button) {
     var rootRect = root.getBoundingClientRect();
     var labelRect = button.getBoundingClientRect();
-    var labelX = labelRect.left - rootRect.left;
     var labelY = labelRect.top - rootRect.top;
     var endX = button.dataset.side === 'left' ? labelRect.right - rootRect.left : labelRect.left - rootRect.left;
     var endY = labelY + labelRect.height * .5;
-    var markerX = state.screen.x;
-    var markerY = state.screen.y;
-    if (width < 700) {
-      var covered = markerX >= labelX - 4 && markerX <= labelX + labelRect.width + 4
-        && markerY >= labelY - 4 && markerY <= labelY + labelRect.height + 4;
-      var clipped = markerX < 4 || markerX > width - 4 || markerY < 4 || markerY > height - 4;
-      if (covered || clipped || Math.hypot(markerX - endX, markerY - endY) < 30) {
-        markerX = endX + (button.dataset.side === 'left' ? 30 : -30);
-        markerY = endY;
-      }
-      markerX = Math.max(4, Math.min(width - 4, markerX));
-      markerY = Math.max(4, Math.min(height - 4, markerY));
-    }
-    return { markerX: markerX, markerY: markerY, endX: endX, endY: endY };
+    return { markerX: state.screen.x, markerY: state.screen.y, endX: endX, endY: endY };
   }
 
   function markerButtonAt(clientX, clientY) {
@@ -694,7 +668,7 @@
     var candidates = assignments.map(function (id, index) {
       var event = events.find(function (item) { return item.id === id; });
       if (!event) return null;
-      var state = eventState(event, index);
+      var state = eventState(event);
       var geometry = leaderGeometry(state, dockNodes[index]);
       return {
         button: dockNodes[index],
@@ -749,7 +723,7 @@
     });
     var states = assignments.map(function (id, index) {
       var event = events.find(function (item) { return item.id === id; });
-      return event ? eventState(event, index) : null;
+      return event ? eventState(event) : null;
     }).filter(Boolean);
     positionMobileRecords(states);
     states.forEach(function (state, index) {

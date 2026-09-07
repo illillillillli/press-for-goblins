@@ -172,8 +172,8 @@ test('worldglass keeps every event stable, reactive and on the shared colour tok
   assert.match(worldglassSource, /if \(moved && event\.detail !== 0\) return;[\s\S]{0,80}?activateLabel\(button\)/);
   assert.doesNotMatch(worldglassSource, /event\.target\.closest\('button'\) && width >= 700/);
   assert.match(worldglassSource, /\(event\.target\.closest\('\.worldglass-label'\) \|\| root\)\.setPointerCapture\(pointerId\)/);
-  assert.match(worldglassSource, /var mobileRecordBelt = \[/);
-  assert.match(worldglassSource, /coordinate = width < 700 && mobileRecordBelt\[index\] \? mobileRecordBelt\[index\] : event/);
+  assert.doesNotMatch(worldglassSource, /mobileRecordBelt/);
+  assert.match(worldglassSource, /function eventState\(event\) \{\s*var point = rotate\(sphere\(event\.lat, event\.lon\)\)/);
   assert.match(worldglassSource, /function positionMobileRecords\(states\) \{\s*if \(width >= 700 \|\| !lastMobileLayout\) return;/);
   assert.match(worldglassSource, /if \(state\.opacity <= \.01\)/);
   assert.match(worldglassSource, /positionMobileRecords\(states\)/);
@@ -186,7 +186,10 @@ test('worldglass keeps every event stable, reactive and on the shared colour tok
   assert.match(worldglassSource, /var maximum = defaultZoom \* 2\.15/);
   assert.match(worldglassSource, /if \(pinching && touchPoints\.size >= 2\) \{\s*event\.preventDefault\(\);\s*updatePinch\(\)/);
   assert.match(worldglassSource, /function leaderGeometry\(state, button\)/);
-  assert.match(worldglassSource, /covered \|\| clipped \|\| Math\.hypot\(markerX - endX, markerY - endY\) < 30/);
+  assert.match(worldglassSource, /return \{ markerX: state\.screen\.x, markerY: state\.screen\.y, endX: endX, endY: endY \}/);
+  assert.doesNotMatch(worldglassSource, /markerX = endX/);
+  assert.match(worldglassSource, /var side = index % 2 \? 'right' : 'left'/);
+  assert.match(worldglassSource, /var slot = \[-2, -1, 1, 2\]\[Math\.floor\(index \/ 2\)\]/);
   assert.match(worldglassSource, /distance: Math\.hypot\(localX - geometry\.markerX, localY - geometry\.markerY\)/);
   assert.match(worldglassSource, /button\.matches\(':hover, :focus'\)/);
   assert.match(worldglassStyles, /color: var\(--green, #74c58d\)/);
@@ -229,7 +232,7 @@ test('principal headings begin below the fully opaque top mist at every viewport
 test('the official portfolio surface loads worldglass', () => {
   assert.match(source, /href="assets\/worldglass\/worldglass\.css\?v=20260907-2"/);
   assert.match(source, /src="assets\/worldglass\/natural-earth-110m-land\.js\?v=20260906-4"/);
-  assert.match(source, /src="assets\/worldglass\/worldglass\.js\?v=20260907-8"/);
+  assert.match(source, /src="assets\/worldglass\/worldglass\.js\?v=20260907-9"/);
   assert.match(source, /titleLines: \['worldglass', ''\]/);
   assert.match(source, /id="screen-portfolio"[^>]+aria-label="worldglass"/);
   assert.match(worldglassSource, /stack\.replaceWith\(root\)/);
