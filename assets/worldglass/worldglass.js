@@ -628,18 +628,14 @@
   function drawLeader(state, button, time) {
     if (!connectionsIntroducedAt || !button || !button.classList.contains('is-visible')) return;
     var reveal = reduced.matches ? 1 : Math.min(1, Math.max(0, (time - connectionsIntroducedAt) / 360));
-    var rootRect = root.getBoundingClientRect();
-    var labelRect = button.getBoundingClientRect();
-    var labelY = labelRect.top - rootRect.top;
-    var endX = button.dataset.side === 'left' ? labelRect.right - rootRect.left : labelRect.left - rootRect.left;
-    var endY = labelY + labelRect.height * .5;
+    var geometry = leaderGeometry(state, button);
     var active = state.event.id === selectedId || state.event.id === markerHoverId || button.matches(':hover, :focus');
     if (state.opacity > 0) {
       context.save();
       context.globalAlpha = state.opacity * reveal;
       context.beginPath();
-      context.moveTo(state.screen.x, state.screen.y);
-      context.lineTo(endX, endY);
+      context.moveTo(geometry.markerX, geometry.markerY);
+      context.lineTo(geometry.endX, geometry.endY);
       context.setLineDash([3, 7]);
       context.lineDashOffset = active && !reduced.matches ? -(time * .018) : 0;
       context.lineWidth = active ? 1.65 : 1;
@@ -649,13 +645,13 @@
       context.lineDashOffset = 0;
       context.lineWidth = 1;
       context.beginPath();
-      context.arc(state.screen.x, state.screen.y, 3, 0, Math.PI * 2);
+      context.arc(geometry.markerX, geometry.markerY, 3, 0, Math.PI * 2);
       context.strokeStyle = '#fff';
       context.stroke();
       if (active) {
         var phase = reduced.matches ? 0 : (time % 1450) / 1450;
         context.beginPath();
-        context.arc(state.screen.x, state.screen.y, 4 + phase * 11, 0, Math.PI * 2);
+        context.arc(geometry.markerX, geometry.markerY, 4 + phase * 11, 0, Math.PI * 2);
         context.globalAlpha = state.opacity * (1 - phase) * .82;
         context.strokeStyle = '#fff';
         context.stroke();
@@ -668,6 +664,29 @@
     button.classList.toggle('is-interactive', interactive);
   }
 
+  function leaderGeometry(state, button) {
+    var rootRect = root.getBoundingClientRect();
+    var labelRect = button.getBoundingClientRect();
+    var labelX = labelRect.left - rootRect.left;
+    var labelY = labelRect.top - rootRect.top;
+    var endX = button.dataset.side === 'left' ? labelRect.right - rootRect.left : labelRect.left - rootRect.left;
+    var endY = labelY + labelRect.height * .5;
+    var markerX = state.screen.x;
+    var markerY = state.screen.y;
+    if (width < 700) {
+      var covered = markerX >= labelX - 4 && markerX <= labelX + labelRect.width + 4
+        && markerY >= labelY - 4 && markerY <= labelY + labelRect.height + 4;
+      var clipped = markerX < 4 || markerX > width - 4 || markerY < 4 || markerY > height - 4;
+      if (covered || clipped || Math.hypot(markerX - endX, markerY - endY) < 30) {
+        markerX = endX + (button.dataset.side === 'left' ? 30 : -30);
+        markerY = endY;
+      }
+      markerX = Math.max(4, Math.min(width - 4, markerX));
+      markerY = Math.max(4, Math.min(height - 4, markerY));
+    }
+    return { markerX: markerX, markerY: markerY, endX: endX, endY: endY };
+  }
+
   function markerButtonAt(clientX, clientY) {
     var rootRect = root.getBoundingClientRect();
     var localX = clientX - rootRect.left;
@@ -676,9 +695,10 @@
       var event = events.find(function (item) { return item.id === id; });
       if (!event) return null;
       var state = eventState(event, index);
+      var geometry = leaderGeometry(state, dockNodes[index]);
       return {
         button: dockNodes[index],
-        distance: Math.hypot(localX - state.screen.x, localY - state.screen.y),
+        distance: Math.hypot(localX - geometry.markerX, localY - geometry.markerY),
         opacity: state.opacity
       };
     }).filter(function (candidate) {
@@ -853,7 +873,7 @@
   function beginPinch() {
     pinching = true;
     pinchStartDistance = Math.max(1, touchDistance());
-    pinchStartZoom = targetZoom;
+    pinchStartZoom = zoom;
     dragging = false;
     pointerId = null;
     moved = true;
@@ -862,9 +882,9 @@
   }
 
   function updatePinch() {
-    var scale = touchDistance() / pinchStartDistance;
+    var scale = Math.pow(touchDistance() / pinchStartDistance, 1.22);
     var minimum = defaultZoom * .72;
-    var maximum = defaultZoom * 1.4;
+    var maximum = defaultZoom * 2.15;
     targetZoom = Math.max(minimum, Math.min(maximum, pinchStartZoom * scale));
   }
 

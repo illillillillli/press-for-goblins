@@ -181,8 +181,12 @@ test('worldglass keeps every event stable, reactive and on the shared colour tok
   assert.match(worldglassSource, /function beginPinch\(\) \{/);
   assert.match(worldglassSource, /function updatePinch\(\) \{/);
   assert.match(worldglassSource, /var minimum = defaultZoom \* \.72/);
-  assert.match(worldglassSource, /var maximum = defaultZoom \* 1\.4/);
+  assert.match(worldglassSource, /var scale = Math\.pow\(touchDistance\(\) \/ pinchStartDistance, 1\.22\)/);
+  assert.match(worldglassSource, /var maximum = defaultZoom \* 2\.15/);
   assert.match(worldglassSource, /if \(pinching && touchPoints\.size >= 2\) \{\s*event\.preventDefault\(\);\s*updatePinch\(\)/);
+  assert.match(worldglassSource, /function leaderGeometry\(state, button\)/);
+  assert.match(worldglassSource, /covered \|\| clipped \|\| Math\.hypot\(markerX - endX, markerY - endY\) < 30/);
+  assert.match(worldglassSource, /distance: Math\.hypot\(localX - geometry\.markerX, localY - geometry\.markerY\)/);
   assert.match(worldglassSource, /button\.matches\(':hover, :focus'\)/);
   assert.match(worldglassStyles, /color: var\(--green, #74c58d\)/);
   assert.doesNotMatch(worldglassSource, /button\.style\.width = 'calc\('/);
@@ -224,7 +228,7 @@ test('principal headings begin below the fully opaque top mist at every viewport
 test('the official portfolio surface loads worldglass', () => {
   assert.match(source, /href="assets\/worldglass\/worldglass\.css\?v=20260907-2"/);
   assert.match(source, /src="assets\/worldglass\/natural-earth-110m-land\.js\?v=20260906-4"/);
-  assert.match(source, /src="assets\/worldglass\/worldglass\.js\?v=20260907-6"/);
+  assert.match(source, /src="assets\/worldglass\/worldglass\.js\?v=20260907-7"/);
   assert.match(source, /titleLines: \['worldglass', ''\]/);
   assert.match(source, /id="screen-portfolio"[^>]+aria-label="worldglass"/);
   assert.match(worldglassSource, /stack\.replaceWith\(root\)/);
