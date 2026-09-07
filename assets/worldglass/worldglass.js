@@ -889,20 +889,21 @@
   }
 
   function pointerDown(event) {
-    if (event.target.closest('button') && width >= 700) return;
     lastInteractionAt = performance.now();
     clearMarkerHover();
     if (event.pointerType === 'touch' && width < 700) {
       if (!touchPoints.has(event.pointerId) && touchPoints.size >= 2) return;
       touchPoints.set(event.pointerId, { x: event.clientX, y: event.clientY });
-      root.setPointerCapture(event.pointerId);
+      (event.target.closest('.worldglass-label') || root).setPointerCapture(event.pointerId);
       if (touchPoints.size === 2) {
         beginPinch();
         return;
       }
     }
     pointerId = event.pointerId;
-    if (event.pointerType !== 'touch' || width >= 700) root.setPointerCapture(pointerId);
+    if (event.pointerType !== 'touch' || width >= 700) {
+      (event.target.closest('.worldglass-label') || root).setPointerCapture(pointerId);
+    }
     dragging = true;
     moved = false;
     lastX = event.clientX;
@@ -963,7 +964,7 @@
     if (event.pointerId !== pointerId) return;
     dragging = false;
     pointerId = null;
-    if (moved && width < 700 && document.activeElement && document.activeElement.closest('.worldglass-label')) {
+    if (moved && document.activeElement && document.activeElement.closest('.worldglass-label')) {
       document.activeElement.blur();
     }
     settleAt = performance.now() + 650;
