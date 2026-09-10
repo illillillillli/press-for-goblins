@@ -1232,6 +1232,11 @@
       position: relative;
     }
 
+    .cta-latin {
+      display: inline-block;
+      white-space: nowrap;
+    }
+
     .cta-runes {
       position: absolute;
       inset: 0;
@@ -1239,16 +1244,16 @@
       align-items: center;
       justify-content: center;
       gap: 0;
-      font-family: "Courier New", Courier, monospace;
-      font-size: 1.25rem;
-      line-height: 1.5;
+      font-family: "Press Start 2P", monospace;
+      font-size: inherit;
+      line-height: inherit;
       opacity: 0;
       pointer-events: none;
     }
 
     @media (max-width: 600px) {
       .cta-runes {
-        font-size: clamp(0.75rem, 4.65vw, 1.25rem);
+        font-size: inherit;
       }
     }
 
@@ -3219,7 +3224,7 @@
         align-items: center;
       }
 
-      .pfg-rune-spacer {
+      #pfg-email-rune .pfg-rune-spacer {
         width: 0 !important;
       }
 
@@ -3733,9 +3738,9 @@
             </a>
           </div>
           <p class="about-address" id="about-address" data-nosnippet>
-            <span>press for goblins<sup class="pfg-tm">®</sup></span>
-            <span>167-169 great portland st</span>
-            <span>london w1w 5pf</span>
+            <span>Press for Goblins<sup class="pfg-tm">®</sup></span>
+            <span>167-169 Great Portland St</span>
+            <span>London W1W 5PF</span>
           </p>
         </div>
       </section>
@@ -7663,10 +7668,11 @@
         var glyphs = [];
         Array.from(phrase).forEach(function (ch) {
           if (ch === ' ') {
-            container.appendChild(spacer('.75em'));
+            container.appendChild(spacer(settings.spaceWidth || '.75em'));
             return;
           }
           var g = makeGlyph(rot13(ch), false);
+          if (settings.glyphWidth) g.setAttribute('width', settings.glyphWidth);
           g._correct = ch.toLowerCase();
           g._orig = RUNES[ch.toUpperCase()] || g._orig;
           g._rune.setAttribute('d', g._orig);
@@ -7934,60 +7940,14 @@
         setTimeout(onDone, TOTAL_MS);
       }
 
-      var _pageLoadTime = Date.now();
-      var emailHoverDecoded = false;
-      var emailHoverReturnRequested = false;
-      var emailHoverReturnTimer = null;
-
-      function scheduleEmailHoverReturn() {
-        if (!emailHoverDecoded || !emailHoverReturnRequested || timerId) return;
-        clearTimeout(emailHoverReturnTimer);
-        emailHoverReturnTimer = setTimeout(function () {
-          link.classList.remove('pfg-decoded');
-          currentTids = encode(glyphs, function () {
-            decoding = false;
-            emailHoverDecoded = false;
-            link._decoded = false;
-            if (_idleShimmerTid) clearTimeout(_idleShimmerTid);
-            _idleShimmerTid = setTimeout(_idleShimmerCycle, 3000 + Math.floor(Math.random() * 2000));
-          });
-        }, 7000);
-      }
-
-      function beginEmailHoverDecode() {
-        emailHoverReturnRequested = false;
-        clearTimeout(emailHoverReturnTimer);
-        if (decoding) return;
-        decoding = true;
-        link._decoded = true;
-        link.classList.add('pfg-decoded');
-        if (_idleShimmerTid) { clearTimeout(_idleShimmerTid); _idleShimmerTid = null; }
-        revealGlyphs(glyphs);
-        currentTids.forEach(clearTimeout);
-        if (timerId) { clearTimeout(timerId); timerId = null; }
-        currentTids = decode(glyphs, function () {
-          emailHoverDecoded = true;
-          if (emailHoverReturnRequested) scheduleEmailHoverReturn();
-        });
-      }
-
-      function endEmailHoverDecode() {
-        if (!decoding || timerId) return;
-        emailHoverReturnRequested = true;
-        scheduleEmailHoverReturn();
-      }
+      var emailDecoded = false;
 
       link.addEventListener('click', function (e) {
-        if (emailHoverDecoded) {
-          emailHoverReturnRequested = false;
-          clearTimeout(emailHoverReturnTimer);
+        if (emailDecoded) {
           link.href = 'mailto:' + rot13(_ER);
           return;
         }
         e.preventDefault();
-        // block programmatic clicks: real users have a pointer type; synthetic clicks do not
-        if (e.pointerType === '' && Date.now() - _pageLoadTime < 2000) return;
-
         if (decoding) {
           // already decoded - re-copy and flash the copied annotation
           var email2 = rot13(_ER);
@@ -8002,7 +7962,7 @@
         link._decoded = true;
         link.classList.add('pfg-decoded');
         // stop idle shimmer the moment decode begins
-        if (_idleShimmerTid) { clearTimeout(_idleShimmerTid); _idleShimmerTid = null; }
+        stopIdleShimmer();
         // decode ROT13 only at click - real email never in DOM before this point
         var email = rot13(_ER);
         if (navigator.clipboard) navigator.clipboard.writeText(email).catch(function () { });
@@ -8011,7 +7971,7 @@
         if (timerId) { clearTimeout(timerId); timerId = null; }
 
         currentTids = decode(glyphs, function () {
-          emailHoverDecoded = true;
+          emailDecoded = true;
           // draw "copied" annotation - fires only after decode completes
           var copiedSlot = document.getElementById('pfg-copied-ann-slot');
           if (!copiedSlot) return;
@@ -8103,11 +8063,10 @@
                 var copiedAnn = copiedSlot.querySelector('.pfg-copied-ann');
                 currentTids = encode(glyphs, function () {
                   decoding = false;
-                  emailHoverDecoded = false;
+                  emailDecoded = false;
                   link._decoded = false;
                   timerId = null;
-                  if (_idleShimmerTid) clearTimeout(_idleShimmerTid);
-                  _idleShimmerTid = setTimeout(_idleShimmerCycle, 3000 + Math.floor(Math.random() * 2000));
+                  stopIdleShimmer = startIdleShimmer(glyphs, function () { return decoding; });
                   // erase the annotation; the slot never participates in layout
                   if (copiedAnn && copiedAnn.parentNode) {
                     setTimeout(function () {
@@ -8515,7 +8474,11 @@
         latinFontFamily: "'Press Start 2P', monospace",
         /* 10.667 / 16 across a 1.5em cell resolves to exactly 1em: no final resize. */
         latinFontSize: '10.667',
-        latinFill: 'var(--green)'
+        latinFill: 'var(--green)',
+        /* One final-font advance plus the CTA's .04em tracking. Both layers now
+           occupy the same phrase geometry before, during and after decoding. */
+        glyphWidth: '1.04em',
+        spaceWidth: '1.04em'
       });
       var decodeTimer = 0;
       var finished = false;
@@ -8539,7 +8502,7 @@
     }());
   </script>
   <script src="assets/worldglass/natural-earth-110m-land.js?v=20260906-4"></script>
-  <script src="assets/worldglass/worldglass.js?v=20260907-9"></script>
+  <script src="assets/worldglass/worldglass.js?v=20260910-1"></script>
 </body>
 
 </html>

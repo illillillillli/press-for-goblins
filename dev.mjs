@@ -69,11 +69,8 @@ createServer(async (req, nodeRes) => {
         const betaScript = readFileSync(resolve(__dir, '_private/worldglass-beta/worldglass.js'), 'utf8');
         content = content.replace("titleLines: ['field reports', '']", "titleLines: ['worldglass', '']");
         [
-          ['Press for Goblins', 'press for goblins'],
           ['The words', 'the words'],
           ['Oscar Wilde', 'oscar wilde'],
-          ['Great Portland St', 'great portland st'],
-          ['London W1W 5PF', 'london w1w 5pf'],
           ['[REDACTED]', '[redacted]'],
           ['LinkedIn', 'linkedin'],
           ['Main navigation', 'main navigation'],

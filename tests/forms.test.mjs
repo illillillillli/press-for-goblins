@@ -186,3 +186,17 @@ test('receipt emails preserve terms questions and mirror current goblin copy', (
     assert.match(html, /Can we begin with one chapter\?/);
   }
 });
+
+test('query receipts preserve the casing supplied by the human', () => {
+  const answers = {
+    'f-pitch': 'A Clockwork City Learns to Dream.',
+    'f-title': 'The Brass Orchard',
+    'f-name': 'Elliot Vane',
+    'f-email': 'writer@example.com',
+  };
+  for (const html of [buildUserReceipt(answers, '#0043'), buildAdminReceipt(answers, '#0043')]) {
+    assert.match(html, /A Clockwork City Learns to Dream\./);
+    assert.match(html, /The Brass Orchard/);
+    assert.match(html, /Elliot Vane/);
+  }
+});

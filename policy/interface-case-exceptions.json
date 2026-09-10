@@ -1,4 +1,20 @@
 {
   "version": 1,
-  "exceptions": []
+  "exceptions": [
+    {
+      "text": "Press for Goblins",
+      "files": ["index.html"],
+      "reason": "proper-case organisation name inside the factual postal address"
+    },
+    {
+      "text": "167-169 Great Portland St",
+      "files": ["index.html"],
+      "reason": "proper-case postal address"
+    },
+    {
+      "text": "London W1W 5PF",
+      "files": ["index.html"],
+      "reason": "proper-case postal address"
+    }
+  ]
 }

@@ -196,11 +196,15 @@
     selectedId = button.dataset.eventId;
     dockNodes.forEach(function (node) {
       if (node.dataset.eventId === selectedId) {
-        node._shouldReturn = false;
-        if (node._decoded) acknowledgeLabel(node);
+        /* Each record owns its own reveal cycle. Activating another record must
+           never interrupt or recode this one. */
+        node._shouldReturn = true;
+        if (node._decoded) {
+          acknowledgeLabel(node);
+          scheduleLabelReturn(node);
+        }
         else decodeLabel(node);
       }
-      else if (!node.matches(':hover, :focus')) encodeLabel(node);
     });
   }
 

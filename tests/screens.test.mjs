@@ -137,10 +137,27 @@ test('homepage identifies Noah and corrects singular studio ownership to the col
 test('email runes decode on deliberate activation, remain readable, then open the mail app', () => {
   assert.doesNotMatch(source, /link\.addEventListener\('pointerenter', beginEmailHoverDecode\)/);
   assert.doesNotMatch(source, /link\.addEventListener\('focus', beginEmailHoverDecode\)/);
-  assert.match(source, /emailHoverReturnTimer = setTimeout\([\s\S]{0,700}?}, 7000\)/);
   assert.match(source, /link\.addEventListener\('click', function \(e\)/);
-  assert.match(source, /if \(emailHoverDecoded\) \{[\s\S]{0,220}?link\.href = 'mailto:' \+ rot13\(_ER\);[\s\S]{0,80}?return;/);
+  assert.match(source, /if \(emailDecoded\) \{\s*link\.href = 'mailto:' \+ rot13\(_ER\);\s*return;/);
+  assert.doesNotMatch(source, /e\.pointerType === '' && Date\.now\(\) - _pageLoadTime < 2000/);
+  assert.doesNotMatch(source, /_idleShimmerTid|_idleShimmerCycle|emailHoverDecoded|emailHoverReturn/);
+  assert.match(source, /stopIdleShimmer\(\);[\s\S]{0,300}?revealGlyphs\(glyphs\)/);
+  assert.match(source, /timerId = setTimeout\(function \(\) \{[\s\S]{0,700}?stopIdleShimmer = startIdleShimmer\(glyphs, function \(\) \{ return decoding; \}\);[\s\S]{0,500}?}, 7000\)/);
   assert.match(source, /latinEl\.setAttribute\('fill', GRAY\)/);
+});
+
+test('the homepage rune tutorial preserves the final CTA geometry throughout decoding', () => {
+  assert.match(source, /\.cta-latin \{\s*display: inline-block;\s*white-space: nowrap;/);
+  assert.match(source, /\.cta-runes \{[\s\S]{0,280}?font-family: "Press Start 2P", monospace;\s*font-size: inherit;\s*line-height: inherit;/);
+  assert.match(source, /#pfg-email-rune \.pfg-rune-spacer \{\s*width: 0 !important;/);
+  assert.doesNotMatch(source, /\n\s*\.pfg-rune-spacer \{\s*width: 0 !important;/);
+  assert.match(source, /glyphWidth: '1\.04em',\s*spaceWidth: '1\.04em'/);
+});
+
+test('the factual postal address retains proper casing', () => {
+  assert.match(source, /<span>Press for Goblins<sup class="pfg-tm">®<\/sup><\/span>/);
+  assert.match(source, /<span>167-169 Great Portland St<\/span>/);
+  assert.match(source, /<span>London W1W 5PF<\/span>/);
 });
 
 test('worldglass keeps every event stable, reactive and on the shared colour tokens', () => {
@@ -150,6 +167,8 @@ test('worldglass keeps every event stable, reactive and on the shared colour tok
   assert.match(worldglassSource, /button\.classList\.add\('is-decoding'\)/);
   assert.match(worldglassSource, /button\.classList\.add\('is-decoded'\)/);
   assert.match(worldglassSource, /button\.addEventListener\('click', function \(event\)/);
+  assert.match(worldglassSource, /node\._shouldReturn = true;[\s\S]{0,180}?scheduleLabelReturn\(node\)/);
+  assert.doesNotMatch(worldglassSource, /else if \(!node\.matches\(':hover, :focus'\)\) encodeLabel\(node\)/);
   assert.match(worldglassSource, /function markerButtonAt\(clientX, clientY\)/);
   assert.match(worldglassSource, /function updateMarkerHover\(event\)/);
   assert.match(worldglassSource, /state\.event\.id === markerHoverId/);
@@ -232,7 +251,7 @@ test('principal headings begin below the fully opaque top mist at every viewport
 test('the official portfolio surface loads worldglass', () => {
   assert.match(source, /href="assets\/worldglass\/worldglass\.css\?v=20260907-2"/);
   assert.match(source, /src="assets\/worldglass\/natural-earth-110m-land\.js\?v=20260906-4"/);
-  assert.match(source, /src="assets\/worldglass\/worldglass\.js\?v=20260907-9"/);
+  assert.match(source, /src="assets\/worldglass\/worldglass\.js\?v=20260910-1"/);
   assert.match(source, /titleLines: \['worldglass', ''\]/);
   assert.match(source, /id="screen-portfolio"[^>]+aria-label="worldglass"/);
   assert.match(worldglassSource, /stack\.replaceWith\(root\)/);

@@ -13,10 +13,7 @@ export function inspectHumanText(source, file = '<source>') {
   const exceptions = exceptionPolicy.exceptions.filter((entry) =>
     Array.isArray(entry.files) && entry.files.some((candidate) => file.endsWith(candidate))
   );
-  const stripApproved = (value) => exceptions.reduce(
-    (text, entry) => text.split(entry.text).join(''),
-    value
-  );
+  const stripApproved = (value) => exceptions.some((entry) => value === entry.text) ? '' : value;
   const inspect = (value, surface) => {
     const decoded = decodeEntities(value).replace(/\s+/g, ' ').trim();
     if (!decoded) return;

@@ -26,3 +26,9 @@ test('checks rendered text inside an escaped srcdoc', () => {
   const findings = inspectHumanText(source, '_previews/wrapper.html');
   assert.deepEqual(findings.map(({ text }) => text), ['REPORT', 'OPEN']);
 });
+
+test('allows only the approved proper-case address strings in the public index', () => {
+  const approved = '<p>Press for Goblins</p><p>167-169 Great Portland St</p><p>London W1W 5PF</p>';
+  assert.deepEqual(inspectHumanText(approved, 'index.html'), []);
+  assert.equal(inspectHumanText('<p>Great Portland Street</p>', 'index.html').length, 1);
+});
