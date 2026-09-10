@@ -251,6 +251,11 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .worldglass.is-introduced canvas,
+  .worldglass-label.is-visible.is-introduced {
+    opacity: var(--depth-opacity, 1);
+  }
+
   .worldglass-label {
     transition: none;
   }

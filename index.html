@@ -1219,6 +1219,11 @@
       cursor: pointer;
     }
 
+    .hero.ready .cta:disabled {
+      pointer-events: none;
+      cursor: default;
+    }
+
     .cta {
       font-family: "Press Start 2P", monospace;
       font-size: calc(var(--h1-size, 2.38rem) * 0.9);
@@ -2238,6 +2243,15 @@
         transition: none !important;
       }
 
+      .about-contact-line.ready,
+      .about-rune-row.ready,
+      .about-address.ready,
+      #about-social.ready,
+      #ascii-output.settled {
+        opacity: 1 !important;
+        filter: none !important;
+      }
+
       .page {
         opacity: 1 !important;
       }
@@ -2551,7 +2565,15 @@
     }
 
     .about-address.ready {
-      opacity: 1;
+      animation: rewindIn 0.55s steps(5, end) forwards;
+    }
+
+    #screen-about .about-intro-glitch {
+      animation: rewindIn 0.55s steps(5, end) forwards;
+    }
+
+    #screen-about:not(.about-introduced) .principal-header {
+      opacity: 0;
     }
 
     .about-address span {
@@ -4102,10 +4124,14 @@
       /* run about tab animation sequence - entrance only fires on first visit */
       var _aboutAnimFired = false;
       function runAboutAnim() {
+        var screen = document.getElementById('screen-about');
         var cs = document.getElementById('about-cs');
         var social = document.getElementById('about-social');
         var addr = document.querySelector('.about-address');
         var dot = DOTS['about'];
+
+        if (_aboutAnimFired) return;
+        _aboutAnimFired = true;
 
         setTimeout(function () {
           if (dot && !dot.classList.contains('settled')) triggerFlicker(dot);
@@ -4115,57 +4141,51 @@
           if (cs && !cs.classList.contains('settled')) triggerFlicker(cs);
         }, 200);
 
-        /* contact line + rune row + address - glitch in on first visit only */
-        setTimeout(function () {
-          var contactLine = document.getElementById('about-contact-line');
-          var contactLine2 = document.getElementById('about-contact-line-2');
-          var runeRow = document.getElementById('about-rune-row');
-          requestAnimationFrame(function () {
-            requestAnimationFrame(function () {
-              if (!_aboutAnimFired) {
-                if (contactLine) contactLine.classList.add('ready');
-                if (contactLine2) contactLine2.classList.add('ready');
-                if (runeRow) runeRow.classList.add('ready');
-                if (addr) addr.classList.add('ready');
-                // scramble-on-miss: taps outside runes/eyes briefly cycle each rune through 2 random glyphs then revert
-                attachRuneScrambleOnMiss(runeRow);
-                // rune glitch - same btnGlitch flicker as the CTA, stops on decode
-                // first glitch fires after 1s; subsequent glitches schedule randomly 2-6s apart
-                var runeLink = document.getElementById('pfg-email-link');
-                if (runeLink) {
-                  function fireRuneGlitch() {
-                    if (runeLink._decoded) return;
-                    runeLink.classList.remove('btn-glitch');
-                    requestAnimationFrame(function () {
-                      requestAnimationFrame(function () {
-                        var done = false;
-                        function finish() { if (done) return; done = true; runeLink.classList.remove('btn-glitch'); scheduleRuneGlitch(); }
-                        runeLink.classList.add('btn-glitch');
-                        runeLink.addEventListener('animationend', function onEnd(e) {
-                          if (e.animationName !== 'btnGlitch') return;
-                          runeLink.removeEventListener('animationend', onEnd);
-                          finish();
-                        });
-                        setTimeout(finish, 400);
-                      });
-                    });
-                  }
-                  function scheduleRuneGlitch() {
-                    setTimeout(fireRuneGlitch, 2000 + Math.random() * 4000);
-                  }
-                  setTimeout(fireRuneGlitch, 1000);
-                }
-                _aboutAnimFired = true;
-              }
-            });
-          });
-        }, 350);
+        /* the whole screen materialises only on its first real entry. */
+        var contactLine = document.getElementById('about-contact-line');
+        var contactLine2 = document.getElementById('about-contact-line-2');
+        var runeRow = document.getElementById('about-rune-row');
+        var introPieces = [principalHeader, contactLine, contactLine2, runeRow, social, addr];
+        introPieces.forEach(function (piece, index) {
+          if (!piece) return;
+          setTimeout(function () {
+            if (piece === principalHeader && screen) screen.classList.add('about-introduced');
+            piece.classList.add('ready', 'about-intro-glitch');
+            setTimeout(function () { piece.classList.remove('about-intro-glitch'); }, 620);
+          }, 80 + index * 90);
+        });
 
+        attachRuneScrambleOnMiss(runeRow);
         setTimeout(function () {
-          if (social && !social.classList.contains('settled')) triggerFlicker(social);
           var asciiEl = document.getElementById('ascii-output');
           if (asciiEl && typeof asciiEl._runFlyIn === 'function') asciiEl._runFlyIn();
         }, 550);
+
+        /* rune glitch - same btnGlitch flicker as the CTA, stops on decode */
+        var runeLink = document.getElementById('pfg-email-link');
+        if (runeLink) {
+          function fireRuneGlitch() {
+            if (runeLink._decoded) return;
+            runeLink.classList.remove('btn-glitch');
+            requestAnimationFrame(function () {
+              requestAnimationFrame(function () {
+                var done = false;
+                function finish() { if (done) return; done = true; runeLink.classList.remove('btn-glitch'); scheduleRuneGlitch(); }
+                runeLink.classList.add('btn-glitch');
+                runeLink.addEventListener('animationend', function onEnd(e) {
+                  if (e.animationName !== 'btnGlitch') return;
+                  runeLink.removeEventListener('animationend', onEnd);
+                  finish();
+                });
+                setTimeout(finish, 400);
+              });
+            });
+          }
+          function scheduleRuneGlitch() {
+            setTimeout(fireRuneGlitch, 2000 + Math.random() * 4000);
+          }
+          setTimeout(fireRuneGlitch, 1000);
+        }
 
       }
 
@@ -4770,8 +4790,11 @@
         if (currentTab === 'home' && principalTitle) principalTitle.classList.add('is-visible');
         var cta = document.getElementById('cta');
         if (cta && !cta.classList.contains('settled')) {
-          /* mobile settles quickly after the unified reveal; desktop keeps its longer beat. */
-          setTimeout(function () {
+          function introduceReadyCta() {
+            if (cta.disabled) {
+              cta.addEventListener('pfgCtaReady', introduceReadyCta, { once: true });
+              return;
+            }
             triggerFlicker(cta);
             /* once the intro flicker settles, begin the idle existence glitch */
             cta.addEventListener('animationend', function onSettleEnd() {
@@ -4780,7 +4803,9 @@
             }, { once: true });
             /* safari fallback: start glitch after max flicker duration */
             setTimeout(function () { if (!cta._glitchTimeout) scheduleGlitch(cta); }, 700);
-          }, 500);
+          }
+          /* the CTA's rune translation is the final beat of the home introduction. */
+          setTimeout(introduceReadyCta, 500);
         }
         /* flicker the home dot */
         var dot = DOTS['home'];
@@ -5533,7 +5558,7 @@
     }
 
     cta.addEventListener('click', () => {
-      if (!ctaVisible) return; /* swallow click - not yet in view */
+      if (!ctaVisible || cta.disabled) return; /* swallow click until the intro has fully settled */
       /* make all eyes blink */
       eyes.forEach(e => { e.classList.add('blink'); setTimeout(() => e.classList.remove('blink'), 250); });
 
@@ -8482,6 +8507,9 @@
       });
       var decodeTimer = 0;
       var finished = false;
+      var decodeScheduled = false;
+      button.disabled = true;
+      button.setAttribute('aria-disabled', 'true');
       button.classList.add('is-rune-tutorial');
       var stopShimmer = decoder.startIdleShimmer(glyphs, function () { return finished; });
 
@@ -8491,18 +8519,34 @@
         stopShimmer();
         decoder.decode(glyphs, function () {
           button.classList.remove('is-rune-tutorial');
-          setTimeout(function () { row.replaceChildren(); }, 140);
+          setTimeout(function () {
+            row.replaceChildren();
+            button.disabled = false;
+            button.removeAttribute('aria-disabled');
+            button.dispatchEvent(new Event('pfgCtaReady'));
+          }, 140);
         }, { applyLayout: false });
       }
 
-      document.addEventListener('pfgCorrectionSettled', function () {
+      function scheduleDecode(delay) {
+        if (finished || decodeScheduled) return;
+        decodeScheduled = true;
         clearTimeout(decodeTimer);
-        decodeTimer = setTimeout(decode, 3000);
+        decodeTimer = setTimeout(decode, delay);
+      }
+
+      document.addEventListener('pfgCorrectionSettled', function () {
+        scheduleDecode(450);
+      }, { once: true });
+      if (window._heroReadyFired && matchMedia('(prefers-reduced-motion: reduce)').matches) scheduleDecode(0);
+      else if (window._heroReadyFired) scheduleDecode(650);
+      else document.addEventListener('heroReady', function () {
+        if (matchMedia('(prefers-reduced-motion: reduce)').matches) scheduleDecode(0);
       }, { once: true });
     }());
   </script>
   <script src="assets/worldglass/natural-earth-110m-land.js?v=20260906-4"></script>
-  <script src="assets/worldglass/worldglass.js?v=20260910-1"></script>
+  <script src="assets/worldglass/worldglass.js?v=20260910-2"></script>
 </body>
 
 </html>

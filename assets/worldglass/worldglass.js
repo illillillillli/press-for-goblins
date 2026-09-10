@@ -842,6 +842,12 @@
     }, 300));
   }
 
+  function portfolioIsActive(screen) {
+    return !!screen
+      && screen.classList.contains('is-active')
+      && screen.getAttribute('aria-hidden') === 'false';
+  }
+
   function touchDistance() {
     var points = Array.from(touchPoints.values());
     if (points.length < 2) return 0;
@@ -1047,13 +1053,16 @@
       visible = !document.hidden;
       if (visible && !frameId) { lastFrame = 0; frameId = requestAnimationFrame(animate); }
     });
+    document.addEventListener('activeScreenChanged', function (event) {
+      if (event.detail && event.detail.id === screen.id) startIntroduction();
+    });
+    if (portfolioIsActive(screen)) startIntroduction();
     if ('IntersectionObserver' in window) {
       new IntersectionObserver(function (entries) {
         visible = entries[0].isIntersecting && !document.hidden;
-        if (visible) startIntroduction();
         if (visible && !frameId) { lastFrame = 0; frameId = requestAnimationFrame(animate); }
       }).observe(root);
-    } else startIntroduction();
+    }
     reduced.addEventListener('change', function () { dockNodes.forEach(encodeLabel); });
     resize(layoutRevision);
     if (document.fonts && document.fonts.ready) document.fonts.ready.then(scheduleResize);

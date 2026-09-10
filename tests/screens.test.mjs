@@ -236,6 +236,10 @@ test('worldglass keeps every event stable, reactive and on the shared colour tok
   assert.match(worldglassSource, /if \(!connectionsIntroducedAt/);
   assert.match(worldglassSource, /\(dockNodes\.length - 1\) \* 115 \+ 260/);
   assert.match(worldglassSource, /var count = 1 \+ Math\.floor\(Math\.random\(\) \* 3\)/);
+  assert.match(worldglassSource, /activeScreenChanged/);
+  assert.match(worldglassSource, /event\.detail\.id === screen\.id\) startIntroduction\(\)/);
+  assert.match(worldglassSource, /if \(portfolioIsActive\(screen\)\) startIntroduction\(\)/);
+  assert.doesNotMatch(worldglassSource, /if \(visible\) startIntroduction\(\)/);
 });
 
 test('principal headings begin below the fully opaque top mist at every viewport', () => {
@@ -251,7 +255,7 @@ test('principal headings begin below the fully opaque top mist at every viewport
 test('the official portfolio surface loads worldglass', () => {
   assert.match(source, /href="assets\/worldglass\/worldglass\.css\?v=20260907-2"/);
   assert.match(source, /src="assets\/worldglass\/natural-earth-110m-land\.js\?v=20260906-4"/);
-  assert.match(source, /src="assets\/worldglass\/worldglass\.js\?v=20260910-1"/);
+  assert.match(source, /src="assets\/worldglass\/worldglass\.js\?v=20260910-2"/);
   assert.match(source, /titleLines: \['worldglass', ''\]/);
   assert.match(source, /id="screen-portfolio"[^>]+aria-label="worldglass"/);
   assert.match(worldglassSource, /stack\.replaceWith\(root\)/);
@@ -337,6 +341,13 @@ test('opportunities count only on their active screen and at least half inside t
   assert.match(source, /function pfgOpportunityIsVisible\(element\)/);
   assert.match(source, /element\.closest\('\.screen'\)/);
   assert.match(source, /screen\.classList\.contains\('is-active'\)/);
+  assert.match(source, /if \(!ctaVisible \|\| cta\.disabled\) return/);
+  assert.match(source, /button\.disabled = true/);
+  assert.match(source, /button\.dispatchEvent\(new Event\('pfgCtaReady'\)\)/);
+  assert.match(source, /document\.addEventListener\('pfgCorrectionSettled',[\s\S]{0,140}?scheduleDecode\(450\)/);
+  assert.match(source, /cta\.addEventListener\('pfgCtaReady', introduceReadyCta/);
+  assert.match(source, /#screen-about:not\(\.about-introduced\) \.principal-header/);
+  assert.match(source, /piece === principalHeader && screen\) screen\.classList\.add\('about-introduced'\)/);
   assert.match(source, /screen\.getAttribute\('aria-hidden'\) !== 'false'/);
   assert.match(source, /\(visibleWidth \* visibleHeight\) \/ area >= \.5/);
   assert.match(source, /activeScreenChanged'[\s\S]{0,100}pfgCheckVisibleOpportunities/);
