@@ -839,7 +839,7 @@
         --mobile-mist-top-opaque: 140px;
         --mobile-mist-dock-zero-depth: 72px;
         --mobile-mist-bottom-depth: 136px;
-        --mobile-content-inset: 20px;
+        --mobile-content-inset: 4px;
         mask-image: linear-gradient(to bottom,
             transparent 0px,
             transparent var(--mobile-mist-top-zero),
@@ -918,7 +918,45 @@
     /* ipad mini (601-900px) - extra top clearance so title clears the eye shadow */
     @media (min-width: 601px) and (max-width: 900px) {
       .screen {
-        padding-top: 210px;
+        padding-top: 190px;
+        padding-left: 32px;
+        padding-right: 32px;
+        padding-bottom: 104px;
+      }
+
+      #screen-hero .principal-title-envelope {
+        height: 96px;
+      }
+
+      #screen-hero .principal-divider {
+        margin-top: 8px;
+      }
+
+      #screen-hero .hero {
+        gap: 8px;
+      }
+
+      #screen-hero .hero .body {
+        margin-top: 12px;
+      }
+
+      #screen-hero .hero p {
+        font-size: 19px;
+        line-height: 1.7;
+      }
+
+      #screen-hero .hero p + p {
+        margin-top: 10px;
+      }
+
+      #screen-hero .cta {
+        padding-block: 10px;
+      }
+    }
+
+    @media (min-width: 601px) and (max-width: 900px) and (min-height: 900px) {
+      body.home-active #screen-hero {
+        overflow-y: hidden;
       }
     }
 
@@ -3922,6 +3960,7 @@
 
       if (window._syncPrincipalHeaderVisibility) window._syncPrincipalHeaderVisibility(id);
       document.body.classList.toggle('terminal-active', id === 'screen-term');
+      document.body.classList.toggle('home-active', id === 'screen-hero');
       document.dispatchEvent(new CustomEvent('activeScreenChanged', { detail: { id: id } }));
       return target;
     }

@@ -135,6 +135,10 @@ test('homepage identifies Noah and corrects singular studio ownership to the col
   assert.doesNotMatch(source, /we-hand-e[\s\S]{0,1800}setTimeout\(\(\) => node\.animate/);
   assert.match(source, /<\/svg><\/span><span class="sr-only">we<\/span> run a narrative studio/);
   assert.match(source, /the word “we” is a handwritten correction to “i”\./);
+  assert.match(source, /--mobile-content-inset: 4px;/);
+  assert.match(source, /@media \(min-width: 601px\) and \(max-width: 900px\)[\s\S]{0,900}?#screen-hero \.hero p \{\s*font-size: 19px;\s*line-height: 1\.7;/);
+  assert.match(source, /@media \(min-width: 601px\) and \(max-width: 900px\) and \(min-height: 900px\)[\s\S]{0,180}?body\.home-active #screen-hero \{\s*overflow-y: hidden;/);
+  assert.match(source, /document\.body\.classList\.toggle\('home-active', id === 'screen-hero'\)/);
 });
 
 test('mobile query navigation returns home and its eyes leave with transcript scroll', () => {
