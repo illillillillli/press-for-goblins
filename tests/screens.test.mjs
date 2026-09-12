@@ -85,6 +85,13 @@ test('principal views share one physical heading and divider at every viewport',
   assert.doesNotMatch(source, /#screen-(?:hero|about|portfolio) \.principal-(?:title-envelope|divider)/);
   assert.match(source, /var el = document\.getElementById\('principal-title'\)/);
   assert.match(source, /document\.addEventListener\('principalTitleChanged', fitTitle\)/);
+  assert.match(source, /#about-rune-row \{\s*margin: var\(--sp-4\) 0 0;/);
+  assert.match(source, /\.bottom-rule \{\s*margin: var\(--sp-4\) 0 var\(--sp-8\);/);
+  assert.match(source, /#about-contact-line-2 \{\s*margin-top: var\(--sp-4\);/);
+  assert.doesNotMatch(source, /#about-contact-line,[\s\S]{0,80}?margin-bottom: -16px/);
+  assert.match(source, /--mobile-page-gutter: var\(--sp-4\);/);
+  assert.match(source, /\.cta-wrap \{\s*margin-top: var\(--mobile-space-group\);\s*margin-bottom: 0;/);
+  assert.match(source, /\.hero \.contact-rule,[\s\S]{0,80}?margin-block: var\(--mobile-space-group\) 0;/);
 });
 
 test('principal tab changes are atomic and use the settled opening cadence everywhere', () => {

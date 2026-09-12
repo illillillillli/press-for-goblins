@@ -220,7 +220,7 @@
       --mobile-space-compact: var(--sp-2);
       --mobile-space-group: var(--sp-4);
       --mobile-space-section: var(--sp-6);
-      --mobile-page-gutter: var(--sp-5);
+      --mobile-page-gutter: var(--sp-4);
     }
 
     *, *::before, *::after {
@@ -918,7 +918,7 @@
     /* ipad mini (601-900px) - extra top clearance so title clears the eye shadow */
     @media (min-width: 601px) and (max-width: 900px) {
       .screen {
-        padding-top: 190px;
+        padding-top: 192px;
         padding-left: 32px;
         padding-right: 32px;
         padding-bottom: 104px;
@@ -937,7 +937,7 @@
       }
 
       #screen-hero .hero .body {
-        margin-top: 12px;
+        margin-top: 16px;
       }
 
       #screen-hero .hero p {
@@ -946,11 +946,11 @@
       }
 
       #screen-hero .hero p + p {
-        margin-top: 10px;
+        margin-top: 8px;
       }
 
       #screen-hero .cta {
-        padding-block: 10px;
+        padding-block: 8px;
       }
     }
 
@@ -1332,6 +1332,7 @@
 
     @media (max-width: 600px) {
       .cta-wrap {
+        margin-top: var(--mobile-space-group);
         margin-bottom: 0;
         /* bottom clearance comes from .screen padding-bottom - matches portfolio/about */
       }
@@ -2533,7 +2534,7 @@
       flex-direction: column;
       align-items: center;
       text-align: center;
-      gap: 16px;
+      gap: 0;
     }
 
     /* coming soon on about + portfolio tabs - same font/size as .cta, flickers in then breathes */
@@ -2646,16 +2647,12 @@
       }
     }
 
-    #about-contact-line-2,
     #port-body-2 {
       margin-top: 0;
     }
 
-    @media (min-width: 601px) {
-      #about-contact-line,
-      #port-body-1 {
-        margin-bottom: -16px;
-      }
+    #about-contact-line-2 {
+      margin-top: var(--sp-4);
     }
 
     /* text content column - matches .hero .body max-width so all tabs share the same left edge */
@@ -2665,14 +2662,14 @@
       align-self: center;
       display: flex;
       flex-direction: column;
-      gap: 16px;
-      margin-top: 16px;
-      /* 32px spacing below top divider */
+      gap: 0;
+      margin-top: var(--sp-4);
+      /* one shared group interval below the top divider */
     }
 
     /* about - matches field reports tab-body-col gap */
     #about-hero .tab-body-col {
-      gap: 16px;
+      gap: 0;
     }
 
     /* contact-rules on tab screens match body column width */
@@ -2682,25 +2679,16 @@
     }
 
     #about-rune-row {
-      margin-top: 14px;
-      /* breathing above - matches .cta padding-top */
-      margin-bottom: 14px;
-      /* breathing below - matches .cta padding-bottom */
+      margin: var(--sp-4) 0 0;
     }
 
     .bottom-rule {
-      margin-top: 16px;
-      /* 32px spacing below email CTA */
-      margin-bottom: 32px;
-      /* extra padding before the ASCII star field */
+      margin: var(--sp-4) 0 var(--sp-8);
     }
 
     @media (max-width: 600px) {
       .bottom-rule {
-        margin-top: 16px;
-        /* 32px spacing below email CTA */
-        margin-bottom: 24px;
-        /* extra padding before the star field */
+        margin: var(--mobile-space-group) 0 var(--mobile-space-section);
       }
 
       /* compensate: zero top margin so body lands same as home */
@@ -2709,7 +2697,7 @@
       }
 
       .tab-hero {
-        gap: 16px;
+        gap: 0;
         padding-bottom: 96px;
         align-items: flex-start;
       }
@@ -3463,7 +3451,7 @@
 
       .hero .contact-rule,
       .tab-hero>.contact-rule {
-        margin-block: 20px 0;
+        margin-block: var(--mobile-space-group) 0;
       }
 
       .term-options-group {
@@ -3539,10 +3527,13 @@
 
       #about-contact-line,
       #port-body-1,
-      #about-contact-line-2,
       #port-body-2 {
         margin-top: 0;
         margin-bottom: 0;
+      }
+
+      #about-contact-line-2 {
+        margin: var(--mobile-space-group) 0 0;
       }
 
       #about-rune-row {
@@ -3550,11 +3541,11 @@
       }
 
       .tab-hero > .bottom-rule {
-        margin: var(--mobile-space-section) 0 0;
+        margin: var(--mobile-space-group) 0 0;
       }
 
       #about-hero > .bottom-rule {
-        margin-top: var(--mobile-space-section);
+        margin-top: var(--mobile-space-group);
       }
 
       /* the divider closes the contact/rune section. the star field begins a
