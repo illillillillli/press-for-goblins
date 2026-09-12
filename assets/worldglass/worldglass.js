@@ -12,6 +12,11 @@
     { id: 'thought-bubble', name: 'thought bubble', city: 'harrogate', date: '15 nov', lat: 53.9921, lon: -1.5418 },
     { id: 'goblin-hq', name: 'goblin hq', city: 'london', date: '', lat: 51.5072, lon: -.1276 }
   ];
+  var mobileLabelOrbit = [
+    { lat: 42, lon: -160 }, { lat: 8, lon: -120 }, { lat: -30, lon: -80 },
+    { lat: 34, lon: -40 }, { lat: 15, lon: 0 }, { lat: -38, lon: 40 },
+    { lat: 60, lon: 80 }, { lat: -18, lon: 120 }, { lat: 44, lon: 160 }
+  ];
   var runes = {
     A:'M9.2 9.6 L6.4 11.9 L1.4 10 L5.3 5.1 L9.2 9.6',B:'M3.8 6.3 L4.6 5.6 L5.5 5.2 L6.6 5.3 L7.6 5.7 L8.3 6.4 L8.7 7.4 L8.8 8.4 L8.4 9.4',C:'M5.1 5.3 Q7.4 3 9.7 5.3 Q7.4 7.6 5.1 5.3 M5 11 Q7.4 8.6 9.8 11 Q7.4 13.4 5 11',D:'M3.2 4 C8.4 7.3 2.6 10.5 7.6 13 M2 4 L4.4 4 M6.4 13 L8.8 13',E:'M3.5 9 Q7.5 6.2 11.5 9 Q7.5 11.8 3.5 9 M7 9 L8 9',F:'M4.3 4.5 L4.3 12.5 M4.3 6.6 L8.7 6.6 M4.3 10.4 L8.7 10.4',G:'M1.6 9.5 Q5.9 1.8 10.2 9.5 M3.5 9.5 Q5.9 5.2 8.3 9.5',H:'M5.3 4.3 L5.3 12.2 M9.9 7 Q8.8 9.5 9.9 12.2',I:'M6.2 5.9 L8.7 8.4 L6.2 10.9 L3.7 8.4 Z',J:'M6.6 1.8 L6.6 11.3 M1 5.8 L9.2 6.3',K:'M3.7 9.3 L10.5 9.3 M3.7 9.3 L3.7 5.6 L4.9 6.3 M7.1 9.3 L7.1 5 L8 5.5 M10.5 9.3 L10.5 5.4 L9.2 6',L:'M5.3 3.5 L5.3 13.5 M7 7.6 Q9 8.8 7 10',M:'M2.8 5.7 L9.9 5.7 M2.8 5.7 L2.7 11.1 M5.3 5.7 L5.3 14.8 M7.4 5.7 L7.4 12.1',N:'M2 5.1 L5 11.9 L8 7.5 L11 10.7',O:'M4.3 4.7 Q2.5 7.95 4.3 11.2 M9.3 4.7 Q11.1 7.95 9.3 11.2',P:'M3.5 5.8 Q9.6 6.7 9.9 11.4 M8.9 7.7 Q3.7 11.1 4.3 10.7',Q:'M2.9 3.5 L4 3 L5.4 3 L6.4 3.6 L6.7 4.9 L6.1 6.2 L4.9 6.8 L3.6 6.5 L2.7 5.5 M2.7 5.5 Q3.4 7.1 1.5 7.5',R:'M6.9 5.6 L8.6 8.4 L6.9 11.2 L5.2 8.4 Z',S:'M5.5 7 L4 10.5 M8 5.5 L6.5 10.5 M10.5 5.5 L9 10.5',T:'M6.3 4.5 L9.9 11.1 L5.1 10.5 L7.6 8.9 L3.8 10.4 L9.3 6 L6.3 4.5',U:'M1 7.1 Q3 3.3 5 7.1 Q7 10.9 9 7.1 Q10 3.3 11 7.1',V:'M5 5.7 Q8.1 8.3 8.5 12.1 Q7.4 12.6 6.8 12.1',W:'M5.3 3 L6.6 3.1 L7.2 4.3 L6.9 5.6 L5.7 6.3 L4.4 6.2 L3.5 5.2 L3.5 3.8 L4.4 3 M5.3 6.4 Q5.4 10.2 6.1 14',X:'M7.8 6.2 L10.5 6.2 M9.5 4.5 L9.5 7.9',Y:'M2.8 7.6 L3.8 7.6 M4.2 10.2 L5.2 10.2',Z:'M9.2 7.4 L6.4 5.1 L1.4 7 L5.3 11.9 L9.2 7.4'
   };
@@ -480,10 +485,43 @@
   function eventState(event) {
     var point = rotate(sphere(event.lat, event.lon));
     var screen = project(point);
-    var opacity = compactDesktopWorldglass()
+    var eventIndex = events.indexOf(event);
+    var orbit = mobileLabelOrbit[eventIndex] || { lat: 0, lon: 0 };
+    var orbitPoint = narrowWorldglass()
+      ? rotate(sphere(orbit.lat, orbit.lon))
+      : point;
+    var orbitScreen = narrowWorldglass() ? project(orbitPoint) : screen;
+    var opacity = narrowWorldglass()
+      ? Math.max(0, Math.min(1, (orbitPoint.z - .02) / .32))
+      : compactDesktopWorldglass()
       ? Math.max(0, Math.min(1, (point.z - .08) / .28))
       : Math.max(0, Math.min(1, (point.z + .18) / .34));
-    return { event: event, point: point, screen: screen, opacity: opacity };
+    return { event: event, point: point, screen: screen, opacity: opacity, orbitPoint: orbitPoint, orbitScreen: orbitScreen };
+  }
+
+  function positionMobileOrbit(states) {
+    if (!narrowWorldglass()) return;
+    var inset = 12;
+    states.forEach(function (state, index) {
+      var button = dockNodes[index];
+      if (!button) return;
+      var buttonWidth = button.offsetWidth;
+      var buttonHeight = button.offsetHeight;
+      var radialX = state.orbitScreen.x - centreX;
+      var radialY = state.orbitScreen.y - centreY;
+      var radialLength = Math.max(1, Math.hypot(radialX, radialY));
+      radialX /= radialLength;
+      radialY /= radialLength;
+      var labelX = state.orbitScreen.x + radialX * 54 - buttonWidth * .5;
+      var labelY = state.orbitScreen.y + radialY * 38 - buttonHeight * .5;
+      labelX = Math.max(inset, Math.min(width - inset - buttonWidth, labelX));
+      labelY = Math.max(lastMobileLayout.top, Math.min(lastMobileLayout.bottom - buttonHeight, labelY));
+      button.dataset.side = labelX + buttonWidth * .5 < state.screen.x ? 'left' : 'right';
+      button.style.left = '0px';
+      button.style.right = 'auto';
+      button.style.top = '0px';
+      button.style.transform = 'translate3d(' + labelX.toFixed(1) + 'px,' + labelY.toFixed(1) + 'px,0)';
+    });
   }
 
   function chooseAssignments(force) {
@@ -586,18 +624,6 @@
         stageRect.bottom - bottomDepth - rootRect.top,
         navRect ? navRect.top - 12 - rootRect.top : height
       );
-      var labelHeights = dockNodes.map(function (button) { return button.getBoundingClientRect().height; });
-      var maxLabelHeight = Math.max.apply(Math, labelHeights);
-      var usableHeight = Math.max(maxLabelHeight * dockNodes.length, safeBottom - safeTop);
-      var labelStep = dockNodes.length > 1
-        ? Math.max(maxLabelHeight, (usableHeight - maxLabelHeight) / (dockNodes.length - 1))
-        : 0;
-      if (safeTop + labelStep * (dockNodes.length - 1) + maxLabelHeight > safeBottom) {
-        safeTop = Math.max(0, safeBottom - (labelStep * (dockNodes.length - 1) + maxLabelHeight));
-      }
-      dockNodes.forEach(function (button, index) {
-        button.style.top = Math.round(safeTop + index * labelStep) + 'px';
-      });
       mobileSafe = { top: safeTop, bottom: safeBottom };
       root.style.setProperty('--worldglass-safe-top', Math.round(safeTop) + 'px');
       root.style.setProperty('--worldglass-safe-bottom', Math.round(safeBottom) + 'px');
@@ -643,10 +669,10 @@
       }
       context.restore();
     }
-    var labelOpacity = narrowWorldglass() ? 1 : width < 1100 ? depthOpacity : (state.event.id === selectedId ? 1 : state.opacity);
+    var labelOpacity = width < 1100 ? depthOpacity : (state.event.id === selectedId ? 1 : state.opacity);
     button.style.setProperty('--depth-opacity', labelOpacity.toFixed(3));
     var interactive = narrowWorldglass()
-      ? true
+      ? depthOpacity >= .72
       : compactDesktopWorldglass()
         ? depthOpacity >= .72
         : state.event.id === selectedId || state.opacity >= .55;
@@ -731,6 +757,7 @@
       var event = events.find(function (item) { return item.id === id; });
       return event ? eventState(event) : null;
     }).filter(Boolean);
+    positionMobileOrbit(states);
     states.forEach(function (state, index) {
       drawLeader(state, dockNodes[index], time || 0);
     });
@@ -777,7 +804,7 @@
     height = rect.height;
     root.classList.toggle('is-narrow-worldglass', mobile);
     root.classList.toggle('is-compact-desktop', !mobile && width < 1100);
-    var nextDefaultZoom = width < 1100 ? 2.05 : 1;
+    var nextDefaultZoom = mobile ? 1.85 : width < 1100 ? 1.9 : 1;
     if (!zoomInitialised || Math.abs(targetZoom - defaultZoom) < .001) {
       zoom = nextDefaultZoom;
       targetZoom = nextDefaultZoom;
@@ -793,17 +820,17 @@
     var rails = positionDocks();
     var safeTop = rails.mobileSafe ? rails.mobileSafe.top : height * .22;
     var safeBottom = rails.mobileSafe ? rails.mobileSafe.bottom : height * .86;
-    centreY = (safeTop + safeBottom) * .5;
+    centreY = (safeTop + safeBottom) * .5 + (mobile ? Math.min(28, height * .03) : 0);
     var railClearance = width < 1100 ? -24 : 18;
     var horizontalRadius = Math.min(
       centreX - rails.leftInner - railClearance,
       rails.rightInner - centreX - railClearance
     );
-    var fittedRadius = Math.min((width - 32) * .5, (safeBottom - safeTop) * .5);
+    var fittedRadius = Math.min((width - (mobile ? 56 : 32)) * .5, (safeBottom - safeTop) * .5);
     baseRadius = mobile
       ? Math.max(64, fittedRadius / nextDefaultZoom)
       : compactDesktopWorldglass()
-        ? Math.max(64, Math.min(width * .16, (safeBottom - safeTop) * .46))
+        ? Math.max(64, Math.min(width * .15, (safeBottom - safeTop) * .44))
         : Math.max(64, Math.min(width * .25, (safeBottom - safeTop) * .46, horizontalRadius));
     radius = baseRadius * zoom;
     if (mobile) lastMobileLayout = { width: width, height: height, top: safeTop, bottom: safeBottom, revision: revision || 0 };

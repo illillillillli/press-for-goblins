@@ -184,7 +184,7 @@ test('worldglass keeps every event stable, reactive and on the shared colour tok
   assert.match(worldglassSource, /context\.lineDashOffset = active/);
   assert.match(worldglassSource, /candidate\.distance <= 14/);
   assert.match(worldglassSource, /if \(markerButton\) activateLabel\(markerButton\)/);
-  assert.match(worldglassSource, /nextDefaultZoom = width < 1100 \? 2\.05 : 1/);
+  assert.match(worldglassSource, /nextDefaultZoom = mobile \? 1\.85 : width < 1100 \? 1\.9 : 1/);
   assert.match(worldglassSource, /zoom \/ defaultZoom/);
   assert.match(worldglassSource, /if \(event\.metaKey \|\| event\.ctrlKey\) return/);
   assert.match(worldglassSource, /function dockLayout\(\)/);
@@ -193,8 +193,8 @@ test('worldglass keeps every event stable, reactive and on the shared colour tok
   assert.match(worldglassSource, /viewportTop = viewport \? viewport\.offsetTop : 0/);
   assert.match(worldglassSource, /safeBottom = Math\.min\(/);
   assert.match(worldglassSource, /canvas\.style\.width = width \+ 'px'/);
-  assert.match(worldglassSource, /fittedRadius = Math\.min\(\(width - 32\) \* \.5, \(safeBottom - safeTop\) \* \.5\)/);
-  assert.match(worldglassSource, /compactDesktopWorldglass\(\)\s*\? Math\.max\(64, Math\.min\(width \* \.16, \(safeBottom - safeTop\) \* \.46\)\)/);
+  assert.match(worldglassSource, /fittedRadius = Math\.min\(\(width - \(mobile \? 56 : 32\)\) \* \.5, \(safeBottom - safeTop\) \* \.5\)/);
+  assert.match(worldglassSource, /compactDesktopWorldglass\(\)\s*\? Math\.max\(64, Math\.min\(width \* \.15, \(safeBottom - safeTop\) \* \.44\)\)/);
   assert.match(worldglassSource, /visualViewport\.addEventListener\('resize', scheduleResize\)/);
   assert.match(worldglassSource, /new ResizeObserver\(scheduleResize\)\.observe\(root\)/);
   assert.match(worldglassSource, /dragThreshold = event\.pointerType === 'touch' \? 8 : 3/);
@@ -213,7 +213,7 @@ test('worldglass keeps every event stable, reactive and on the shared colour tok
   assert.match(worldglassSource, /compactDesktopWorldglass\(\)[\s\S]{0,100}?\(point\.z - \.08\) \/ \.28/);
   assert.match(worldglassSource, /: Math\.max\(0, Math\.min\(1, \(point\.z \+ \.18\) \/ \.34\)\)/);
   assert.doesNotMatch(worldglassSource, /positionMobileRecords\(states\)/);
-  assert.match(worldglassSource, /var labelOpacity = narrowWorldglass\(\) \? 1 : width < 1100 \? depthOpacity/);
+  assert.match(worldglassSource, /var labelOpacity = width < 1100 \? depthOpacity/);
   assert.match(worldglassSource, /if \(moved && document\.activeElement && document\.activeElement\.closest\('\.worldglass-label'\)\)/);
   assert.match(worldglassSource, /function beginPinch\(\) \{/);
   assert.match(worldglassSource, /function updatePinch\(\) \{/);
@@ -225,7 +225,12 @@ test('worldglass keeps every event stable, reactive and on the shared colour tok
   assert.match(worldglassSource, /return \{ markerX: state\.screen\.x, markerY: state\.screen\.y, endX: endX, endY: endY \}/);
   assert.doesNotMatch(worldglassSource, /markerX = endX/);
   assert.doesNotMatch(worldglassSource, /faceScale|mobileRecordOffsets|mobileFacingOffsets|mobileLabelOverlaps|nearestMobileLabelPosition/);
-  assert.match(worldglassSource, /narrowWorldglass\(\)\s*\? true/);
+  assert.match(worldglassSource, /var mobileLabelOrbit = \[/);
+  assert.match(worldglassSource, /rotate\(sphere\(orbit\.lat, orbit\.lon\)\)/);
+  assert.match(worldglassSource, /function positionMobileOrbit\(states\)/);
+  assert.match(worldglassSource, /positionMobileOrbit\(states\)/);
+  assert.match(worldglassSource, /button\.style\.transform = 'translate3d\('/);
+  assert.match(worldglassSource, /narrowWorldglass\(\)\s*\? depthOpacity >= \.72/);
   assert.match(worldglassSource, /compactDesktopWorldglass\(\)\s*\? depthOpacity >= \.72/);
   assert.match(worldglassSource, /: state\.event\.id === selectedId \|\| state\.opacity >= \.55/);
   assert.match(worldglassSource, /narrowWorldglass\(\)\s*\? Math\.max\(labelX, Math\.min\(labelX \+ labelRect\.width, state\.screen\.x\)\)/);
@@ -276,9 +281,9 @@ test('principal headings begin below the fully opaque top mist at every viewport
 });
 
 test('the official portfolio surface loads worldglass', () => {
-  assert.match(source, /href="assets\/worldglass\/worldglass\.css\?v=20260912-6"/);
+  assert.match(source, /href="assets\/worldglass\/worldglass\.css\?v=20260912-7"/);
   assert.match(source, /src="assets\/worldglass\/natural-earth-110m-land\.js\?v=20260906-4"/);
-  assert.match(source, /src="assets\/worldglass\/worldglass\.js\?v=20260912-6"/);
+  assert.match(source, /src="assets\/worldglass\/worldglass\.js\?v=20260912-7"/);
   assert.match(source, /titleLines: \['worldglass', ''\]/);
   assert.match(source, /id="screen-portfolio"[^>]+aria-label="worldglass"/);
   assert.match(worldglassSource, /stack\.replaceWith\(root\)/);

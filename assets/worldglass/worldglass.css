@@ -240,7 +240,7 @@
   padding: 3px 8px;
   max-width: calc(100% - 32px);
   background: rgba(0, 0, 0, .82);
-  will-change: opacity;
+  will-change: opacity, transform;
 }
 
 .worldglass.is-narrow-worldglass .worldglass-label.rewind-in {
