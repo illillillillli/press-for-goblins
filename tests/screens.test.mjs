@@ -127,11 +127,28 @@ test('homepage identifies Noah and corrects singular studio ownership to the col
   assert.match(source, /newSubjectEl\.style\.width = '38px'/);
   assert.match(source, /newSubjectEl\.style\.marginRight = '0px'/);
   assert.match(source, /newSubjectEl\.style\.marginRight = '-4px'/);
+  assert.match(source, /function syncCorrectionAlignment\(\)/);
+  assert.match(source, /newSubjectEl\.classList\.toggle\('is-line-start', correctionLeft <= paragraphLeft \+ 2\)/);
+  assert.match(source, /#new-subject\.is-line-start svg \{\s*margin-left: 0;/);
   assert.doesNotMatch(source, /letter\.style\.transform = `translate\(|570 \+ Math\.random/);
   assert.doesNotMatch(source, /hero\.classList\.remove\('ready'\);\s*settleCorrection\(\)/);
   assert.doesNotMatch(source, /we-hand-e[\s\S]{0,1800}setTimeout\(\(\) => node\.animate/);
   assert.match(source, /<\/svg><\/span><span class="sr-only">we<\/span> run a narrative studio/);
   assert.match(source, /the word “we” is a handwritten correction to “i”\./);
+});
+
+test('mobile query navigation returns home and its eyes leave with transcript scroll', () => {
+  assert.match(source, /history\.pushState\(\{ pfgScreen: 'term' \}, '', '#query'\)/);
+  assert.match(source, /window\.addEventListener\('popstate',[\s\S]{0,400}?returnToHomepage\(true\)/);
+  assert.match(source, /if \(tab === 'home' && \(termActive \|\| receiptActive\)\) \{\s*leaveQueryForHomepage\(\)/);
+  assert.match(source, /if \(history\.state && history\.state\.pfgScreen === 'term'\) \{\s*history\.back\(\);\s*returnToHomepage\(true\)/);
+  assert.match(source, /if \(!h && currentTab === 'home' && terminalStarted && heroActive\) return;/);
+  assert.match(source, /if \(ctaBtn\) ctaBtn\.innerText = 'to the goblins'/);
+  assert.match(source, /body\.terminal-active \.eyes \{[\s\S]{0,160}?--terminal-eye-scroll/);
+  assert.match(source, /document\.body\.classList\.toggle\('terminal-active', id === 'screen-term'\)/);
+  assert.match(source, /const offset = Math\.min\(180, Math\.max\(0, terminal\.scrollTop\)\)/);
+  assert.match(source, /document\.body\.style\.setProperty\('--terminal-eye-scroll', offset \+ 'px'\)/);
+  assert.doesNotMatch(source, /eyesLockedVisible|restoreTimer = setTimeout/);
 });
 
 test('email runes decode on deliberate activation, remain readable, then open the mail app', () => {

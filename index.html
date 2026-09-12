@@ -451,6 +451,11 @@
     }
 
     @media (max-width:600px) {
+      body.terminal-active .eyes {
+        transform: translateX(-50%) translateY(calc(-1 * var(--terminal-eye-scroll, 0px)));
+        transition: none;
+      }
+
       .eyes.hidden-mobile {
         transform: translateX(-50%) translateY(-160px);
         opacity: 0;
@@ -1187,6 +1192,10 @@
       height: 14px;
       /* optical centre between the pencil's endpoint and the following "run". */
       margin-left: 8px;
+    }
+
+    #new-subject.is-line-start svg {
+      margin-left: 0;
     }
 
     #new-subject .we-hand-stroke {
@@ -3912,6 +3921,7 @@
       });
 
       if (window._syncPrincipalHeaderVisibility) window._syncPrincipalHeaderVisibility(id);
+      document.body.classList.toggle('terminal-active', id === 'screen-term');
       document.dispatchEvent(new CustomEvent('activeScreenChanged', { detail: { id: id } }));
       return target;
     }
@@ -4642,30 +4652,53 @@
         doSwitch();
       }
 
+      function returnToHomepage(fromHistory) {
+        var screenTerm = document.getElementById('screen-term');
+        var screenReceipt = document.getElementById('screen-receipt');
+        var termActive = screenTerm && screenTerm.classList.contains('is-active');
+        var receiptActive = screenReceipt && screenReceipt.classList.contains('is-active');
+        if ((termActive || receiptActive) && terminalStarted && !hasSubmitted) {
+          terminalPaused = true;
+          var ctaBtn = document.getElementById('cta');
+          if (ctaBtn) ctaBtn.innerText = 'to the goblins';
+        }
+        activateScreen('screen-hero');
+        renderPrincipalHeader('home');
+        var eyeNav = document.querySelector('.footer-nav');
+        if (eyeNav) eyeNav.classList.remove('hidden');
+        setDot('home');
+        currentTab = 'home';
+        if (!fromHistory) history.replaceState(null, '', window.location.pathname);
+      }
+      window._returnToHomepage = returnToHomepage;
+
+      function leaveQueryForHomepage() {
+        if (history.state && history.state.pfgScreen === 'term') {
+          history.back();
+          returnToHomepage(true);
+        } else returnToHomepage(false);
+      }
+      window._leaveQueryForHomepage = leaveQueryForHomepage;
+
+      window._enterQueryHistory = function () {
+        if (history.state && history.state.pfgScreen === 'term') return;
+        history.pushState({ pfgScreen: 'term' }, '', '#query');
+      };
+
+      window.addEventListener('popstate', function () {
+        var term = document.getElementById('screen-term');
+        var receipt = document.getElementById('screen-receipt');
+        if ((term && term.classList.contains('is-active')) || (receipt && receipt.classList.contains('is-active'))) {
+          returnToHomepage(true);
+        }
+      });
+
       /* - eyes click: return to home screen (instant, no replay) - */
       var eyesEl = document.getElementById('eyes');
       if (eyesEl) {
         eyesEl.addEventListener('click', function () {
           if (!heroLoaded) return; /* ignore click before first hero sequence completes */
-          var screenTerm = document.getElementById('screen-term');
-          var screenReceipt = document.getElementById('screen-receipt');
-          var termActive = screenTerm && screenTerm.classList.contains('is-active');
-          var receiptActive = screenReceipt && screenReceipt.classList.contains('is-active');
-          /* if mid-session terminal (not submitted), mark paused so CTA resumes */
-          if ((termActive || receiptActive) && terminalStarted && !hasSubmitted) {
-            terminalPaused = true;
-            var ctaBtn = document.getElementById('cta');
-            if (ctaBtn) ctaBtn.innerText = 'resume chat';
-          }
-          /* show hero directly - bypass switchTab's currentTab guard */
-          activateScreen('screen-hero');
-          renderPrincipalHeader('home');
-          var _eyeNav = document.querySelector('.footer-nav');
-          if (_eyeNav) _eyeNav.classList.remove('hidden');
-          setDot('home');
-          currentTab = 'home';
-          history.replaceState(null, '', window.location.pathname);
-          /* eyes are already open-locked - no replayHero needed */
+          leaveQueryForHomepage();
         });
       }
 
@@ -4721,6 +4754,12 @@
           var btn = e.target.closest('.nav-btn');
           if (!btn) return;
           var tab = btn.getAttribute('data-tab');
+          var termActive = document.getElementById('screen-term').classList.contains('is-active');
+          var receiptActive = document.getElementById('screen-receipt').classList.contains('is-active');
+          if (tab === 'home' && (termActive || receiptActive)) {
+            leaveQueryForHomepage();
+            return;
+          }
           if (tab === currentTab) return;
           switchTab(tab, false);
         });
@@ -4754,6 +4793,8 @@
       /* - handle browser back/forward - */
       window.addEventListener('hashchange', function () {
         var h = window.location.hash.replace('#', '');
+        var heroActive = document.getElementById('screen-hero').classList.contains('is-active');
+        if (!h && currentTab === 'home' && terminalStarted && heroActive) return;
         var tab = (h === 'about' || h === 'portfolio') ? h : 'home';
         switchTab(tab, false);
       });
@@ -5361,7 +5402,21 @@
         path.style.strokeDashoffset = '0';
         path.style.opacity = path.dataset.inkOpacity || '1';
       });
+      syncCorrectionAlignment();
     }
+
+    function syncCorrectionAlignment() {
+      newSubjectEl.classList.remove('is-line-start');
+      if (window.innerWidth > 600 || newSubjectEl.getBoundingClientRect().width < 30) return;
+      requestAnimationFrame(() => {
+        const paragraph = newSubjectEl.closest('p');
+        if (!paragraph) return;
+        const paragraphLeft = paragraph.getBoundingClientRect().left;
+        const correctionLeft = newSubjectEl.getBoundingClientRect().left;
+        newSubjectEl.classList.toggle('is-line-start', correctionLeft <= paragraphLeft + 2);
+      });
+    }
+    window.addEventListener('resize', syncCorrectionAlignment);
 
     function resetCorrection() {
       const strikePath = subjectEl.querySelector('#strikethrough-svg path');
@@ -5477,67 +5532,25 @@
       }
     }
 
-    /* [auto-hide-eyes] mobile only: hide eyes briefly on scroll down in terminal,
-       then restore them after 1s and lock them visible for the duration of the q&a.
-       anti-jitter: requires MIN_DELTA px of movement before toggling,
-       and a LOCK_MS cooldown after each state change. */
+    /* [terminal-eyes] mobile only: the eyes occupy the top of the transcript and
+       move out with its scroll instead of floating over every question. */
     (function () {
       if (window.innerWidth > 600) return; /* desktop: skip */
 
-      const eyesEl = document.getElementById('eyes');
-      const blockerEl = document.querySelector('.eyes-blocker');
-      const shadowEl = document.querySelector('.eyes-shadow');
       const terminal = document.querySelector('.terminal');
-      if (!eyesEl || !terminal) return;
-
-      const MIN_DELTA = 12;   /* px of scroll needed before acting */
-      const LOCK_MS = 300;    /* cooldown after toggle to ignore rapid reversals */
-
-      let lastScroll = 0;
-      let hidden = false;
-      let locked = false;
+      if (!terminal) return;
       let ticking = false;
-      let restoreTimer = null;
-      let eyesLockedVisible = false; /* set true once q&a is underway */
 
-      function setEyeZone(hide) {
-        eyesEl.classList.toggle('hidden-mobile', hide);
-        if (blockerEl) blockerEl.classList.toggle('hidden-mobile', hide);
-        /* shadowEl stays put so the void gradient keeps its hard line */
-      }
-
-      /* called by terminal start - eyes stay visible for the q&a */
-      window._lockEyesVisible = function () {
-        eyesLockedVisible = true;
-        setEyeZone(false);
-        hidden = false;
-      };
-
-      function updateEyes() {
+      function syncTerminalEyes() {
         ticking = false;
-        if (locked || eyesLockedVisible) return;
-        const current = terminal.scrollTop;
-        const delta = current - lastScroll;
-        lastScroll = current;
-
-        if (Math.abs(delta) < MIN_DELTA) return; /* not enough movement */
-
-        if (delta > 0 && current > 50 && !hidden) {
-          /* scrolling down - hide eyes briefly, then restore after 1s */
-          hidden = true;
-          setEyeZone(true);
-          locked = true;
-          if (restoreTimer) clearTimeout(restoreTimer);
-          restoreTimer = setTimeout(() => {
-            setEyeZone(false);
-            hidden = false;
-            locked = false;
-          }, 1000);
-        }
+        const offset = Math.min(180, Math.max(0, terminal.scrollTop));
+        document.body.style.setProperty('--terminal-eye-scroll', offset + 'px');
       }
+
+      window._lockEyesVisible = syncTerminalEyes;
 
       terminal.addEventListener('scroll', () => {
-        if (!ticking) { requestAnimationFrame(updateEyes); ticking = true; }
+        if (!ticking) { requestAnimationFrame(syncTerminalEyes); ticking = true; }
       }, { passive: true });
     }());
 
@@ -5566,6 +5579,7 @@
       hero.style.transition = 'opacity .45s ease';
       hero.style.opacity = '0';
       setTimeout(() => {
+        if (typeof window._enterQueryHistory === 'function') window._enterQueryHistory();
         showScreen('term', { focus: 'context' });
         hero.style.opacity = '';
         if (terminalStarted) {
