@@ -169,6 +169,8 @@ test('the homepage rune tutorial preserves the final CTA geometry throughout dec
   assert.match(source, /#pfg-email-rune \.pfg-rune-spacer \{\s*width: 0 !important;/);
   assert.doesNotMatch(source, /\n\s*\.pfg-rune-spacer \{\s*width: 0 !important;/);
   assert.match(source, /glyphWidth: '1\.04em',\s*spaceWidth: '1\.04em'/);
+  assert.match(source, /Keep the decoded SVG Latin as the final button face/);
+  assert.doesNotMatch(source, /button\.classList\.remove\('is-rune-tutorial'\);\s*setTimeout\(function \(\) \{\s*row\.replaceChildren\(\)/);
 });
 
 test('the factual postal address retains proper casing', () => {

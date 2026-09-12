@@ -8532,9 +8532,9 @@
         finished = true;
         stopShimmer();
         decoder.decode(glyphs, function () {
-          button.classList.remove('is-rune-tutorial');
+          /* Keep the decoded SVG Latin as the final button face. Swapping to the
+             separate HTML label exposed a one-pixel font-metric seam. */
           setTimeout(function () {
-            row.replaceChildren();
             button.disabled = false;
             button.removeAttribute('aria-disabled');
             button.dispatchEvent(new Event('pfgCtaReady'));
