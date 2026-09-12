@@ -143,7 +143,7 @@ test('mobile query navigation returns home and its eyes leave with transcript sc
   assert.match(source, /if \(tab === 'home' && \(termActive \|\| receiptActive\)\) \{\s*leaveQueryForHomepage\(\)/);
   assert.match(source, /if \(history\.state && history\.state\.pfgScreen === 'term'\) \{\s*history\.back\(\);\s*returnToHomepage\(true\)/);
   assert.match(source, /if \(!h && currentTab === 'home' && terminalStarted && heroActive\) return;/);
-  assert.match(source, /if \(ctaBtn\) ctaBtn\.innerText = 'to the goblins'/);
+  assert.match(source, /if \(ctaBtn\) ctaBtn\.innerText = 'back to the goblins'/);
   assert.match(source, /body\.terminal-active \.eyes \{[\s\S]{0,160}?--terminal-eye-scroll/);
   assert.match(source, /document\.body\.classList\.toggle\('terminal-active', id === 'screen-term'\)/);
   assert.match(source, /const offset = Math\.min\(180, Math\.max\(0, terminal\.scrollTop\)\)/);
