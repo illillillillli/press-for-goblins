@@ -82,6 +82,7 @@ test('principal views share one physical heading and divider at every viewport',
   assert.doesNotMatch(source, /id="(?:home|about|port)-title"/);
   assert.match(source, /\.principal-header-slot\s*\{[\s\S]*?display:\s*block/);
   assert.doesNotMatch(source, /@media \(min-width:\s*601px\)[\s\S]{0,300}\.principal-header-slot\s*\{[\s\S]{0,100}display:\s*none/);
+  assert.doesNotMatch(source, /#screen-(?:hero|about|portfolio) \.principal-(?:title-envelope|divider)/);
   assert.match(source, /var el = document\.getElementById\('principal-title'\)/);
   assert.match(source, /document\.addEventListener\('principalTitleChanged', fitTitle\)/);
 });
