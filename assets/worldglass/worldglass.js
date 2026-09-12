@@ -636,11 +636,20 @@
   }
 
   function drawLeader(state, button, time) {
-    if (!connectionsIntroducedAt || !button || !button.classList.contains('is-visible')) return;
+    if (!button || !button.classList.contains('is-visible')) return;
+    var depthOpacity = button._layoutVisible === false ? 0 : state.opacity;
+    var labelOpacity = width < 1100 ? depthOpacity : (state.event.id === selectedId ? 1 : state.opacity);
+    button.style.setProperty('--depth-opacity', labelOpacity.toFixed(3));
+    var interactive = narrowWorldglass()
+      ? depthOpacity >= .72
+      : compactDesktopWorldglass()
+        ? depthOpacity >= .72
+        : state.event.id === selectedId || state.opacity >= .55;
+    button.classList.toggle('is-interactive', interactive);
+    if (!connectionsIntroducedAt) return;
     var reveal = reduced.matches ? 1 : Math.min(1, Math.max(0, (time - connectionsIntroducedAt) / 360));
     var geometry = leaderGeometry(state, button);
     var active = state.event.id === selectedId || state.event.id === markerHoverId || button.matches(':hover, :focus');
-    var depthOpacity = button._layoutVisible === false ? 0 : state.opacity;
     if (depthOpacity > 0) {
       context.save();
       context.globalAlpha = depthOpacity * reveal;
@@ -669,14 +678,6 @@
       }
       context.restore();
     }
-    var labelOpacity = width < 1100 ? depthOpacity : (state.event.id === selectedId ? 1 : state.opacity);
-    button.style.setProperty('--depth-opacity', labelOpacity.toFixed(3));
-    var interactive = narrowWorldglass()
-      ? depthOpacity >= .72
-      : compactDesktopWorldglass()
-        ? depthOpacity >= .72
-        : state.event.id === selectedId || state.opacity >= .55;
-    button.classList.toggle('is-interactive', interactive);
   }
 
   function leaderGeometry(state, button) {
@@ -860,7 +861,10 @@
       return;
     }
     introTimers.push(setTimeout(function () {
-      dockNodes.forEach(function (button, index) {
+      var visibleButtons = dockNodes.filter(function (button) {
+        return parseFloat(getComputedStyle(button).getPropertyValue('--depth-opacity')) > .1;
+      });
+      visibleButtons.forEach(function (button, index) {
         introTimers.push(setTimeout(function () {
           button.classList.add('is-introduced');
           button.classList.remove('rewind-in');
@@ -870,8 +874,9 @@
       });
       introduced = true;
       introTimers.push(setTimeout(function () {
+        dockNodes.forEach(function (button) { button.classList.add('is-introduced'); });
         connectionsIntroducedAt = performance.now();
-      }, Math.max(0, (dockNodes.length - 1) * 115 + 260)));
+      }, Math.max(0, (visibleButtons.length - 1) * 115 + 260)));
     }, 300));
   }
 

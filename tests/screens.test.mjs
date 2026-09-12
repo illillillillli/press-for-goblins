@@ -214,6 +214,11 @@ test('worldglass keeps every event stable, reactive and on the shared colour tok
   assert.match(worldglassSource, /: Math\.max\(0, Math\.min\(1, \(point\.z \+ \.18\) \/ \.34\)\)/);
   assert.doesNotMatch(worldglassSource, /positionMobileRecords\(states\)/);
   assert.match(worldglassSource, /var labelOpacity = width < 1100 \? depthOpacity/);
+  assert.match(worldglassSource, /button\.style\.setProperty\('--depth-opacity', labelOpacity\.toFixed\(3\)\);[\s\S]{0,420}?if \(!connectionsIntroducedAt\) return;/);
+  assert.doesNotMatch(worldglassSource, /function drawLeader\(state, button, time\) \{\s*if \(!connectionsIntroducedAt/);
+  assert.match(worldglassSource, /var visibleButtons = dockNodes\.filter\(function \(button\) \{\s*return parseFloat\(getComputedStyle\(button\)\.getPropertyValue\('--depth-opacity'\)\) > \.1;/);
+  assert.match(worldglassSource, /visibleButtons\.forEach\(function \(button, index\)/);
+  assert.match(worldglassSource, /dockNodes\.forEach\(function \(button\) \{ button\.classList\.add\('is-introduced'\); \}\);\s*connectionsIntroducedAt/);
   assert.match(worldglassSource, /if \(moved && document\.activeElement && document\.activeElement\.closest\('\.worldglass-label'\)\)/);
   assert.match(worldglassSource, /function beginPinch\(\) \{/);
   assert.match(worldglassSource, /function updatePinch\(\) \{/);
@@ -262,7 +267,7 @@ test('worldglass keeps every event stable, reactive and on the shared colour tok
   assert.match(worldglassSource, /yaw \+= delta \* \.000018/);
   assert.match(worldglassSource, /function shimmerEncodedLabel\(\)/);
   assert.match(worldglassSource, /if \(!connectionsIntroducedAt/);
-  assert.match(worldglassSource, /\(dockNodes\.length - 1\) \* 115 \+ 260/);
+  assert.match(worldglassSource, /\(visibleButtons\.length - 1\) \* 115 \+ 260/);
   assert.match(worldglassSource, /var count = 1 \+ Math\.floor\(Math\.random\(\) \* 3\)/);
   assert.match(worldglassSource, /activeScreenChanged/);
   assert.match(worldglassSource, /event\.detail\.id === screen\.id\) startIntroduction\(\)/);
@@ -281,9 +286,9 @@ test('principal headings begin below the fully opaque top mist at every viewport
 });
 
 test('the official portfolio surface loads worldglass', () => {
-  assert.match(source, /href="assets\/worldglass\/worldglass\.css\?v=20260912-7"/);
+  assert.match(source, /href="assets\/worldglass\/worldglass\.css\?v=20260912-8"/);
   assert.match(source, /src="assets\/worldglass\/natural-earth-110m-land\.js\?v=20260906-4"/);
-  assert.match(source, /src="assets\/worldglass\/worldglass\.js\?v=20260912-7"/);
+  assert.match(source, /src="assets\/worldglass\/worldglass\.js\?v=20260912-8"/);
   assert.match(source, /titleLines: \['worldglass', ''\]/);
   assert.match(source, /id="screen-portfolio"[^>]+aria-label="worldglass"/);
   assert.match(worldglassSource, /stack\.replaceWith\(root\)/);
