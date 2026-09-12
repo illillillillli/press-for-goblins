@@ -214,7 +214,7 @@
 }
 
 .worldglass.is-narrow-worldglass {
-  font-size: 16px;
+  font-size: 18px;
   touch-action: none;
 
   --worldglass-mobile-glyph: 1;
@@ -237,10 +237,10 @@
 
 .worldglass.is-narrow-worldglass .worldglass-label {
   min-height: 44px;
-  padding: 2px 8px;
+  padding: 3px 8px;
   max-width: calc(100% - 32px);
   background: rgba(0, 0, 0, .82);
-  will-change: opacity, transform;
+  will-change: opacity;
 }
 
 .worldglass.is-narrow-worldglass .worldglass-label.rewind-in {

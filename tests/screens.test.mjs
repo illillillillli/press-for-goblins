@@ -200,7 +200,7 @@ test('worldglass keeps every event stable, reactive and on the shared colour tok
   assert.match(worldglassSource, /dragThreshold = event\.pointerType === 'touch' \? 8 : 3/);
   assert.match(worldglassSource, /if \(moved && event\.detail !== 0\) return;[\s\S]{0,80}?activateLabel\(button\)/);
   assert.match(worldglassSource, /function touchWorldglass\(\) \{\s*return navigator\.maxTouchPoints > 0 \|\| matchMedia\('\(pointer: coarse\)'\)\.matches;/);
-  assert.match(worldglassSource, /function narrowWorldglass\(\) \{\s*return width < 900 && touchWorldglass\(\);/);
+  assert.match(worldglassSource, /function narrowWorldglass\(\) \{\s*return width < 700;/);
   assert.match(worldglassSource, /function compactDesktopWorldglass\(\) \{\s*return width < 1100 && !narrowWorldglass\(\);/);
   assert.match(worldglassSource, /if \(!narrowWorldglass\(\)\) \{\s*button\.style\.removeProperty\('transform'\);\s*button\.style\.removeProperty\('opacity'\);\s*button\._layoutVisible = true;/);
   assert.match(worldglassSource, /root\.classList\.toggle\('is-narrow-worldglass', mobile\)/);
@@ -209,11 +209,11 @@ test('worldglass keeps every event stable, reactive and on the shared colour tok
   assert.match(worldglassSource, /\(event\.target\.closest\('\.worldglass-label'\) \|\| root\)\.setPointerCapture\(pointerId\)/);
   assert.doesNotMatch(worldglassSource, /mobileRecordBelt/);
   assert.match(worldglassSource, /function eventState\(event\) \{\s*var point = rotate\(sphere\(event\.lat, event\.lon\)\)/);
-  assert.match(worldglassSource, /function positionMobileRecords\(states\) \{\s*if \(!narrowWorldglass\(\) \|\| !lastMobileLayout\) return;/);
+  assert.doesNotMatch(worldglassSource, /function positionMobileRecords\(/);
   assert.match(worldglassSource, /compactDesktopWorldglass\(\)[\s\S]{0,100}?\(point\.z - \.08\) \/ \.28/);
   assert.match(worldglassSource, /: Math\.max\(0, Math\.min\(1, \(point\.z \+ \.18\) \/ \.34\)\)/);
-  assert.match(worldglassSource, /positionMobileRecords\(states\)/);
-  assert.match(worldglassSource, /var labelOpacity = width < 1100 \? depthOpacity : \(state\.event\.id === selectedId \? 1 : state\.opacity\)/);
+  assert.doesNotMatch(worldglassSource, /positionMobileRecords\(states\)/);
+  assert.match(worldglassSource, /var labelOpacity = narrowWorldglass\(\) \? 1 : width < 1100 \? depthOpacity/);
   assert.match(worldglassSource, /if \(moved && document\.activeElement && document\.activeElement\.closest\('\.worldglass-label'\)\)/);
   assert.match(worldglassSource, /function beginPinch\(\) \{/);
   assert.match(worldglassSource, /function updatePinch\(\) \{/);
@@ -224,23 +224,8 @@ test('worldglass keeps every event stable, reactive and on the shared colour tok
   assert.match(worldglassSource, /function leaderGeometry\(state, button\)/);
   assert.match(worldglassSource, /return \{ markerX: state\.screen\.x, markerY: state\.screen\.y, endX: endX, endY: endY \}/);
   assert.doesNotMatch(worldglassSource, /markerX = endX/);
-  assert.match(worldglassSource, /\{ tangent: -72, radial: 42 \}/);
-  assert.match(worldglassSource, /\{ tangent: 18, radial: 138 \}/);
-  assert.match(worldglassSource, /var mobileFacingOffsets = \[-120, -90, -60, -30, 0, 30, 60, 90, 120\]/);
-  assert.match(worldglassSource, /rotate\(sphere\(event\.lat, event\.lon \+ \(mobileFacingOffsets\[eventIndex\] \|\| 0\)\)\)/);
-  assert.match(worldglassSource, /var faceScale = narrowWorldglass\(\) \? Math\.max\(\.025, Math\.min\(1, facingPoint\.z\)\) : 1/);
-  assert.match(worldglassSource, /facingPoint\.z \/ \.46/);
-  assert.match(worldglassSource, /labelCentreX = state\.screen\.x \+ radialX \* offset\.radial \+ tangentX \* offset\.tangent/);
-  assert.match(worldglassSource, /labelCentreY = state\.screen\.y \+ radialY \* offset\.radial \+ tangentY \* offset\.tangent/);
-  assert.match(worldglassSource, /function mobileLabelOverlaps\(candidate, placed\)/);
-  assert.match(worldglassSource, /function nearestMobileLabelPosition\(item, placed, inset\)/);
-  assert.match(worldglassSource, /candidates\.find\(function \(candidate\) \{ return !mobileLabelOverlaps\(candidate, placed\); \}\) \|\| null/);
-  assert.match(worldglassSource, /button\._layoutVisible = layoutVisible/);
-  assert.match(worldglassSource, /else button\.style\.opacity = '0'/);
-  assert.match(worldglassSource, /renderedOpacity: parseFloat\(getComputedStyle\(button\)\.opacity\) \|\| 0/);
-  assert.match(worldglassSource, /var needsLayout = Math\.max\(item\.state\.opacity, item\.renderedOpacity\) > \.01/);
-  assert.doesNotMatch(worldglassSource, /items\.sort\(function \(a, b\) \{ return b\.state\.opacity/);
-  assert.match(worldglassSource, /narrowWorldglass\(\)\s*\? depthOpacity >= \.72 && state\.faceScale >= \.72/);
+  assert.doesNotMatch(worldglassSource, /faceScale|mobileRecordOffsets|mobileFacingOffsets|mobileLabelOverlaps|nearestMobileLabelPosition/);
+  assert.match(worldglassSource, /narrowWorldglass\(\)\s*\? true/);
   assert.match(worldglassSource, /compactDesktopWorldglass\(\)\s*\? depthOpacity >= \.72/);
   assert.match(worldglassSource, /: state\.event\.id === selectedId \|\| state\.opacity >= \.55/);
   assert.match(worldglassSource, /narrowWorldglass\(\)\s*\? Math\.max\(labelX, Math\.min\(labelX \+ labelRect\.width, state\.screen\.x\)\)/);
@@ -251,7 +236,7 @@ test('worldglass keeps every event stable, reactive and on the shared colour tok
   assert.match(worldglassStyles, /color: var\(--green, #74c58d\)/);
   assert.doesNotMatch(worldglassSource, /button\.style\.width = 'calc\('/);
   assert.doesNotMatch(worldglassStyles, /scaleX\(/);
-  assert.match(worldglassSource, /scaleX\(' \+ item\.state\.faceScale\.toFixed\(3\) \+ '\)'/);
+  assert.doesNotMatch(worldglassSource, /scaleX\(/);
   assert.match(worldglassSource, /leftInner: edgeInset \+ leftWidth/);
   assert.match(worldglassSource, /rightInner: width - edgeInset - rightWidth/);
   assert.match(worldglassStyles, /color: var\(--text-secondary, rgba\(255, 255, 255, \.55\)\)/);
@@ -261,7 +246,7 @@ test('worldglass keeps every event stable, reactive and on the shared colour tok
   assert.match(worldglassStyles, /width: \.6em;[\s\S]{0,80}?height: 1\.5em;[\s\S]{0,80}?flex: 0 0 \.6em;/);
   assert.match(worldglassStyles, /font: 400 \.84375em\/1/);
   assert.match(worldglassStyles, /stroke-width: 1\.05/);
-  assert.match(worldglassStyles, /\.worldglass\.is-narrow-worldglass \{[\s\S]*?font-size: 16px;[\s\S]*?touch-action: none/);
+  assert.match(worldglassStyles, /\.worldglass\.is-narrow-worldglass \{[\s\S]*?font-size: 18px;[\s\S]*?touch-action: none/);
   assert.match(worldglassStyles, /\.worldglass\.is-narrow-worldglass \.worldglass-glyph \{\s*width: \.62em;\s*flex-basis: \.62em;/);
   assert.match(worldglassStyles, /\.worldglass\.is-narrow-worldglass \.worldglass-label\.rewind-in \{\s*animation-fill-mode: none;/);
   assert.match(worldglassSource, /worldglass-glyph-literal/);
@@ -291,9 +276,9 @@ test('principal headings begin below the fully opaque top mist at every viewport
 });
 
 test('the official portfolio surface loads worldglass', () => {
-  assert.match(source, /href="assets\/worldglass\/worldglass\.css\?v=20260912-5"/);
+  assert.match(source, /href="assets\/worldglass\/worldglass\.css\?v=20260912-6"/);
   assert.match(source, /src="assets\/worldglass\/natural-earth-110m-land\.js\?v=20260906-4"/);
-  assert.match(source, /src="assets\/worldglass\/worldglass\.js\?v=20260912-5"/);
+  assert.match(source, /src="assets\/worldglass\/worldglass\.js\?v=20260912-6"/);
   assert.match(source, /titleLines: \['worldglass', ''\]/);
   assert.match(source, /id="screen-portfolio"[^>]+aria-label="worldglass"/);
   assert.match(worldglassSource, /stack\.replaceWith\(root\)/);
