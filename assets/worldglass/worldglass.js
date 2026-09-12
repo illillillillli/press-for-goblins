@@ -9,14 +9,17 @@
     { id: 'ble', name: 'brand licensing europe', city: 'london', date: '7 oct', lat: 51.5072, lon: -.1276 },
     { id: 'fantasycon', name: 'fantasycon', city: 'glasgow', date: '10 oct', lat: 55.8642, lon: -4.2518 },
     { id: 'yalc', name: 'yalc', city: 'london', date: '1 nov', lat: 51.5072, lon: -.1276 },
-    { id: 'thought-bubble', name: 'thought bubble', city: 'harrogate', date: '15 nov', lat: 53.9921, lon: -1.5418 }
+    { id: 'thought-bubble', name: 'thought bubble', city: 'harrogate', date: '15 nov', lat: 53.9921, lon: -1.5418 },
+    { id: 'goblin-hq', name: 'goblin hq', city: 'london', date: '', lat: 51.5072, lon: -.1276 }
   ];
   var mobileRecordOffsets = [
-    { side: -1, y: -72 }, { side: 1, y: -72 },
-    { side: -1, y: -24 }, { side: 1, y: -24 },
-    { side: -1, y: 24 }, { side: 1, y: 24 },
-    { side: -1, y: 72 }, { side: 1, y: 72 }
+    { tangent: -72, radial: 42 }, { tangent: 72, radial: 42 },
+    { tangent: -54, radial: 74 }, { tangent: 54, radial: 74 },
+    { tangent: -36, radial: 106 }, { tangent: 36, radial: 106 },
+    { tangent: -18, radial: 138 }, { tangent: 18, radial: 138 },
+    { tangent: 0, radial: 170 }
   ];
+  var mobileFacingOffsets = [-120, -90, -60, -30, 0, 30, 60, 90, 120];
 
   var runes = {
     A:'M9.2 9.6 L6.4 11.9 L1.4 10 L5.3 5.1 L9.2 9.6',B:'M3.8 6.3 L4.6 5.6 L5.5 5.2 L6.6 5.3 L7.6 5.7 L8.3 6.4 L8.7 7.4 L8.8 8.4 L8.4 9.4',C:'M5.1 5.3 Q7.4 3 9.7 5.3 Q7.4 7.6 5.1 5.3 M5 11 Q7.4 8.6 9.8 11 Q7.4 13.4 5 11',D:'M3.2 4 C8.4 7.3 2.6 10.5 7.6 13 M2 4 L4.4 4 M6.4 13 L8.8 13',E:'M3.5 9 Q7.5 6.2 11.5 9 Q7.5 11.8 3.5 9 M7 9 L8 9',F:'M4.3 4.5 L4.3 12.5 M4.3 6.6 L8.7 6.6 M4.3 10.4 L8.7 10.4',G:'M1.6 9.5 Q5.9 1.8 10.2 9.5 M3.5 9.5 Q5.9 5.2 8.3 9.5',H:'M5.3 4.3 L5.3 12.2 M9.9 7 Q8.8 9.5 9.9 12.2',I:'M6.2 5.9 L8.7 8.4 L6.2 10.9 L3.7 8.4 Z',J:'M6.6 1.8 L6.6 11.3 M1 5.8 L9.2 6.3',K:'M3.7 9.3 L10.5 9.3 M3.7 9.3 L3.7 5.6 L4.9 6.3 M7.1 9.3 L7.1 5 L8 5.5 M10.5 9.3 L10.5 5.4 L9.2 6',L:'M5.3 3.5 L5.3 13.5 M7 7.6 Q9 8.8 7 10',M:'M2.8 5.7 L9.9 5.7 M2.8 5.7 L2.7 11.1 M5.3 5.7 L5.3 14.8 M7.4 5.7 L7.4 12.1',N:'M2 5.1 L5 11.9 L8 7.5 L11 10.7',O:'M4.3 4.7 Q2.5 7.95 4.3 11.2 M9.3 4.7 Q11.1 7.95 9.3 11.2',P:'M3.5 5.8 Q9.6 6.7 9.9 11.4 M8.9 7.7 Q3.7 11.1 4.3 10.7',Q:'M2.9 3.5 L4 3 L5.4 3 L6.4 3.6 L6.7 4.9 L6.1 6.2 L4.9 6.8 L3.6 6.5 L2.7 5.5 M2.7 5.5 Q3.4 7.1 1.5 7.5',R:'M6.9 5.6 L8.6 8.4 L6.9 11.2 L5.2 8.4 Z',S:'M5.5 7 L4 10.5 M8 5.5 L6.5 10.5 M10.5 5.5 L9 10.5',T:'M6.3 4.5 L9.9 11.1 L5.1 10.5 L7.6 8.9 L3.8 10.4 L9.3 6 L6.3 4.5',U:'M1 7.1 Q3 3.3 5 7.1 Q7 10.9 9 7.1 Q10 3.3 11 7.1',V:'M5 5.7 Q8.1 8.3 8.5 12.1 Q7.4 12.6 6.8 12.1',W:'M5.3 3 L6.6 3.1 L7.2 4.3 L6.9 5.6 L5.7 6.3 L4.4 6.2 L3.5 5.2 L3.5 3.8 L4.4 3 M5.3 6.4 Q5.4 10.2 6.1 14',X:'M7.8 6.2 L10.5 6.2 M9.5 4.5 L9.5 7.9',Y:'M2.8 7.6 L3.8 7.6 M4.2 10.2 L5.2 10.2',Z:'M9.2 7.4 L6.4 5.1 L1.4 7 L5.3 11.9 L9.2 7.4'
@@ -74,6 +77,22 @@
   var layoutFrame = 0;
   var layoutRevision = 0;
   var lastMobileLayout = null;
+
+  function touchWorldglass() {
+    return navigator.maxTouchPoints > 0 || matchMedia('(pointer: coarse)').matches;
+  }
+
+  function narrowWorldglass() {
+    return width < 900 && touchWorldglass();
+  }
+
+  function compactDesktopWorldglass() {
+    return width < 1100 && !narrowWorldglass();
+  }
+
+  function eventDetail(event) {
+    return event.date ? event.date + ' · ' + event.city : event.city;
+  }
 
   function sphere(lat, lon) {
     var a = lat * Math.PI / 180;
@@ -201,16 +220,16 @@
   function activateLabel(button) {
     selectedId = button.dataset.eventId;
     dockNodes.forEach(function (node) {
-      if (node.dataset.eventId === selectedId) {
-        /* Each record owns its own reveal cycle. Activating another record must
-           never interrupt or recode this one. */
-        node._shouldReturn = true;
-        if (node._decoded) {
-          acknowledgeLabel(node);
-          scheduleLabelReturn(node);
-        }
-        else decodeLabel(node);
+      node._shouldReturn = true;
+      if (node.dataset.eventId !== selectedId) {
+        if (node._decoded || node._decoding) encodeLabel(node);
+        return;
       }
+      if (node._decoded) {
+        acknowledgeLabel(node);
+        scheduleLabelReturn(node);
+      }
+      else decodeLabel(node);
     });
   }
 
@@ -233,9 +252,9 @@
     button.classList.remove('is-interactive');
     button.classList.remove('is-decoded', 'is-decoding', 'is-encoding');
     button.dataset.eventId = event.id;
-    button.setAttribute('aria-label', event.name + ', ' + event.date + ', ' + event.city);
+    button.setAttribute('aria-label', event.name + ', ' + eventDetail(event));
     button.style.removeProperty('width');
-    button.replaceChildren(makeLine(event.name), makeLine(event.date + ' · ' + event.city));
+    button.replaceChildren(makeLine(event.name), makeLine(eventDetail(event)));
     requestAnimationFrame(function () {
       button.classList.add('is-visible');
       if (button.matches(':hover, :focus')) decodeLabel(button);
@@ -288,7 +307,7 @@
     scheduleLabelShimmer();
   }
 
-  function decodeLine(line, delay, instant, token, palette) {
+  function decodeLine(line, delay, instant, token, palette, staggerOverride) {
     var glyphs = Array.from(line._runes.children);
     if (instant) {
       glyphs.forEach(function (glyph) {
@@ -298,7 +317,7 @@
       });
       return 0;
     }
-    var stagger = 64;
+    var stagger = staggerOverride == null ? 64 : staggerOverride;
     var scramble = 102;
     var rounds = 5;
     var fade = 30;
@@ -356,8 +375,14 @@
     var lines = button.querySelectorAll('.worldglass-line');
     var instant = reduced.matches;
     var token = button._motionToken = (button._motionToken || 0) + 1;
-    var firstDone = decodeLine(lines[0], 0, instant, token, ['#74c58d', '#fffccc', '#fdfd96', '#fffccc', '#74c58d', '#fdfd96', '#74c58d']);
-    var secondDone = decodeLine(lines[1], firstDone + (instant ? 0 : 80), instant, token, ['#8c8c8c', '#fffccc', '#fdfd96', '#fffccc', '#8c8c8c', '#fdfd96', '#8c8c8c']);
+    var firstLength = lines[0]._runes.children.length;
+    var secondLength = lines[1]._runes.children.length;
+    var sharedSpan = Math.max(firstLength, secondLength, 1) * 64 - 64;
+    var firstStagger = firstLength > 1 ? sharedSpan / (firstLength - 1) : 0;
+    var secondStagger = secondLength > 1 ? sharedSpan / (secondLength - 1) : 0;
+    var firstDone = decodeLine(lines[0], 0, instant, token, ['#74c58d', '#fffccc', '#fdfd96', '#fffccc', '#74c58d', '#fdfd96', '#74c58d'], firstStagger);
+    var secondDone = decodeLine(lines[1], 0, instant, token, ['#8c8c8c', '#fffccc', '#fdfd96', '#fffccc', '#8c8c8c', '#fdfd96', '#8c8c8c'], secondStagger);
+    var decodeDone = Math.max(firstDone, secondDone);
     setTimeout(function () {
       if (button._generation !== generation || button._motionToken !== token) return;
       button._decoded = true;
@@ -365,7 +390,7 @@
       button.classList.remove('is-decoding');
       button.classList.add('is-decoded');
       if (button._shouldReturn) scheduleLabelReturn(button);
-    }, secondDone);
+    }, decodeDone);
   }
 
   function encodeLine(line, delay, instant, token, palette) {
@@ -387,11 +412,13 @@
       if (!glyph._path) return;
       setTimeout(function () {
         if (line.closest('.worldglass-label')._motionToken !== token) return;
-        glyph._latin.animate([{ opacity: 1 }, { opacity: 0 }], { duration: fade * .6, easing: 'ease-out', fill: 'forwards' });
+        var latinOpacity = getComputedStyle(glyph._latin).opacity;
+        glyph._latin.animate([{ opacity: latinOpacity }, { opacity: 0 }], { duration: fade * .6, easing: 'ease-out', fill: 'forwards' });
         setTimeout(function () {
           var round = 0;
           glyph._path.setAttribute('d', glyph._original);
-          glyph._path.animate([{ opacity: 0 }, { opacity: 1 }], { duration: fade * .4, easing: 'ease-out', fill: 'forwards' });
+          var runeOpacity = getComputedStyle(glyph._path).opacity;
+          glyph._path.animate([{ opacity: runeOpacity }, { opacity: 1 }], { duration: fade * .4, easing: 'ease-out', fill: 'forwards' });
           var interval = setInterval(function () {
             if (line.closest('.worldglass-label')._motionToken !== token) { clearInterval(interval); return; }
             var decay = 1 - round / rounds;
@@ -420,10 +447,27 @@
 
   function encodeLabel(button) {
     clearTimeout(button._returnTimer);
-    if (!button._decoded || button._decoding || button._encoding) return;
+    clearTimeout(button._reverseTimer);
+    button._reverseTimer = null;
+    if ((!button._decoded && !button._decoding) || button._encoding) return;
+    if (button._decoding) {
+      button._motionToken = (button._motionToken || 0) + 1;
+      button.querySelectorAll('.worldglass-glyph').forEach(function (glyph) {
+        [glyph, glyph._path, glyph._latin].filter(Boolean).forEach(function (part) {
+          var opacity = getComputedStyle(part).opacity;
+          part.getAnimations().forEach(function (animation) {
+            animation.cancel();
+          });
+          if (part === glyph._path || part === glyph._latin) part.style.opacity = opacity;
+        });
+        glyph.style.transform = '';
+      });
+    }
     button._encoding = true;
+    button._decoding = false;
     button._decoded = false;
-    button.classList.remove('is-decoded');
+    button._decodeAfterEncode = false;
+    button.classList.remove('is-decoded', 'is-decoding');
     button.classList.add('is-encoding');
     var generation = button._generation;
     var lines = button.querySelectorAll('.worldglass-line');
@@ -445,32 +489,99 @@
   function eventState(event) {
     var point = rotate(sphere(event.lat, event.lon));
     var screen = project(point);
-    var opacity = width < 700
-      ? Math.max(0, Math.min(1, (point.z + .12) / .42))
-      : Math.max(0, Math.min(1, (point.z + .18) / .34));
-    return { event: event, point: point, screen: screen, opacity: opacity };
+    var eventIndex = events.indexOf(event);
+    var facingPoint = narrowWorldglass()
+      ? rotate(sphere(event.lat, event.lon + (mobileFacingOffsets[eventIndex] || 0)))
+      : point;
+    var faceScale = narrowWorldglass() ? Math.max(.025, Math.min(1, facingPoint.z)) : 1;
+    var opacity = narrowWorldglass()
+      ? Math.max(0, Math.min(1, facingPoint.z / .46))
+      : compactDesktopWorldglass()
+        ? Math.max(0, Math.min(1, (point.z - .08) / .28))
+        : Math.max(0, Math.min(1, (point.z + .18) / .34));
+    return { event: event, point: point, screen: screen, opacity: opacity, facingPoint: facingPoint, faceScale: faceScale };
+  }
+
+  function mobileLabelOverlaps(candidate, placed) {
+    var gap = 5;
+    return placed.some(function (other) {
+      return candidate.x < other.x + other.width + gap
+        && candidate.x + candidate.width + gap > other.x
+        && candidate.y < other.y + other.height + gap
+        && candidate.y + candidate.height + gap > other.y;
+    });
+  }
+
+  function nearestMobileLabelPosition(item, placed, inset) {
+    var candidates = [];
+    var maxX = width - inset - item.width;
+    var maxY = lastMobileLayout.bottom - item.height;
+    for (var row = -9; row <= 9; row += 1) {
+      for (var column = -3; column <= 3; column += 1) {
+        var x = Math.max(inset, Math.min(maxX, item.desiredX + column * 56));
+        var y = Math.max(lastMobileLayout.top, Math.min(maxY, item.desiredY + row * (item.height + 5)));
+        candidates.push({
+          x: x,
+          y: y,
+          width: item.width,
+          height: item.height,
+          distance: Math.pow(x - item.desiredX, 2) + Math.pow(y - item.desiredY, 2)
+        });
+      }
+    }
+    candidates.sort(function (a, b) { return a.distance - b.distance; });
+    return candidates.find(function (candidate) { return !mobileLabelOverlaps(candidate, placed); }) || null;
   }
 
   function positionMobileRecords(states) {
-    if (width >= 700 || !lastMobileLayout) return;
+    if (!narrowWorldglass() || !lastMobileLayout) return;
     var inset = 12;
-    states.forEach(function (state, index) {
+    var items = states.map(function (state, index) {
       var button = dockNodes[index];
-      if (!button) return;
-      var rect = button.getBoundingClientRect();
-      var offset = mobileRecordOffsets[index] || { side: state.screen.x < centreX ? -1 : 1, y: 0 };
-      var side = offset.side < 0 ? 'left' : 'right';
-      var x = state.screen.x - rect.width * .5 + offset.side * 42;
-      x = Math.max(inset, Math.min(width - inset - rect.width, x));
-      var y = Math.max(
-        lastMobileLayout.top,
-        Math.min(lastMobileLayout.bottom - rect.height, state.screen.y + offset.y - rect.height * .5)
-      );
+      if (!button) return null;
+      var intrinsicWidth = button.offsetWidth;
+      var intrinsicHeight = button.offsetHeight;
+      var radialX = state.screen.x - centreX;
+      var radialY = state.screen.y - centreY;
+      var radialLength = Math.hypot(radialX, radialY);
+      if (radialLength < 8) { radialX = 0; radialY = -1; }
+      else { radialX /= radialLength; radialY /= radialLength; }
+      var tangentX = -radialY;
+      var tangentY = radialX;
+      var offset = mobileRecordOffsets[index] || { tangent: 0, radial: 42 };
+      var labelCentreX = state.screen.x + radialX * offset.radial + tangentX * offset.tangent;
+      var labelCentreY = state.screen.y + radialY * offset.radial + tangentY * offset.tangent;
+      return {
+        button: button,
+        state: state,
+        width: intrinsicWidth * state.faceScale,
+        intrinsicWidth: intrinsicWidth,
+        height: intrinsicHeight,
+        renderedOpacity: parseFloat(getComputedStyle(button).opacity) || 0,
+        desiredX: Math.max(inset, Math.min(width - inset - intrinsicWidth * state.faceScale, labelCentreX - intrinsicWidth * state.faceScale * .5)),
+        desiredY: Math.max(lastMobileLayout.top, Math.min(lastMobileLayout.bottom - intrinsicHeight, labelCentreY - intrinsicHeight * .5))
+      };
+    }).filter(Boolean);
+    var placed = [];
+    items.forEach(function (item) {
+      var needsLayout = Math.max(item.state.opacity, item.renderedOpacity) > .01;
+      var position = needsLayout
+        ? nearestMobileLabelPosition(item, placed, inset)
+        : { x: item.desiredX, y: item.desiredY, width: item.width, height: item.height };
+      var layoutVisible = !needsLayout || !!position;
+      if (!position) position = { x: item.desiredX, y: item.desiredY, width: item.width, height: item.height };
+      if (needsLayout && layoutVisible) placed.push(position);
+      var side = position.x + item.width * .5 < item.state.screen.x ? 'left' : 'right';
+      var button = item.button;
+      button._layoutVisible = layoutVisible;
+      if (layoutVisible) button.style.removeProperty('opacity');
+      else button.style.opacity = '0';
       button.dataset.side = side;
       button.style.left = '0px';
       button.style.right = 'auto';
       button.style.top = '0px';
-      button.style.transform = 'translate3d(' + Math.round(x) + 'px,' + Math.round(y) + 'px,0)';
+      var translateX = position.x - (item.intrinsicWidth - item.width) * .5;
+      button.style.transform = 'translate3d(' + Math.round(translateX) + 'px,' + Math.round(position.y) + 'px,0) scaleX(' + item.state.faceScale.toFixed(3) + ')';
     });
   }
 
@@ -489,7 +600,7 @@
   }
 
   function dockLayout() {
-    if (width < 700) {
+    if (narrowWorldglass()) {
       return events.map(function (_, index) {
         return { y: 0, side: index % 2 ? 'right' : 'left' };
       });
@@ -520,6 +631,11 @@
       var slot = layout[index];
       button.hidden = !slot;
       if (!slot) return;
+      if (!narrowWorldglass()) {
+        button.style.removeProperty('transform');
+        button.style.removeProperty('opacity');
+        button._layoutVisible = true;
+      }
       button.style.removeProperty('left');
       button.style.removeProperty('right');
       button.dataset.side = slot.side;
@@ -543,7 +659,7 @@
       else button.style.right = Math.round(edgeInset + rightWidth - measured) + 'px';
     });
     var mobileSafe = null;
-    if (width < 700) {
+    if (narrowWorldglass()) {
       var rootRect = root.getBoundingClientRect();
       var stage = root.closest('.stage');
       var stageRect = stage ? stage.getBoundingClientRect() : rootRect;
@@ -597,9 +713,10 @@
     var reveal = reduced.matches ? 1 : Math.min(1, Math.max(0, (time - connectionsIntroducedAt) / 360));
     var geometry = leaderGeometry(state, button);
     var active = state.event.id === selectedId || state.event.id === markerHoverId || button.matches(':hover, :focus');
-    if (state.opacity > 0) {
+    var depthOpacity = button._layoutVisible === false ? 0 : state.opacity;
+    if (depthOpacity > 0) {
       context.save();
-      context.globalAlpha = state.opacity * reveal;
+      context.globalAlpha = depthOpacity * reveal;
       context.beginPath();
       context.moveTo(geometry.markerX, geometry.markerY);
       context.lineTo(geometry.endX, geometry.endY);
@@ -619,24 +736,33 @@
         var phase = reduced.matches ? 0 : (time % 1450) / 1450;
         context.beginPath();
         context.arc(geometry.markerX, geometry.markerY, 4 + phase * 11, 0, Math.PI * 2);
-        context.globalAlpha = state.opacity * (1 - phase) * .82;
+        context.globalAlpha = depthOpacity * (1 - phase) * .82;
         context.strokeStyle = '#fff';
         context.stroke();
       }
       context.restore();
     }
-    var labelOpacity = width < 700 ? state.opacity : (state.event.id === selectedId ? 1 : state.opacity);
+    var labelOpacity = width < 1100 ? depthOpacity : (state.event.id === selectedId ? 1 : state.opacity);
     button.style.setProperty('--depth-opacity', labelOpacity.toFixed(3));
-    var interactive = state.event.id === selectedId || state.opacity >= .55;
+    var interactive = narrowWorldglass()
+      ? depthOpacity >= .72 && state.faceScale >= .72
+      : compactDesktopWorldglass()
+        ? depthOpacity >= .72
+        : state.event.id === selectedId || state.opacity >= .55;
     button.classList.toggle('is-interactive', interactive);
   }
 
   function leaderGeometry(state, button) {
     var rootRect = root.getBoundingClientRect();
     var labelRect = button.getBoundingClientRect();
+    var labelX = labelRect.left - rootRect.left;
     var labelY = labelRect.top - rootRect.top;
-    var endX = button.dataset.side === 'left' ? labelRect.right - rootRect.left : labelRect.left - rootRect.left;
-    var endY = labelY + labelRect.height * .5;
+    var endX = narrowWorldglass()
+      ? Math.max(labelX, Math.min(labelX + labelRect.width, state.screen.x))
+      : button.dataset.side === 'left' ? labelRect.right - rootRect.left : labelRect.left - rootRect.left;
+    var endY = narrowWorldglass()
+      ? Math.max(labelY, Math.min(labelY + labelRect.height, state.screen.y))
+      : labelY + labelRect.height * .5;
     return { markerX: state.screen.x, markerY: state.screen.y, endX: endX, endY: endY };
   }
 
@@ -740,7 +866,7 @@
   function resize(revision) {
     var rect = root.getBoundingClientRect();
     var viewport = window.visualViewport;
-    var mobile = rect.width < 700;
+    var mobile = rect.width < 900 && touchWorldglass();
     var transientViewport = mobile && (
       (viewport && viewport.scale > 1.01) ||
       document.body.classList.contains('mobile-keyboard-open')
@@ -749,6 +875,8 @@
     dpr = Math.min(devicePixelRatio || 1, 2);
     width = rect.width;
     height = rect.height;
+    root.classList.toggle('is-narrow-worldglass', mobile);
+    root.classList.toggle('is-compact-desktop', !mobile && width < 1100);
     var nextDefaultZoom = width < 1100 ? 2.05 : 1;
     if (!zoomInitialised || Math.abs(targetZoom - defaultZoom) < .001) {
       zoom = nextDefaultZoom;
@@ -774,9 +902,12 @@
     var fittedRadius = Math.min((width - 32) * .5, (safeBottom - safeTop) * .5);
     baseRadius = mobile
       ? Math.max(64, fittedRadius / nextDefaultZoom)
-      : Math.max(64, Math.min(width * .25, (safeBottom - safeTop) * .46, horizontalRadius));
+      : compactDesktopWorldglass()
+        ? Math.max(64, Math.min(width * .16, (safeBottom - safeTop) * .46))
+        : Math.max(64, Math.min(width * .25, (safeBottom - safeTop) * .46, horizontalRadius));
     radius = baseRadius * zoom;
     if (mobile) lastMobileLayout = { width: width, height: height, top: safeTop, bottom: safeBottom, revision: revision || 0 };
+    else lastMobileLayout = null;
     draw(performance.now());
   }
 
@@ -850,7 +981,7 @@
   function pointerDown(event) {
     lastInteractionAt = performance.now();
     clearMarkerHover();
-    if (event.pointerType === 'touch' && width < 700) {
+    if (event.pointerType === 'touch' && narrowWorldglass()) {
       if (!touchPoints.has(event.pointerId) && touchPoints.size >= 2) return;
       touchPoints.set(event.pointerId, { x: event.clientX, y: event.clientY });
       (event.target.closest('.worldglass-label') || root).setPointerCapture(event.pointerId);
@@ -860,7 +991,7 @@
       }
     }
     pointerId = event.pointerId;
-    if (event.pointerType !== 'touch' || width >= 700) {
+    if (event.pointerType !== 'touch' || !narrowWorldglass()) {
       (event.target.closest('.worldglass-label') || root).setPointerCapture(pointerId);
     }
     dragging = true;
@@ -877,7 +1008,7 @@
 
   function pointerMove(event) {
     lastInteractionAt = performance.now();
-    if (event.pointerType === 'touch' && width < 700 && touchPoints.has(event.pointerId)) {
+    if (event.pointerType === 'touch' && narrowWorldglass() && touchPoints.has(event.pointerId)) {
       touchPoints.set(event.pointerId, { x: event.clientX, y: event.clientY });
       if (pinching && touchPoints.size >= 2) {
         event.preventDefault();
@@ -909,7 +1040,7 @@
   }
 
   function pointerUp(event) {
-    if (event.pointerType === 'touch' && width < 700) {
+    if (event.pointerType === 'touch' && narrowWorldglass()) {
       touchPoints.delete(event.pointerId);
       if (pinching || pointerId === null) {
         if (touchPoints.size < 2) pinching = false;
@@ -976,7 +1107,7 @@
     records.className = 'worldglass-records';
     events.forEach(function (event) {
       var item = document.createElement('li');
-      item.textContent = event.name + ', ' + event.date + ', ' + event.city;
+      item.textContent = event.name + ', ' + eventDetail(event);
       records.append(item);
     });
     root.append(canvas, docks, records);
