@@ -879,6 +879,7 @@
           button.classList.add('rewind-in');
         }, index * 115));
       });
+      introTimers.push(setTimeout(shimmerEncodedLabel, 180));
       introduced = true;
       introTimers.push(setTimeout(function () {
         dockNodes.forEach(function (button) { button.classList.add('is-introduced'); });
@@ -1072,7 +1073,10 @@
       if (event.target.closest('button') || moved) return;
       var markerButton = markerButtonAt(event.clientX, event.clientY);
       if (markerButton) activateLabel(markerButton);
-      else selectedId = null;
+      else {
+        selectedId = null;
+        shimmerEncodedLabel();
+      }
     });
     root.addEventListener('keydown', function (event) {
       lastInteractionAt = performance.now();
@@ -1111,7 +1115,7 @@
     reduced.addEventListener('change', function () { dockNodes.forEach(encodeLabel); });
     resize(layoutRevision);
     if (document.fonts && document.fonts.ready) document.fonts.ready.then(scheduleResize);
-    scheduleLabelShimmer(2000 + Math.floor(Math.random() * 2000));
+    scheduleLabelShimmer();
     frameId = requestAnimationFrame(animate);
   }
 
