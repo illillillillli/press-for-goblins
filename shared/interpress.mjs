@@ -1,7 +1,7 @@
 /* ═══════════════════════════════════════════════════════
    press for goblins - shared email scaffolding
    imported by receipt-user.js, receipt-notif.js,
-   ticket-user.js, ticket-notif.js
+   receipt email builders
    constants: insignia.mjs
    ═══════════════════════════════════════════════════════ */
 
@@ -101,7 +101,7 @@ export function dotRowHtml(label, valueHtml) {
   </tr>`;
 }
 
-/* - ticket stub block: email centered white | asterisk rule | admitted on date+time - */
+/* - centred email and date stub - */
 /* email: bearer address. dateStr: e.g. "14 jun 2026". timeStr: e.g. "@ 20:00"          */
 export function stubBlock(email, dateStr, timeStr) {
   /* asterisk row: always one star wider each side than the admitted line.
@@ -133,12 +133,12 @@ export function stampImg({ src, alt = 'stamp', opacity = 0.69 }) {
 
 /* - stamp SVG - circular ink stamp (apple mail + WebKit only - outlook strips SVG) - */
 /* [approved human-text exception]
-   The generated query and field-report stamp faces deliberately use the exact
-   all-capitals inscriptions UNDER REVIEW and ADMIT ONE. They are physical-stamp
-   treatments, not interface labels, and Noah approved this narrow exception on
-   13 September 2026. No other email copy inherits it. */
-/* topText: arc text top (e.g. 'query received' / 'field reports')
-   midText: centre line (e.g. 'under review' / 'admit one')
+   The generated query stamp face deliberately uses the exact all-capitals
+   inscription UNDER REVIEW. It is a physical-stamp treatment, not an interface
+   label, and Noah approved this narrow exception on 13 September 2026. No other
+   email copy inherits it. */
+/* topText: arc text at the top
+   midText: centre inscription
    refNum:  shown below midText
    year:    shown above midText
    id:      unique filter id suffix (avoid SVG filter id collisions across emails) */

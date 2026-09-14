@@ -166,6 +166,9 @@
     var path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
     path.setAttribute('d', runes[character.toUpperCase()]);
     svg.append(path);
+    svg._rune = path;
+    svg._isAt = false;
+    svg._isDot = false;
     span.append(svg);
     var latin = document.createElement('span');
     latin.className = 'worldglass-glyph-latin';
@@ -308,25 +311,6 @@
       }, glyphIndex * 60);
     });
     scheduleLabelShimmer();
-  }
-
-  function scrambleEncodedLabels() {
-    if (reduced.matches) return;
-    dockNodes.forEach(function (button) {
-      if (button._decoded || button._decoding || button._encoding) return;
-      button.querySelectorAll('.worldglass-glyph').forEach(function (glyph) {
-        if (!glyph._path) return;
-        setTimeout(function () {
-          glyph._path.setAttribute('d', runes[runeKeys[Math.floor(Math.random() * runeKeys.length)]]);
-        }, Math.random() * 40);
-        setTimeout(function () {
-          glyph._path.setAttribute('d', runes[runeKeys[Math.floor(Math.random() * runeKeys.length)]]);
-        }, 80 + Math.random() * 40);
-        setTimeout(function () {
-          glyph._path.setAttribute('d', glyph._original);
-        }, 180);
-      });
-    });
   }
 
   function decodeLine(line, delay, instant, token, palette, staggerOverride) {
@@ -902,7 +886,6 @@
       introTimers.push(setTimeout(function () {
         dockNodes.forEach(function (button) { button.classList.add('is-introduced'); });
         connectionsIntroducedAt = performance.now();
-        introTimers.push(setTimeout(scrambleEncodedLabels, 360));
       }, Math.max(0, (visibleButtons.length - 1) * 115 + 260)));
     }, 300));
   }
@@ -1071,6 +1054,11 @@
     });
     root.append(canvas, docks, records);
     mountPoint.replaceWith(root);
+    if (window._attachRuneScrambleOnMiss) {
+      window._attachRuneScrambleOnMiss(screen, docks, docks, function () {
+        return !screen.classList.contains('is-active');
+      });
+    }
     var features = window.pfgNaturalEarthLand.features || [];
     features.forEach(function (feature) {
       var geometry = feature.geometry;
@@ -1092,14 +1080,7 @@
       if (event.target.closest('button') || moved) return;
       var markerButton = markerButtonAt(event.clientX, event.clientY);
       if (markerButton) activateLabel(markerButton);
-      else {
-        selectedId = null;
-        var bounds = root.getBoundingClientRect();
-        var x = event.clientX - bounds.left;
-        var y = event.clientY - bounds.top;
-        if (Math.hypot(x - centreX, y - centreY) <= radius) return;
-        scrambleEncodedLabels();
-      }
+      else selectedId = null;
     });
     root.addEventListener('keydown', function (event) {
       lastInteractionAt = performance.now();
@@ -1138,7 +1119,7 @@
     reduced.addEventListener('change', function () { dockNodes.forEach(encodeLabel); });
     resize(layoutRevision);
     if (document.fonts && document.fonts.ready) document.fonts.ready.then(scheduleResize);
-    scheduleLabelShimmer();
+    scheduleLabelShimmer(2000 + Math.floor(Math.random() * 2000));
     frameId = requestAnimationFrame(animate);
   }
 

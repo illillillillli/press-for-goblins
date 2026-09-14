@@ -2679,7 +2679,7 @@
       /* one shared group interval below the top divider */
     }
 
-    /* about - matches field reports tab-body-col gap */
+    /* portfolio body spacing */
     #about-hero .tab-body-col {
       gap: 0;
     }
@@ -2736,7 +2736,7 @@
     }
 
     /* [ascii-linkedin] meet the goblins keeps its interactive star field.
-       field reports has no social star field. */
+       no other principal view owns this treatment. */
     #ascii-output {
       opacity: 0;
       font-family: "Courier New", Courier, monospace;
@@ -3580,34 +3580,29 @@
       /* contact-rules track the shared content-width token; no JS override needed */
     }
 
-    /* scramble-on-miss: taps on the about screen that land outside the rune link
-           and outside #eyes briefly cycle each letter rune through 2 random paths then revert.
-           shows something is interactive without revealing the latin letters. */
-    function attachRuneScrambleOnMiss(runeRow) {
-      if (!runeRow || runeRow._scrambleAttached) return;
-      runeRow._scrambleAttached = true;
-      var screen = document.getElementById('screen-about');
-      var runeLink = document.getElementById('pfg-email-link');
+    /* [rune-miss] a press elsewhere in a rune-bearing principal view makes its
+       still-encoded glyphs briefly cycle through two random paths and return.
+       Portfolio, home and Worldglass share this exact reaction. */
+    function attachRuneScrambleOnMiss(screen, runeRoot, interactiveTarget, inactive) {
+      if (!screen || !runeRoot || runeRoot._scrambleAttached) return;
+      runeRoot._scrambleAttached = true;
       var eyes = document.getElementById('eyes');
-      if (!screen) return;
       screen.addEventListener('pointerdown', function (e) {
-        // ignore if runes already decoded
-        if (runeLink && runeLink._decoded) return;
-        // ignore taps on the rune link or the eyes animation
-        if (runeLink && (e.target === runeLink || runeLink.contains(e.target))) return;
+        if (inactive && inactive()) return;
+        if (interactiveTarget && (e.target === interactiveTarget || interactiveTarget.contains(e.target))) return;
         if (eyes && (e.target === eyes || eyes.contains(e.target))) return;
-        // scramble: for each letter glyph, swap to 2 random rune paths then snap back
         var runes = window._pfgRunes;
         if (!runes) return;
         var runeVals = Object.keys(runes).map(function (k) { return runes[k]; });
-        var svgs = runeRow.querySelectorAll('svg');
+        var svgs = runeRoot.querySelectorAll('svg');
         svgs.forEach(function (svg) {
           if (!svg._rune || svg._isAt || svg._isDot) return;
+          if (svg.closest('.is-decoded, .is-decoding, .is-encoding')) return;
           var orig = svg._rune.getAttribute('d');
-          var t1 = setTimeout(function () {
+          setTimeout(function () {
             svg._rune.setAttribute('d', runeVals[Math.floor(Math.random() * runeVals.length)]);
           }, Math.random() * 40);
-          var t2 = setTimeout(function () {
+          setTimeout(function () {
             svg._rune.setAttribute('d', runeVals[Math.floor(Math.random() * runeVals.length)]);
           }, 80 + Math.random() * 40);
           setTimeout(function () {
@@ -3616,6 +3611,7 @@
         });
       });
     }
+    window._attachRuneScrambleOnMiss = attachRuneScrambleOnMiss;
 
     /* - scheduleGlitch - fires btnGlitch once on el, then reschedules itself
        via animationend. interval is random 2000-5000ms each cycle.
@@ -3818,7 +3814,12 @@
           }, 80 + index * 90);
         });
 
-        attachRuneScrambleOnMiss(runeRow);
+        attachRuneScrambleOnMiss(
+          document.getElementById('screen-about'),
+          runeRow,
+          document.getElementById('pfg-email-link'),
+          function () { return Boolean(document.getElementById('pfg-email-link')._decoded); }
+        );
         setTimeout(function () {
           var asciiEl = document.getElementById('ascii-output');
           if (asciiEl && typeof asciiEl._runFlyIn === 'function') asciiEl._runFlyIn();
@@ -7532,6 +7533,14 @@
       button.setAttribute('aria-disabled', 'true');
       button.classList.add('is-rune-tutorial');
       var stopShimmer = decoder.startIdleShimmer(glyphs, function () { return finished; });
+      if (window._attachRuneScrambleOnMiss) {
+        window._attachRuneScrambleOnMiss(
+          document.getElementById('screen-hero'),
+          row,
+          button,
+          function () { return finished; }
+        );
+      }
 
       function decode() {
         if (finished) return;
@@ -7566,7 +7575,7 @@
     }());
   </script>
   <script src="assets/worldglass/natural-earth-110m-land.js?v=20260906-4"></script>
-  <script src="assets/worldglass/worldglass.js?v=20260914-3"></script>
+  <script src="assets/worldglass/worldglass.js?v=20260913-2"></script>
 </body>
 
 </html>

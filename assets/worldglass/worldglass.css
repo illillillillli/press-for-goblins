@@ -32,8 +32,8 @@
   overflow: hidden;
   background: #000;
   color: var(--green, #74c58d);
-  /* exact desktop source size used by the meet-the-goblins rune row */
-  font: 25px/1.18 "Courier New", monospace;
+  /* shared readable size across all three principal tabs */
+  font: 20px/1.18 "Courier New", monospace;
   touch-action: none;
   user-select: none;
 }
@@ -147,7 +147,7 @@
   display: grid;
   place-items: center;
   color: currentColor;
-  font: 400 .84375em/1 "Courier New", monospace;
+  font: 400 1em/1 "Courier New", monospace;
   opacity: 0;
 }
 
@@ -179,7 +179,7 @@
   inset: 0;
   display: grid;
   place-items: center;
-  font: 400 .84375em/1 "Courier New", monospace;
+  font: 400 1em/1 "Courier New", monospace;
 }
 
 .worldglass.is-mobile-proof {
@@ -189,7 +189,7 @@
   max-width: 100%;
   height: min(844px, 100%);
   transform: translateX(-50%);
-  font-size: 18px;
+  font-size: 20px;
 }
 
 .worldglass.is-mobile-proof .worldglass-label {
@@ -212,11 +212,11 @@
 }
 
 .worldglass.is-compact-desktop {
-  font-size: 26px;
+  font-size: 20px;
 }
 
 .worldglass.is-narrow-worldglass {
-  font-size: 18px;
+  font-size: 20px;
   touch-action: none;
 
   --worldglass-mobile-glyph: 1;
@@ -234,7 +234,7 @@
 
 .worldglass.is-narrow-worldglass .worldglass-glyph-latin,
 .worldglass.is-narrow-worldglass .worldglass-glyph-literal {
-  font-size: .9375em;
+  font-size: 1em;
 }
 
 .worldglass.is-narrow-worldglass .worldglass-label {

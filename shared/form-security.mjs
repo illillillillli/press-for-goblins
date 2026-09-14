@@ -68,10 +68,8 @@ const RECEIPT_LIMITS = {
   _submissionId: 64,
 };
 
-const TICKET_LIMITS = { email: 254, _gotcha: 200, _submissionId: 64 };
-
-export function validateFields(body, kind) {
-  const limits = kind === 'receipt' ? RECEIPT_LIMITS : TICKET_LIMITS;
+export function validateFields(body) {
+  const limits = RECEIPT_LIMITS;
   for (const [key, value] of Object.entries(body)) {
     if (!(key in limits) || typeof value !== 'string' || value.length > limits[key]) {
       const error = new Error('invalid fields');
@@ -79,7 +77,7 @@ export function validateFields(body, kind) {
       throw error;
     }
   }
-  const emailKey = kind === 'receipt' ? 'f-email' : 'email';
+  const emailKey = 'f-email';
   const email = String(body[emailKey] || '').trim().toLowerCase();
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email) || email.length > 254) {
     const error = new Error('missing or invalid email');
@@ -91,7 +89,7 @@ export function validateFields(body, kind) {
     error.status = 400;
     throw error;
   }
-  if (kind === 'receipt' && /[\r\n]/.test(body['f-title'] || '')) {
+  if (/[\r\n]/.test(body['f-title'] || '')) {
     const error = new Error('invalid title');
     error.status = 400;
     throw error;
@@ -156,10 +154,6 @@ export async function loadSubmission(kind, id) {
 
 export async function saveSubmission(kind, id, state) {
   await pipeline([['SET', `pfg:${kind}:submission:${id}`, JSON.stringify(state), 'EX', SUBMISSION_TTL]]);
-}
-
-export async function storeSubscriber(email) {
-  await pipeline([['SADD', 'pfg-subscribers', email]]);
 }
 
 export function clientIp(req) {

@@ -18,7 +18,7 @@ export default async function handler(req, res) {
 
   let answers;
   try {
-    answers = validateFields(parseBoundedBody(req), 'receipt');
+    answers = validateFields(parseBoundedBody(req));
   } catch (error) {
     return res.status(error.status || 400).json({ error: error.message || 'bad request' });
   }
