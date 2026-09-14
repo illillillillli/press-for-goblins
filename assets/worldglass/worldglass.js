@@ -898,14 +898,11 @@
           button.classList.add('rewind-in');
         }, index * 115));
       });
-      introTimers.push(setTimeout(
-        scrambleEncodedLabels,
-        Math.max(180, (visibleButtons.length - 1) * 115 + 120)
-      ));
       introduced = true;
       introTimers.push(setTimeout(function () {
         dockNodes.forEach(function (button) { button.classList.add('is-introduced'); });
         connectionsIntroducedAt = performance.now();
+        introTimers.push(setTimeout(scrambleEncodedLabels, 360));
       }, Math.max(0, (visibleButtons.length - 1) * 115 + 260)));
     }, 300));
   }
@@ -1097,6 +1094,10 @@
       if (markerButton) activateLabel(markerButton);
       else {
         selectedId = null;
+        var bounds = root.getBoundingClientRect();
+        var x = event.clientX - bounds.left;
+        var y = event.clientY - bounds.top;
+        if (Math.hypot(x - centreX, y - centreY) <= radius) return;
         scrambleEncodedLabels();
       }
     });
