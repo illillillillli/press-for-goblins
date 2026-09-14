@@ -313,6 +313,25 @@
     scheduleLabelShimmer();
   }
 
+  function scrambleEncodedLabels() {
+    if (reduced.matches) return;
+    dockNodes.forEach(function (button) {
+      if (button._decoded || button._decoding || button._encoding) return;
+      button.querySelectorAll('.worldglass-glyph').forEach(function (glyph) {
+        if (!glyph._path) return;
+        setTimeout(function () {
+          glyph._path.setAttribute('d', runes[runeKeys[Math.floor(Math.random() * runeKeys.length)]]);
+        }, Math.random() * 40);
+        setTimeout(function () {
+          glyph._path.setAttribute('d', runes[runeKeys[Math.floor(Math.random() * runeKeys.length)]]);
+        }, 80 + Math.random() * 40);
+        setTimeout(function () {
+          glyph._path.setAttribute('d', glyph._original);
+        }, 180);
+      });
+    });
+  }
+
   function decodeLine(line, delay, instant, token, palette, staggerOverride) {
     var glyphs = Array.from(line._runes.children);
     if (instant) {
@@ -815,7 +834,7 @@
     height = rect.height;
     root.classList.toggle('is-narrow-worldglass', mobile);
     root.classList.toggle('is-compact-desktop', !mobile && width < 1200);
-    var nextDefaultZoom = mobile ? 1.85 : width < 1200 ? 1.9 : 1;
+    var nextDefaultZoom = mobile ? 1.85 : 1.9;
     if (!zoomInitialised || Math.abs(targetZoom - defaultZoom) < .001) {
       zoom = nextDefaultZoom;
       targetZoom = nextDefaultZoom;
@@ -832,17 +851,10 @@
     var safeTop = rails.mobileSafe ? rails.mobileSafe.top : height * .22;
     var safeBottom = rails.mobileSafe ? rails.mobileSafe.bottom : height * .86;
     centreY = (safeTop + safeBottom) * .5 + (mobile ? Math.min(28, height * .03) : 0);
-    var railClearance = width < 1200 ? -24 : 18;
-    var horizontalRadius = Math.min(
-      centreX - rails.leftInner - railClearance,
-      rails.rightInner - centreX - railClearance
-    );
     var fittedRadius = Math.min((width - (mobile ? 56 : 32)) * .5, (safeBottom - safeTop) * .5);
     baseRadius = mobile
       ? Math.max(64, fittedRadius / nextDefaultZoom)
-      : compactDesktopWorldglass()
-        ? Math.max(64, Math.min(width * .15, (safeBottom - safeTop) * .44))
-        : Math.max(64, Math.min(width * .25, (safeBottom - safeTop) * .46, horizontalRadius));
+      : Math.max(64, Math.min(180, width * .15, (safeBottom - safeTop) * .44));
     radius = baseRadius * zoom;
     if (mobile) lastMobileLayout = { width: width, height: height, top: safeTop, bottom: safeBottom, revision: revision || 0 };
     else lastMobileLayout = null;
@@ -886,6 +898,7 @@
       introTimers.push(setTimeout(function () {
         dockNodes.forEach(function (button) { button.classList.add('is-introduced'); });
         connectionsIntroducedAt = performance.now();
+        introTimers.push(setTimeout(scrambleEncodedLabels, 360));
       }, Math.max(0, (visibleButtons.length - 1) * 115 + 260)));
     }, 300));
   }
@@ -1080,7 +1093,14 @@
       if (event.target.closest('button') || moved) return;
       var markerButton = markerButtonAt(event.clientX, event.clientY);
       if (markerButton) activateLabel(markerButton);
-      else selectedId = null;
+      else {
+        selectedId = null;
+        var bounds = root.getBoundingClientRect();
+        var x = event.clientX - bounds.left;
+        var y = event.clientY - bounds.top;
+        if (Math.hypot(x - centreX, y - centreY) <= radius) return;
+        scrambleEncodedLabels();
+      }
     });
     root.addEventListener('keydown', function (event) {
       lastInteractionAt = performance.now();
@@ -1119,7 +1139,7 @@
     reduced.addEventListener('change', function () { dockNodes.forEach(encodeLabel); });
     resize(layoutRevision);
     if (document.fonts && document.fonts.ready) document.fonts.ready.then(scheduleResize);
-    scheduleLabelShimmer(2000 + Math.floor(Math.random() * 2000));
+    scheduleLabelShimmer();
     frameId = requestAnimationFrame(animate);
   }
 
