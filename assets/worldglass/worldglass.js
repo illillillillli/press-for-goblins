@@ -73,6 +73,7 @@
   var introTimers = [];
   var connectionsIntroducedAt = 0;
   var nextLabelShimmerAt = 0;
+  var labelHintToken = 0;
   var layoutFrame = 0;
   var layoutRevision = 0;
   var lastMobileLayout = null;
@@ -224,6 +225,7 @@
   }
 
   function activateLabel(button) {
+    cancelLabelHints();
     selectedId = button.dataset.eventId;
     dockNodes.forEach(function (node) {
       node._shouldReturn = true;
@@ -279,7 +281,19 @@
     nextLabelShimmerAt = reduced.matches ? Infinity : performance.now() + (delay == null ? 3000 + Math.floor(Math.random() * 4000) : delay);
   }
 
+  function cancelLabelHints() {
+    labelHintToken += 1;
+    dockNodes.forEach(function (button) {
+      if (button._decoded || button._decoding || button._encoding) return;
+      button.querySelectorAll('.worldglass-glyph').forEach(function (glyph) {
+        if (glyph._path) glyph._path.setAttribute('d', glyph._original);
+      });
+    });
+    scheduleLabelShimmer();
+  }
+
   function shimmerEncodedLabel() {
+    var hintToken = ++labelHintToken;
     var candidates = dockNodes.filter(function (button) {
       return button.classList.contains('is-visible') &&
         button.classList.contains('is-interactive') &&
@@ -293,12 +307,11 @@
     while (picked.length < count && glyphs.length) picked.push(glyphs.splice(Math.floor(Math.random() * glyphs.length), 1)[0]);
     picked.forEach(function (glyph, glyphIndex) {
       setTimeout(function () {
-        if (button._decoded || button._decoding || button._encoding) return;
+        if (hintToken !== labelHintToken || button._decoded || button._decoding || button._encoding) return;
         var round = 0;
         var interval = setInterval(function () {
-          if (button._decoded || button._decoding || button._encoding) {
+          if (hintToken !== labelHintToken || button._decoded || button._decoding || button._encoding) {
             clearInterval(interval);
-            glyph._path.setAttribute('d', glyph._original);
             return;
           }
           glyph._path.setAttribute('d', runes[runeKeys[Math.floor(Math.random() * runeKeys.length)]]);
@@ -315,17 +328,21 @@
 
   function scrambleEncodedLabels() {
     if (reduced.matches) return;
+    var hintToken = ++labelHintToken;
     dockNodes.forEach(function (button) {
       if (button._decoded || button._decoding || button._encoding) return;
       button.querySelectorAll('.worldglass-glyph').forEach(function (glyph) {
         if (!glyph._path) return;
         setTimeout(function () {
+          if (hintToken !== labelHintToken || button._decoded || button._decoding || button._encoding) return;
           glyph._path.setAttribute('d', runes[runeKeys[Math.floor(Math.random() * runeKeys.length)]]);
         }, Math.random() * 40);
         setTimeout(function () {
+          if (hintToken !== labelHintToken || button._decoded || button._decoding || button._encoding) return;
           glyph._path.setAttribute('d', runes[runeKeys[Math.floor(Math.random() * runeKeys.length)]]);
         }, 80 + Math.random() * 40);
         setTimeout(function () {
+          if (hintToken !== labelHintToken || button._decoded || button._decoding || button._encoding) return;
           glyph._path.setAttribute('d', glyph._original);
         }, 180);
       });
