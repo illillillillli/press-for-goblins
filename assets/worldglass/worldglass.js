@@ -310,6 +310,25 @@
     scheduleLabelShimmer();
   }
 
+  function scrambleEncodedLabels() {
+    if (reduced.matches) return;
+    dockNodes.forEach(function (button) {
+      if (button._decoded || button._decoding || button._encoding) return;
+      button.querySelectorAll('.worldglass-glyph').forEach(function (glyph) {
+        if (!glyph._path) return;
+        setTimeout(function () {
+          glyph._path.setAttribute('d', runes[runeKeys[Math.floor(Math.random() * runeKeys.length)]]);
+        }, Math.random() * 40);
+        setTimeout(function () {
+          glyph._path.setAttribute('d', runes[runeKeys[Math.floor(Math.random() * runeKeys.length)]]);
+        }, 80 + Math.random() * 40);
+        setTimeout(function () {
+          glyph._path.setAttribute('d', glyph._original);
+        }, 180);
+      });
+    });
+  }
+
   function decodeLine(line, delay, instant, token, palette, staggerOverride) {
     var glyphs = Array.from(line._runes.children);
     if (instant) {
@@ -879,7 +898,10 @@
           button.classList.add('rewind-in');
         }, index * 115));
       });
-      introTimers.push(setTimeout(shimmerEncodedLabel, 180));
+      introTimers.push(setTimeout(
+        scrambleEncodedLabels,
+        Math.max(180, (visibleButtons.length - 1) * 115 + 120)
+      ));
       introduced = true;
       introTimers.push(setTimeout(function () {
         dockNodes.forEach(function (button) { button.classList.add('is-introduced'); });
@@ -1075,7 +1097,7 @@
       if (markerButton) activateLabel(markerButton);
       else {
         selectedId = null;
-        shimmerEncodedLabel();
+        scrambleEncodedLabels();
       }
     });
     root.addEventListener('keydown', function (event) {
