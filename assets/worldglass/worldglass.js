@@ -851,7 +851,7 @@
     height = rect.height;
     root.classList.toggle('is-narrow-worldglass', mobile);
     root.classList.toggle('is-compact-desktop', !mobile && width < 1200);
-    var nextDefaultZoom = mobile ? 1.85 : 1.9;
+    var nextDefaultZoom = mobile ? 1.85 : width < 1200 ? 1.9 : 1;
     if (!zoomInitialised || Math.abs(targetZoom - defaultZoom) < .001) {
       zoom = nextDefaultZoom;
       targetZoom = nextDefaultZoom;
@@ -867,11 +867,19 @@
     var rails = positionDocks();
     var safeTop = rails.mobileSafe ? rails.mobileSafe.top : height * .22;
     var safeBottom = rails.mobileSafe ? rails.mobileSafe.bottom : height * .86;
-    centreY = (safeTop + safeBottom) * .5 + (mobile ? Math.min(28, height * .03) : 0);
+    var wideDesktopDrop = width >= 1200 ? Math.min(40, height * .035) : 0;
+    centreY = (safeTop + safeBottom) * .5 + (mobile ? Math.min(28, height * .03) : wideDesktopDrop);
+    var railClearance = width < 1200 ? -24 : 18;
+    var horizontalRadius = Math.min(
+      centreX - rails.leftInner - railClearance,
+      rails.rightInner - centreX - railClearance
+    );
     var fittedRadius = Math.min((width - (mobile ? 56 : 32)) * .5, (safeBottom - safeTop) * .5);
     baseRadius = mobile
       ? Math.max(64, fittedRadius / nextDefaultZoom)
-      : Math.max(64, Math.min(180, width * .15, (safeBottom - safeTop) * .44));
+      : compactDesktopWorldglass()
+        ? Math.max(64, Math.min(width * .20, (safeBottom - safeTop) * .48))
+        : Math.max(64, Math.min(width * .25, (safeBottom - safeTop) * .46, horizontalRadius));
     radius = baseRadius * zoom;
     if (mobile) lastMobileLayout = { width: width, height: height, top: safeTop, bottom: safeBottom, revision: revision || 0 };
     else lastMobileLayout = null;
