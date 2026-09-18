@@ -851,7 +851,8 @@
     height = rect.height;
     root.classList.toggle('is-narrow-worldglass', mobile);
     root.classList.toggle('is-compact-desktop', !mobile && width < 1200);
-    var nextDefaultZoom = mobile ? 1.85 : width < 1200 ? 1.9 : 1;
+    var touchTablet = !mobile && width < 1200 && touchWorldglass();
+    var nextDefaultZoom = mobile ? 1.85 : touchTablet ? 1.75 : width < 1200 ? 1.9 : 1;
     if (!zoomInitialised || Math.abs(targetZoom - defaultZoom) < .001) {
       zoom = nextDefaultZoom;
       targetZoom = nextDefaultZoom;
@@ -867,8 +868,17 @@
     var rails = positionDocks();
     var safeTop = rails.mobileSafe ? rails.mobileSafe.top : height * .22;
     var safeBottom = rails.mobileSafe ? rails.mobileSafe.bottom : height * .86;
+    if (!mobile && width < 1200) {
+      var rootRect = root.getBoundingClientRect();
+      var eyes = document.getElementById('eyes');
+      var eyesRect = eyes && getComputedStyle(eyes).display !== 'none' ? eyes.getBoundingClientRect() : null;
+      var nav = document.querySelector('.footer-nav');
+      var navRect = nav ? nav.getBoundingClientRect() : null;
+      if (eyesRect) safeTop = Math.max(0, eyesRect.bottom + 8 - rootRect.top);
+      if (navRect) safeBottom = Math.min(height, navRect.top - 12 - rootRect.top);
+    }
     var wideDesktopDrop = width >= 1200 ? Math.min(40, height * .035) : 0;
-    centreY = (safeTop + safeBottom) * .5 + (mobile ? Math.min(28, height * .03) : wideDesktopDrop);
+    centreY = (safeTop + safeBottom) * .5 + wideDesktopDrop;
     var railClearance = width < 1200 ? -24 : 18;
     var horizontalRadius = Math.min(
       centreX - rails.leftInner - railClearance,
