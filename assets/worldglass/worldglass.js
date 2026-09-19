@@ -868,7 +868,7 @@
     var rails = positionDocks();
     var safeTop = rails.mobileSafe ? rails.mobileSafe.top : height * .22;
     var safeBottom = rails.mobileSafe ? rails.mobileSafe.bottom : height * .86;
-    if (!mobile && width < 1200) {
+    if (!mobile) {
       var rootRect = root.getBoundingClientRect();
       var eyes = document.getElementById('eyes');
       var eyesRect = eyes && getComputedStyle(eyes).display !== 'none' ? eyes.getBoundingClientRect() : null;
@@ -877,8 +877,7 @@
       if (eyesRect) safeTop = Math.max(0, eyesRect.bottom + 8 - rootRect.top);
       if (navRect) safeBottom = Math.min(height, navRect.top - 12 - rootRect.top);
     }
-    var wideDesktopDrop = width >= 1200 ? Math.min(40, height * .035) : 0;
-    centreY = (safeTop + safeBottom) * .5 + wideDesktopDrop;
+    centreY = (safeTop + safeBottom) * .5;
     var railClearance = width < 1200 ? -24 : 18;
     var horizontalRadius = Math.min(
       centreX - rails.leftInner - railClearance,
@@ -889,7 +888,7 @@
       ? Math.max(64, fittedRadius / nextDefaultZoom)
       : compactDesktopWorldglass()
         ? Math.max(64, Math.min(width * .20, (safeBottom - safeTop) * .48))
-        : Math.max(64, Math.min(width * .25, (safeBottom - safeTop) * .46, horizontalRadius));
+        : Math.max(64, Math.min(width * .25, (safeBottom - safeTop) * .48, horizontalRadius));
     radius = baseRadius * zoom;
     if (mobile) lastMobileLayout = { width: width, height: height, top: safeTop, bottom: safeBottom, revision: revision || 0 };
     else lastMobileLayout = null;
