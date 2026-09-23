@@ -1139,6 +1139,15 @@
       opacity: 1;
     }
 
+    /* The home wording arrives as one recovered signal after the eyes open.
+       This deliberately reuses the terminal rewind materialisation unchanged. */
+    .principal-title.home-intro-glitch,
+    .hero .body.home-intro-glitch,
+    .hero .cta-wrap.home-intro-glitch {
+      animation: rewindIn 260ms steps(5, end) forwards;
+      transition: none;
+    }
+
     .hero p {
       font-size: clamp(0.95rem, 1.6svh, 1.1rem);
       /* *body text size - matches form input scale */
@@ -3647,15 +3656,13 @@
 
     /* ═══════════════════════════════════════════════════════
        [nav] three tabs. home; about; portfolio. page fades out between switches.
-       hash routing handles direct links. the opening eye animation runs once per session.
+       hash routing handles direct links. the complete opening sequence runs on each page load.
        ═══════════════════════════════════════════════════════ */
     var terminalStarted = false;
     var hasSubmitted = false;
     var terminalPaused = false;
     (function () {
       var page = document.querySelector('.page');
-      var SITE_KEY = 'pfg-loaded';
-
       /* one source of principal-view identity. legacy maps below are derived, never hand-copied. */
       var PRINCIPAL_VIEWS = {
         home: {
@@ -4657,6 +4664,7 @@
 
     function runCorrection() {
       const strikePath = subjectEl.querySelector('#strikethrough-svg path');
+      document.dispatchEvent(new Event('pfgCorrectionStarted'));
       if (!strikePath || correctionLetters.length !== 2 || correctionMotion.matches) {
         settleCorrection();
         document.dispatchEvent(new Event('pfgCorrectionSettled'));
@@ -4709,6 +4717,24 @@
 
       const submittedLine = document.getElementById('submittedLine');
       const bodyEl = document.getElementById('hero').querySelector('.body');
+      const principalTitleEl = document.getElementById('principal-title');
+      const ctaWrapEl = document.querySelector('.cta-wrap');
+
+      [principalTitleEl, bodyEl, ctaWrapEl].forEach(el => {
+        if (el) el.classList.remove('home-intro-glitch');
+      });
+
+      function revealHomeText() {
+        [principalTitleEl, bodyEl, ctaWrapEl].forEach(el => {
+          if (!el) return;
+          void el.offsetWidth;
+          el.classList.add('home-intro-glitch');
+        });
+        cta.classList.add('settled');
+        heroTimers.push(setTimeout(() => {
+          if (!cta._glitchTimeout) scheduleGlitch(cta);
+        }, 300));
+      }
 
       if (hasSubmitted && bodyEl && submittedLine) {
         settleCorrection();
@@ -4724,6 +4750,7 @@
         /* stagger paragraphs oldest-first (natural reading order) */
         heroTimers.push(setTimeout(() => {
           hero.classList.add('ready');
+          revealHomeText();
           document.dispatchEvent(new Event('heroReady'));
           paras.forEach((p, i) => {
             heroTimers.push(setTimeout(() => {
@@ -4747,6 +4774,7 @@
         replayEyes();
         heroTimers.push(setTimeout(() => {
           hero.classList.add('ready');
+          revealHomeText();
           document.dispatchEvent(new Event('heroReady'));
         }, HERO_READY_MS));
         if (!correctionMotion.matches) heroTimers.push(setTimeout(() => runCorrection(), HERO_CORRECTION_MS));
@@ -4833,21 +4861,9 @@
     }
 
 
-    /* start the hero sequence - skip animation on return visits (single site-wide key) */
+    /* start the complete eyes-first introduction on every page load */
     (function () {
-      if (sessionStorage.getItem('pfg-loaded')) {
-        /* return visit with consent - immediately open all eyes and show hero content */
-        eyes.forEach(function (e) { e.classList.add('open-locked'); });
-        hero.classList.add('ready');
-        window._heroReadyFired = true;
-        document.dispatchEvent(new Event('heroReady'));
-        heroTimers.push(setTimeout(() => runCorrection(), 1500));
-      } else {
-        replayHero();
-        heroTimers.push(setTimeout(function () {
-          sessionStorage.setItem('pfg-loaded', '1');
-        }, HERO_READY_MS));
-      }
+      replayHero();
     }());
 
     /* [idle-blink] random independent blinking for each eye pair */
@@ -7529,8 +7545,6 @@
       var decodeTimer = 0;
       var finished = false;
       var decodeScheduled = false;
-      button.disabled = true;
-      button.setAttribute('aria-disabled', 'true');
       button.classList.add('is-rune-tutorial');
       var stopShimmer = decoder.startIdleShimmer(glyphs, function () { return finished; });
       if (window._attachRuneScrambleOnMiss) {
@@ -7550,8 +7564,6 @@
           /* Keep the decoded SVG Latin as the final button face. Swapping to the
              separate HTML label exposed a one-pixel font-metric seam. */
           setTimeout(function () {
-            button.disabled = false;
-            button.removeAttribute('aria-disabled');
             button.dispatchEvent(new Event('pfgCtaReady'));
           }, 140);
         }, { applyLayout: false });
@@ -7564,8 +7576,8 @@
         decodeTimer = setTimeout(decode, delay);
       }
 
-      document.addEventListener('pfgCorrectionSettled', function () {
-        scheduleDecode(450);
+      document.addEventListener('pfgCorrectionStarted', function () {
+        scheduleDecode(0);
       }, { once: true });
       if (window._heroReadyFired && matchMedia('(prefers-reduced-motion: reduce)').matches) scheduleDecode(0);
       else if (window._heroReadyFired) scheduleDecode(650);
