@@ -6,19 +6,22 @@
      the displayed dates unless Noah changes the attendance plan. */
   var events = [
     { id: 'lbf', name: 'london book fair', city: 'london', date: '12 mar', lat: 51.5072, lon: -.1276 },
-    { id: 'mcm', name: 'mcm comic con', city: 'london', date: '22–24 may', lat: 51.5072, lon: -.1276 },
-    { id: 'develop', name: 'develop:brighton', city: 'brighton', date: '15 jul', lat: 50.8225, lon: -.1372 },
+    { id: 'mcm', name: 'mcm comic con', city: 'london', date: '22 & 24 may', lat: 51.5072, lon: -.1276 },
+    { id: 'develop', name: 'develop:brighton', city: 'brighton', date: '16 jul', lat: 50.8225, lon: -.1372 },
     { id: 'gamescom', name: 'gamescom', city: 'cologne', date: '26–29 aug', lat: 50.9375, lon: 6.9603 },
     { id: 'ble', name: 'brand licensing europe', city: 'london', date: '7 oct', lat: 51.5072, lon: -.1276 },
     { id: 'fantasycon', name: 'fantasycon', city: 'glasgow', date: '10 oct', lat: 55.8642, lon: -4.2518 },
+    { id: 'paris-game-week', name: 'paris game week', city: 'paris', date: '22 & 23 oct', lat: 48.8566, lon: 2.3522 },
     { id: 'yalc', name: 'yalc', city: 'london', date: '1 nov', lat: 51.5072, lon: -.1276 },
+    { id: 'adventurex', name: 'adventurex', city: 'london', date: '7 nov', lat: 51.5072, lon: -.1276 },
     { id: 'thought-bubble', name: 'thought bubble', city: 'harrogate', date: '15 nov', lat: 53.9921, lon: -1.5418 },
     { id: 'goblin-hq', name: 'goblin hq', city: 'london', date: '', lat: 51.5072, lon: -.1276 }
   ];
   var mobileLabelOrbit = [
     { lat: 42, lon: -160 }, { lat: 8, lon: -120 }, { lat: -30, lon: -80 },
     { lat: 34, lon: -40 }, { lat: 15, lon: 0 }, { lat: -38, lon: 40 },
-    { lat: 60, lon: 80 }, { lat: -18, lon: 120 }, { lat: 44, lon: 160 }
+    { lat: 60, lon: 80 }, { lat: -18, lon: 120 }, { lat: 44, lon: 160 },
+    { lat: -52, lon: -140 }, { lat: 56, lon: 145 }
   ];
   var runes = {
     A:'M9.2 9.6 L6.4 11.9 L1.4 10 L5.3 5.1 L9.2 9.6',B:'M3.8 6.3 L4.6 5.6 L5.5 5.2 L6.6 5.3 L7.6 5.7 L8.3 6.4 L8.7 7.4 L8.8 8.4 L8.4 9.4',C:'M5.1 5.3 Q7.4 3 9.7 5.3 Q7.4 7.6 5.1 5.3 M5 11 Q7.4 8.6 9.8 11 Q7.4 13.4 5 11',D:'M3.2 4 C8.4 7.3 2.6 10.5 7.6 13 M2 4 L4.4 4 M6.4 13 L8.8 13',E:'M3.5 9 Q7.5 6.2 11.5 9 Q7.5 11.8 3.5 9 M7 9 L8 9',F:'M4.3 4.5 L4.3 12.5 M4.3 6.6 L8.7 6.6 M4.3 10.4 L8.7 10.4',G:'M1.6 9.5 Q5.9 1.8 10.2 9.5 M3.5 9.5 Q5.9 5.2 8.3 9.5',H:'M5.3 4.3 L5.3 12.2 M9.9 7 Q8.8 9.5 9.9 12.2',I:'M6.2 5.9 L8.7 8.4 L6.2 10.9 L3.7 8.4 Z',J:'M6.6 1.8 L6.6 11.3 M1 5.8 L9.2 6.3',K:'M3.7 9.3 L10.5 9.3 M3.7 9.3 L3.7 5.6 L4.9 6.3 M7.1 9.3 L7.1 5 L8 5.5 M10.5 9.3 L10.5 5.4 L9.2 6',L:'M5.3 3.5 L5.3 13.5 M7 7.6 Q9 8.8 7 10',M:'M2.8 5.7 L9.9 5.7 M2.8 5.7 L2.7 11.1 M5.3 5.7 L5.3 14.8 M7.4 5.7 L7.4 12.1',N:'M2 5.1 L5 11.9 L8 7.5 L11 10.7',O:'M4.3 4.7 Q2.5 7.95 4.3 11.2 M9.3 4.7 Q11.1 7.95 9.3 11.2',P:'M3.5 5.8 Q9.6 6.7 9.9 11.4 M8.9 7.7 Q3.7 11.1 4.3 10.7',Q:'M2.9 3.5 L4 3 L5.4 3 L6.4 3.6 L6.7 4.9 L6.1 6.2 L4.9 6.8 L3.6 6.5 L2.7 5.5 M2.7 5.5 Q3.4 7.1 1.5 7.5',R:'M6.9 5.6 L8.6 8.4 L6.9 11.2 L5.2 8.4 Z',S:'M5.5 7 L4 10.5 M8 5.5 L6.5 10.5 M10.5 5.5 L9 10.5',T:'M6.3 4.5 L9.9 11.1 L5.1 10.5 L7.6 8.9 L3.8 10.4 L9.3 6 L6.3 4.5',U:'M1 7.1 Q3 3.3 5 7.1 Q7 10.9 9 7.1 Q10 3.3 11 7.1',V:'M5 5.7 Q8.1 8.3 8.5 12.1 Q7.4 12.6 6.8 12.1',W:'M5.3 3 L6.6 3.1 L7.2 4.3 L6.9 5.6 L5.7 6.3 L4.4 6.2 L3.5 5.2 L3.5 3.8 L4.4 3 M5.3 6.4 Q5.4 10.2 6.1 14',X:'M7.8 6.2 L10.5 6.2 M9.5 4.5 L9.5 7.9',Y:'M2.8 7.6 L3.8 7.6 M4.2 10.2 L5.2 10.2',Z:'M9.2 7.4 L6.4 5.1 L1.4 7 L5.3 11.9 L9.2 7.4'
@@ -591,17 +594,10 @@
       });
     }
     var narrow = width < 1200;
-    var ys = narrow ? [.22, .36, .50, .64] : [.29, .43, .57, .71];
-    return [
-      { y: ys[0], side: 'left' },
-      { y: ys[0], side: 'right' },
-      { y: ys[1], side: 'left' },
-      { y: ys[1], side: 'right' },
-      { y: ys[2], side: 'left' },
-      { y: ys[2], side: 'right' },
-      { y: ys[3], side: 'left' },
-      { y: ys[3], side: 'right' }
-    ];
+    var ys = narrow ? [.20, .31, .42, .53, .64, .75] : [.23, .34, .45, .56, .67, .78];
+    return events.map(function (_, index) {
+      return { y: ys[Math.floor(index / 2)], side: index % 2 ? 'right' : 'left' };
+    });
   }
 
   function positionDocks() {
