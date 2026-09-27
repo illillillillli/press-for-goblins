@@ -11,7 +11,7 @@
     { id: 'gamescom', name: 'gamescom', city: 'cologne', date: '26–29 aug', lat: 50.9375, lon: 6.9603 },
     { id: 'ble', name: 'brand licensing europe', city: 'london', date: '7 oct', lat: 51.5072, lon: -.1276 },
     { id: 'fantasycon', name: 'fantasycon', city: 'glasgow', date: '10 oct', lat: 55.8642, lon: -4.2518 },
-    { id: 'paris-game-week', name: 'paris game week', city: 'paris', date: '22 & 23 oct', lat: 48.8566, lon: 2.3522 },
+    { id: 'paris-game-week', name: 'Paris Games Week', city: 'paris', date: '22 & 23 oct', lat: 48.8566, lon: 2.3522 },
     { id: 'yalc', name: 'yalc', city: 'london', date: '1 nov', lat: 51.5072, lon: -.1276 },
     { id: 'adventurex', name: 'adventurex', city: 'london', date: '7 nov', lat: 51.5072, lon: -.1276 },
     { id: 'thought-bubble', name: 'thought bubble', city: 'harrogate', date: '15 nov', lat: 53.9921, lon: -1.5418 },
