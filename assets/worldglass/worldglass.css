@@ -264,3 +264,11 @@
     transition: none;
   }
 }
+
+@media (hover: hover) and (pointer: fine) {
+  .worldglass,
+  .worldglass.is-compact-desktop,
+  .worldglass.is-narrow-worldglass {
+    font-size: 26px;
+  }
+}

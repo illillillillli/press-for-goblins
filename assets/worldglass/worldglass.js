@@ -1119,10 +1119,6 @@
     root.addEventListener('pointercancel', pointerCancel);
     root.addEventListener('pointerleave', clearMarkerHover);
     root.addEventListener('wheel', wheel, { passive: false });
-    document.addEventListener('keydown', function (event) {
-      if (!screen.classList.contains('is-active') || !(event.metaKey || event.ctrlKey)) return;
-      if (event.key === '+' || event.key === '=' || event.key === '-' || event.key === '0') event.preventDefault();
-    }, true);
     root.addEventListener('click', function (event) {
       if (event.target.closest('button') || moved) return;
       var markerButton = markerButtonAt(event.clientX, event.clientY);
