@@ -5,17 +5,17 @@
      days, not claims about each event's complete public date range. Preserve
      the displayed dates unless Noah changes the attendance plan. */
   var events = [
-    { id: 'lbf', name: 'london book fair', city: 'london', date: '12 mar', lat: 51.5072, lon: -.1276 },
-    { id: 'mcm', name: 'mcm comic con', city: 'london', date: '22 & 24 may', lat: 51.5072, lon: -.1276 },
-    { id: 'develop', name: 'develop:brighton', city: 'brighton', date: '16 jul', lat: 50.8225, lon: -.1372 },
+    { id: 'goblin-hq', name: 'goblin hq', city: 'london', date: '', lat: 51.5072, lon: -.1276 },
+    { id: 'lbf', name: 'london book fair', city: 'london', showCity: false, date: '12 mar', lat: 51.5072, lon: -.1276 },
+    { id: 'mcm', name: 'london comic con', city: 'london', showCity: false, date: '22 & 24 may', lat: 51.5072, lon: -.1276 },
+    { id: 'develop', name: 'develop:brighton', city: 'brighton', showCity: false, date: '16 jul', lat: 50.8225, lon: -.1372 },
     { id: 'gamescom', name: 'gamescom', city: 'cologne', date: '26–29 aug', lat: 50.9375, lon: 6.9603 },
-    { id: 'ble', name: 'brand licensing europe', city: 'london', date: '7 oct', lat: 51.5072, lon: -.1276 },
+    { id: 'ble', name: 'ble', city: 'london', date: '7 oct', lat: 51.5072, lon: -.1276 },
     { id: 'fantasycon', name: 'fantasycon', city: 'glasgow', date: '10 oct', lat: 55.8642, lon: -4.2518 },
-    { id: 'paris-game-week', name: 'paris games week', city: 'paris', date: '22 & 23 oct', lat: 48.8566, lon: 2.3522 },
+    { id: 'paris-game-week', name: 'paris game week', city: 'paris', showCity: false, date: '22 & 23 oct', lat: 48.8566, lon: 2.3522 },
     { id: 'yalc', name: 'yalc', city: 'london', date: '1 nov', lat: 51.5072, lon: -.1276 },
     { id: 'adventurex', name: 'adventurex', city: 'london', date: '7 nov', lat: 51.5072, lon: -.1276 },
-    { id: 'thought-bubble', name: 'thought bubble', city: 'harrogate', date: '15 nov', lat: 53.9921, lon: -1.5418 },
-    { id: 'goblin-hq', name: 'goblin hq', city: 'london', date: '', lat: 51.5072, lon: -.1276 }
+    { id: 'thought-bubble', name: 'thought bubble', city: 'yorkshire', date: '15 nov', lat: 53.9921, lon: -1.5418 }
   ];
   var mobileLabelOrbit = [
     { lat: 42, lon: -160 }, { lat: 8, lon: -120 }, { lat: -30, lon: -80 },
@@ -98,7 +98,7 @@
   }
 
   function eventDetail(event) {
-    return event.date ? event.date + ' · ' + event.city : event.city;
+    return event.showCity === false ? event.date : event.date ? event.date + ' · ' + event.city : event.city;
   }
 
   function sphere(lat, lon) {
@@ -595,9 +595,15 @@
     }
     var narrow = width < 1200;
     var ys = narrow ? [.20, .31, .42, .53, .64, .75] : [.23, .34, .45, .56, .67, .78];
-    return events.map(function (_, index) {
-      return { y: ys[Math.floor(index / 2)], side: index % 2 ? 'right' : 'left' };
+    var layout = [];
+    events.forEach(function (event, index) {
+      var row = Math.floor(index / 2);
+      var side = index % 2 ? 'right' : 'left';
+      if (event.id === 'goblin-hq') side = 'right';
+      if (event.id === 'lbf') side = 'left';
+      layout.push({ y: ys[row], side: side });
     });
+    return layout;
   }
 
   function positionDocks() {
