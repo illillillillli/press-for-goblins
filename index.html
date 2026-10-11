@@ -1236,7 +1236,7 @@
       display: inline-block;
       width: 0;
       opacity: 1;
-      overflow: hidden;
+      overflow: visible;
       line-height: 0;
       margin-left: 0;
       margin-right: 0;
@@ -1249,6 +1249,7 @@
       width: 32px;
       max-width: none;
       height: 14px;
+      overflow: visible;
       /* optical centre between the pencil's endpoint and the following "run". */
       margin-left: 8px;
     }
@@ -1258,13 +1259,20 @@
     }
 
     /* Match the copied annotation’s 2.8-unit principal stroke at its rendered scale. */
+    #strikethrough-svg path,
     #new-subject .we-hand-stroke {
+      stroke: var(--green);
+      filter: none;
       stroke-width: calc(2.8px * 43 / 56);
+    }
+
+    #new-subject .we-hand-stroke {
       stroke-dasharray: 1;
       stroke-dashoffset: 1;
     }
 
     @media (max-width: 600px) {
+      #strikethrough-svg path,
       #new-subject .we-hand-stroke { stroke-width: calc(2.8px * 37 / 56); }
     }
 
@@ -3395,17 +3403,17 @@
                   </svg></span><span id="new-subject" aria-hidden="true"><svg viewBox="0 0 165 72" width="32" height="14"
                     aria-hidden="true" focusable="false">
                     <g class="we-hand-letter we-hand-w">
-                      <path pathLength="1" class="we-hand-stroke goblin-pencil-stroke" data-ink-opacity="0.92"
+                      <path pathLength="1" class="we-hand-stroke goblin-pencil-stroke" data-ink-opacity="1"
                         d="M5 30 C8 38 11 59 11 68" />
-                      <path pathLength="1" class="we-hand-stroke goblin-pencil-stroke" data-ink-opacity="0.92"
+                      <path pathLength="1" class="we-hand-stroke goblin-pencil-stroke" data-ink-opacity="1"
                         d="M11 68 C14 65 16 61 19 58 C25 51 31 46 38 46 C47 48 51 58 62 63 C75 69 86 62 91 45 C96 29 91 20 80 18 C74 17 69 17 65 18" />
                     </g>
                     <g class="we-hand-letter we-hand-e">
-                      <path pathLength="1" class="we-hand-stroke goblin-pencil-stroke" data-ink-opacity="0.95"
+                      <path pathLength="1" class="we-hand-stroke goblin-pencil-stroke" data-ink-opacity="1"
                         d="M126 22 C127 33 128 49 131 59" />
-                      <path pathLength="1" class="we-hand-stroke goblin-pencil-stroke" data-ink-opacity="0.95"
+                      <path pathLength="1" class="we-hand-stroke goblin-pencil-stroke" data-ink-opacity="1"
                         d="M131 59 C130 49 129 39 130 31 C139 30 149 29 156 29" />
-                      <path pathLength="1" class="we-hand-stroke goblin-pencil-stroke" data-ink-opacity="0.95"
+                      <path pathLength="1" class="we-hand-stroke goblin-pencil-stroke" data-ink-opacity="1"
                         d="M156 29 C153 22 144 15 136 12 C125 8 114 12 108 21 C101 32 105 47 116 55 C127 61 143 57 156 51" />
                     </g>
                   </svg></span><span class="sr-only">we</span> run a narrative studio from a dimly lit room in london.
