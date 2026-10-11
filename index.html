@@ -1257,9 +1257,15 @@
       margin-left: 0;
     }
 
+    /* Match the copied annotation’s 2.8-unit principal stroke at its rendered scale. */
     #new-subject .we-hand-stroke {
+      stroke-width: calc(2.8px * 43 / 56);
       stroke-dasharray: 1;
       stroke-dashoffset: 1;
+    }
+
+    @media (max-width: 600px) {
+      #new-subject .we-hand-stroke { stroke-width: calc(2.8px * 37 / 56); }
     }
 
     /* [cta] the press for goblins button functions as a late-stage title card, a cta and a pun. a true triple threat.
@@ -2746,7 +2752,7 @@
       }
     }
 
-    /* [ascii-linkedin] meet the goblins keeps its interactive star field.
+    /* [ascii-linkedin] mail the goblins keeps its interactive star field.
        no other principal view owns this treatment. */
     #ascii-output {
       opacity: 0;
@@ -3404,11 +3410,11 @@
                     </g>
                   </svg></span><span class="sr-only">we</span> run a narrative studio from a dimly lit room in london.
               <span class="sr-only">the word “we” is a handwritten correction to “i”.</span>
-              with five years' experience at a big four publisher and counting, i work with <span
+              with five years' experience at a big four publisher and counting, we work with <span
                 class="service-hl">writers</span>, <span class="service-hl">comic creators</span>, <span
                 class="service-hl">game developers</span> and <span class="service-hl">publishers</span> on <span
                 class="service-hl">developmental editing</span>, <span class="service-hl">writing</span> and <span
-                class="service-hl">narrative design</span>.</p>
+                class="service-hl">narrative design</span> for books, comics and games.</p>
             <p><span class="service-hl">sci-fi</span>, <span class="service-hl">fantasy</span>, <span
                 class="service-hl">horror</span>, <span class="service-hl">romance</span>, <span
                 class="service-hl">genre blends</span>; comics with big action and bigger feelings; games with cutscenes
@@ -3449,12 +3455,11 @@
       <!-- -
          [portfolio-html] the portfolio screen. title and body fade and glitch in on arrival.
          - -->
-      <section class="screen" id="screen-about" data-screen-label="05 portfolio" aria-label="meet the goblins"
+      <section class="screen" id="screen-about" data-screen-label="05 portfolio" aria-label="mail the goblins"
         aria-hidden="true" tabindex="-1" inert>
         <div class="principal-header-slot" data-principal-view="portfolio"></div>
         <div class="tab-hero" id="about-hero">
           <div class="tab-body-col">
-            <p class="about-contact-line" id="about-contact-line">want to speak to the goblins?</p>
             <p class="about-contact-line" id="about-contact-line-2">they like big questions, oscar wilde and npcs with
               memorable dialogue (that's you).</p>
             <div class="about-rune-row" id="about-rune-row" style="position:relative;">
@@ -3513,7 +3518,7 @@
       <div class="active-dot" id="nav-dot-home"></div>
     </div>
     <div class="nav-item" id="nav-portfolio">
-      <button class="nav-btn" data-tab="portfolio" aria-label="portfolio">
+      <button class="nav-btn" data-tab="portfolio" aria-label="mail the goblins">
         <img src="assets/images/portfolio-nav.svg?v=20260913-1" alt="portfolio">
       </button>
       <div class="active-dot" id="nav-dot-portfolio" style="display:none"></div>
@@ -3674,7 +3679,7 @@
         },
         portfolio: {
           screen: 'screen-about', hash: '#portfolio', nav: 'portfolio', variant: 'single',
-          titleLines: ['meet the goblins', '']
+          titleLines: ['mail the goblins', '']
         },
         worldglass: {
           screen: 'screen-portfolio', hash: '#worldglass', nav: 'worldglass', variant: 'single',
@@ -6787,7 +6792,7 @@
       function decode(glyphs, onAllDone, settings) {
         settings = settings || {};
         var showLatin = settings.showLatin !== false;
-        var P = { stagger:64, rounds:5, scrambleMs:102, fadeMs:30, jitter:0 };
+        var P = settings.fast ? { stagger:24, rounds:3, scrambleMs:55, fadeMs:30, jitter:0 } : { stagger:64, rounds:5, scrambleMs:102, fadeMs:30, jitter:0 };
         var tids = [], done = 0, total = glyphs.length;
         glyphs.forEach(function (g, i) {
           var jit = (Math.random()*2-1)*P.jitter;
@@ -7568,7 +7573,7 @@
           setTimeout(function () {
             button.dispatchEvent(new Event('pfgCtaReady'));
           }, 140);
-        }, { applyLayout: false });
+        }, { applyLayout: false, fast: true });
       }
 
       function scheduleDecode(delay) {
@@ -7582,9 +7587,9 @@
         scheduleDecode(0);
       }, { once: true });
       if (window._heroReadyFired && matchMedia('(prefers-reduced-motion: reduce)').matches) scheduleDecode(0);
-      else if (window._heroReadyFired) scheduleDecode(650);
+      else if (window._heroReadyFired) scheduleDecode(0);
       else document.addEventListener('heroReady', function () {
-        if (matchMedia('(prefers-reduced-motion: reduce)').matches) scheduleDecode(0);
+        scheduleDecode(0);
       }, { once: true });
     }());
   </script>
