@@ -4622,6 +4622,48 @@
     const correctionLetters = Array.from(newSubjectEl.querySelectorAll('.we-hand-letter'));
     const correctionPaths = Array.from(newSubjectEl.querySelectorAll('.we-hand-stroke'));
     const correctionMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const correctionParagraph = newSubjectEl.closest('p');
+    /* Keep natural inline wrapping, measuring each word before and after the gap opens. */
+    const correctionWords = [];
+    const correctionWalker = document.createTreeWalker(document.getElementById('home-body'), NodeFilter.SHOW_TEXT, {
+      acceptNode(node) {
+        return node.parentElement.closest('svg, .sr-only, #subject, #new-subject') || !node.textContent.trim()
+          ? NodeFilter.FILTER_REJECT : NodeFilter.FILTER_ACCEPT;
+      }
+    });
+    const correctionTextNodes = [];
+    while (correctionWalker.nextNode()) correctionTextNodes.push(correctionWalker.currentNode);
+    correctionTextNodes.forEach(node => {
+      const fragment = document.createDocumentFragment();
+      node.textContent.split(/(\s+)/).forEach(part => {
+        if (!part) return;
+        if (/^\s+$/.test(part)) fragment.appendChild(document.createTextNode(part));
+        else {
+          const word = document.createElement('span');
+          word.textContent = part;
+          fragment.appendChild(word);
+          correctionWords.push(word);
+        }
+      });
+      node.replaceWith(fragment);
+    });
+    let movingCorrectionWords = [];
+    function clearCorrectionGlitch() {
+      correctionWords.forEach(word => word.classList.remove('rewind-out', 'rewind-in'));
+      movingCorrectionWords = [];
+    }
+    function measureCorrectionMovement() {
+      const before = correctionWords.map(word => word.getBoundingClientRect());
+      newSubjectEl.style.width = '43px';
+      newSubjectEl.style.marginRight = '-9px';
+      movingCorrectionWords = correctionWords.filter((word, index) => {
+        const after = word.getBoundingClientRect();
+        return Math.abs(after.left - before[index].left) > 0.5 || Math.abs(after.top - before[index].top) > 0.5;
+      });
+      newSubjectEl.style.width = '0px';
+      newSubjectEl.style.marginRight = '0px';
+    }
+
 
     function settleCorrection() {
       const strikePath = subjectEl.querySelector('#strikethrough-svg path');
@@ -4630,8 +4672,8 @@
       });
       subjectEl.style.opacity = '1';
       newSubjectEl.style.opacity = '1';
-      newSubjectEl.style.width = '38px';
-      newSubjectEl.style.marginRight = '-4px';
+      newSubjectEl.style.width = '43px';
+      newSubjectEl.style.marginRight = '-9px';
       if (strikePath) strikePath.style.strokeDashoffset = '0';
       correctionPaths.forEach(path => {
         path.style.strokeDashoffset = '0';
@@ -4654,6 +4696,7 @@
     window.addEventListener('resize', syncCorrectionAlignment);
 
     function resetCorrection() {
+      clearCorrectionGlitch();
       const strikePath = subjectEl.querySelector('#strikethrough-svg path');
       [strikePath, newSubjectEl, ...correctionPaths].forEach(node => {
         if (node) node.getAnimations().forEach(animation => animation.cancel());
@@ -4685,13 +4728,25 @@
         { duration: 1200, easing: 'cubic-bezier(0.4,0,0.2,1)', fill: 'forwards' }
       );
 
-      /* reveal the fixed-size approved trace after the strike */
-      newSubjectEl.animate(
-        [{ width: '0px', marginRight: '0px' }, { width: '38px', marginRight: '-4px' }],
-        { duration: 950, delay: 1400, easing: 'cubic-bezier(0.22,0.55,0.35,1)', fill: 'forwards' }
-      );
+      /* Rewind only words that actually change position at the current viewport. */
+      heroTimers.push(setTimeout(() => {
+        measureCorrectionMovement();
+        movingCorrectionWords.forEach(word => word.classList.add('rewind-out'));
+      }, 1400));
+      heroTimers.push(setTimeout(() => {
+        newSubjectEl.style.width = '43px';
+        newSubjectEl.style.marginRight = '-9px';
+        syncCorrectionAlignment();
+        movingCorrectionWords.forEach(word => {
+          word.classList.remove('rewind-out');
+          word.classList.add('rewind-in');
+        });
+      }, 1660));
+      heroTimers.push(setTimeout(() => {
+        clearCorrectionGlitch();
+      }, 1920));
 
-      let penAt = 2350;
+      let penAt = 1920;
       correctionLetters.forEach((letter, letterIndex) => {
         const strokes = Array.from(letter.querySelectorAll('.we-hand-stroke'));
         const lengths = strokes.map(path => path.getTotalLength());
